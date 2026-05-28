@@ -30,8 +30,8 @@ export default function SectionNav() {
     { label: '일일 리포트', href: '/students', icon: FileText }, // 일일 기록은 학생 상세/목록에서 연동
     { label: '학부모 리포트', href: '/reports', icon: MessageSquare },
     { label: '문제 은행', href: '/question-bank', icon: BookOpen },
-    { label: '수행평가', href: '/', icon: GraduationCap }, // v1.1 확장 예정
-    { label: '시험 분석', href: '/', icon: BarChart3 },   // v1.1 확장 예정
+    { label: '수행평가', href: '/performance', icon: GraduationCap },
+    { label: '시험 분석', href: '/analysis', icon: BarChart3 },
   ];
 
   return (
