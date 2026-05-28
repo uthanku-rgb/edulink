@@ -34,21 +34,28 @@ export default function ReportsPage() {
   const [nextWeekGoal, setNextWeekGoal] = useState('');
 
   useEffect(() => {
-    const loadedStudents = getStudents();
-    setStudents(loadedStudents);
-    if (loadedStudents.length > 0) {
-      setSelectedStudentId(loadedStudents[0].id);
-    }
+    const loadStudents = async () => {
+      try {
+        const loadedStudents = await getStudents();
+        setStudents(loadedStudents);
+        if (loadedStudents.length > 0) {
+          setSelectedStudentId(loadedStudents[0].id);
+        }
+      } catch (err) {
+        console.error('Failed to load students in Reports:', err);
+      }
+    };
+    loadStudents();
   }, []);
 
   // 리포트 생성 연산 핸들러
-  const handleGenerateReport = () => {
+  const handleGenerateReport = async () => {
     if (!selectedStudentId) return;
 
     const student = students.find(s => s.id === selectedStudentId);
     if (!student) return;
 
-    const allRecords = getDailyRecords();
+    const allRecords = await getDailyRecords();
     const studentRecords = allRecords.filter(r => r.studentId === selectedStudentId);
     
     // 최근 7일 필터링 (주간 리포트 기준)
@@ -83,8 +90,10 @@ export default function ReportsPage() {
     const latestStage = sorted[0] ? sorted[0].reviewStage : 1;
 
     // D-Day 정보 로드
-    const exam = getExams().find(e => e.studentId === selectedStudentId);
-    const cycle = getCycles().find(c => c.studentId === selectedStudentId);
+    const exams = await getExams();
+    const cycles = await getCycles();
+    const exam = exams.find(e => e.studentId === selectedStudentId);
+    const cycle = cycles.find(c => c.studentId === selectedStudentId);
     let dDayString = '';
     if (exam) {
       const examDate = new Date(exam.examDate);

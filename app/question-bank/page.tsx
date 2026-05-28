@@ -52,18 +52,26 @@ export default function QuestionBankPage() {
   const [regAccuracy, setRegAccuracy] = useState(70);
 
   useEffect(() => {
-    setStudents(getStudents());
-    setQuestions(getQuestions());
-    setPrescriptions(getPrescriptions());
+    const loadData = async () => {
+      try {
+        const loadedStudents = await getStudents();
+        setStudents(loadedStudents);
+        setQuestions(await getQuestions());
+        setPrescriptions(await getPrescriptions());
+        
+        if (loadedStudents.length > 0) {
+          setSelectedStudentId(loadedStudents[0].id);
+        }
+      } catch (err) {
+        console.error('Failed to load question bank data:', err);
+      }
+    };
     
-    const loadedStudents = getStudents();
-    if (loadedStudents.length > 0) {
-      setSelectedStudentId(loadedStudents[0].id);
-    }
+    loadData();
   }, []);
 
   // 1. 문제 등록 핸들러
-  const handleRegisterQuestion = (e: React.FormEvent) => {
+  const handleRegisterQuestion = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!regFilename) {
@@ -88,7 +96,7 @@ export default function QuestionBankPage() {
 
     try {
       const updated = [newQuestion, ...questions];
-      saveQuestions(updated);
+      await saveQuestions(updated);
       setQuestions(updated);
       
       // 폼 리셋
@@ -134,7 +142,7 @@ export default function QuestionBankPage() {
   };
 
   // 4. 처방 제출 핸들러
-  const handlePrescribe = () => {
+  const handlePrescribe = async () => {
     if (!selectedStudentId) {
       alert('처방받을 학생을 선택해 주세요.');
       return;
@@ -159,7 +167,7 @@ export default function QuestionBankPage() {
 
     try {
       const updated = [newPrescription, ...prescriptions];
-      savePrescriptions(updated);
+      await savePrescriptions(updated);
       setPrescriptions(updated);
       
       // 장바구니 비우기 및 알림

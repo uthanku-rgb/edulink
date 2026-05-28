@@ -15,9 +15,10 @@ export default function StudentsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadData = () => {
+    const loadData = async () => {
       try {
-        setStatuses(getStudentStatuses());
+        const loadedStatuses = await getStudentStatuses();
+        setStatuses(loadedStatuses);
       } catch (err) {
         console.error('Failed to load student list:', err);
       } finally {

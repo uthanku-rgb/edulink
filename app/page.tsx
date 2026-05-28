@@ -7,7 +7,7 @@ import CrisisAlerts from '../components/CrisisAlerts';
 import TodayTasks from '../components/TodayTasks';
 import StudentStatusList from '../components/StudentStatusList';
 import WeekStats from '../components/WeekStats';
-import { getAlerts, getStudentStatuses } from '../lib/storage';
+import { getAlerts, getStudentStatuses, seedMockDataIfEmpty } from '../lib/storage';
 import { mockTodayTasks, mockWeekStats } from '../data/mockData';
 import { Alert, StudentStatus } from '../types';
 
@@ -18,10 +18,13 @@ export default function DashboardPage() {
 
   useEffect(() => {
     // 로컬 스토리지 데이터 로드 (클라이언트 사이드 전용)
-    const loadDashboardData = () => {
+    const loadDashboardData = async () => {
       try {
-        setAlerts(getAlerts());
-        setStatuses(getStudentStatuses());
+        await seedMockDataIfEmpty();
+        const loadedAlerts = await getAlerts();
+        const loadedStatuses = await getStudentStatuses();
+        setAlerts(loadedAlerts);
+        setStatuses(loadedStatuses);
       } catch (err) {
         console.error('Failed to load storage data in Dashboard:', err);
       } finally {

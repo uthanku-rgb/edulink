@@ -76,9 +76,9 @@ export default function StudentDetailPage() {
 
   useEffect(() => {
     // 최초 데이터 로딩
-    const loadStudentData = () => {
+    const loadStudentData = async () => {
       try {
-        const students = getStudents();
+        const students = await getStudents();
         const foundStudent = students.find(s => s.id === studentId);
         
         if (!foundStudent) {
@@ -87,14 +87,20 @@ export default function StudentDetailPage() {
         }
 
         setStudent(foundStudent);
-        setExam(getExams().find(e => e.studentId === studentId) || null);
-        setCycle(getCycles().find(c => c.studentId === studentId) || null);
+        const exams = await getExams();
+        setExam(exams.find(e => e.studentId === studentId) || null);
         
-        const allRecords = getDailyRecords();
+        const cycles = await getCycles();
+        setCycle(cycles.find(c => c.studentId === studentId) || null);
+        
+        const allRecords = await getDailyRecords();
         setDailyRecords(allRecords.filter(r => r.studentId === studentId));
         
-        setD21Plan(getD21Plans().find(p => p.studentId === studentId) || null);
-        setTracker(getReviewTrackers().find(t => t.studentId === studentId) || null);
+        const plans = await getD21Plans();
+        setD21Plan(plans.find(p => p.studentId === studentId) || null);
+        
+        const trackers = await getReviewTrackers();
+        setTracker(trackers.find(t => t.studentId === studentId) || null);
 
         // 일일 기록 날짜 기본값 (오늘 날짜)
         setRecordDate(new Date('2026-05-27').toISOString().split('T')[0]);
@@ -156,7 +162,7 @@ export default function StudentDetailPage() {
   };
 
   // 1. 일일 기록 저장 제출 핸들러
-  const handleDailySubmit = (e: React.FormEvent) => {
+  const handleDailySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!recordDate) return;
@@ -174,12 +180,12 @@ export default function StudentDetailPage() {
     };
 
     try {
-      const allRecords = getDailyRecords();
+      const allRecords = await getDailyRecords();
       // 중복 체크 및 업데이트
       const filtered = allRecords.filter(r => !(r.studentId === studentId && r.date === recordDate));
       const updated = [newRecord, ...filtered];
       
-      saveDailyRecords(updated);
+      await saveDailyRecords(updated);
       setDailyRecords(updated.filter(r => r.studentId === studentId));
       
       // 입력 폼 리셋
@@ -201,7 +207,7 @@ export default function StudentDetailPage() {
   };
 
   // 플래너 편집 저장 핸들러
-  const handleSaveCell = () => {
+  const handleSaveCell = async () => {
     if (!d21Plan || !editingCell) return;
 
     const updatedCells = d21Plan.cells.map((c): D21Cell => {
@@ -223,9 +229,9 @@ export default function StudentDetailPage() {
     };
 
     try {
-      const allPlans = getD21Plans();
+      const allPlans = await getD21Plans();
       const filtered = allPlans.filter(p => p.studentId !== studentId);
-      saveD21Plans([...filtered, updatedPlan]);
+      await saveD21Plans([...filtered, updatedPlan]);
       setD21Plan(updatedPlan);
       
       setEditingCell(null);
@@ -236,7 +242,7 @@ export default function StudentDetailPage() {
   };
 
   // 3. N회독 체크박스 값 변경 핸들러
-  const handleTrackerCheck = (subjectName: string, stage: 1 | 2 | 3, value: boolean) => {
+  const handleTrackerCheck = async (subjectName: string, stage: 1 | 2 | 3, value: boolean) => {
     if (!tracker) return;
 
     const updatedItems = tracker.items.map((item): ReviewItem => {
@@ -257,9 +263,9 @@ export default function StudentDetailPage() {
     };
 
     try {
-      const allTrackers = getReviewTrackers();
+      const allTrackers = await getReviewTrackers();
       const filtered = allTrackers.filter(t => t.studentId !== studentId);
-      saveReviewTrackers([...filtered, updatedTracker]);
+      await saveReviewTrackers([...filtered, updatedTracker]);
       setTracker(updatedTracker);
     } catch (err) {
       console.error('Failed to save review tracker check:', err);
@@ -267,7 +273,7 @@ export default function StudentDetailPage() {
   };
 
   // N회독 새 자료 추가 핸들러
-  const handleAddMaterial = (e: React.FormEvent) => {
+  const handleAddMaterial = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!tracker || !newSubject || !newMaterial) return;
 
@@ -285,9 +291,9 @@ export default function StudentDetailPage() {
     };
 
     try {
-      const allTrackers = getReviewTrackers();
+      const allTrackers = await getReviewTrackers();
       const filtered = allTrackers.filter(t => t.studentId !== studentId);
-      saveReviewTrackers([...filtered, updatedTracker]);
+      await saveReviewTrackers([...filtered, updatedTracker]);
       setTracker(updatedTracker);
       
       setNewSubject('');
@@ -299,7 +305,7 @@ export default function StudentDetailPage() {
   };
 
   // N회독 교재 삭제 핸들러
-  const handleDeleteMaterial = (index: number) => {
+  const handleDeleteMaterial = async (index: number) => {
     if (!tracker) return;
     if (!confirm('해당 교재를 트래커에서 삭제하시겠습니까?')) return;
 
@@ -312,9 +318,9 @@ export default function StudentDetailPage() {
     };
 
     try {
-      const allTrackers = getReviewTrackers();
+      const allTrackers = await getReviewTrackers();
       const filtered = allTrackers.filter(t => t.studentId !== studentId);
-      saveReviewTrackers([...filtered, updatedTracker]);
+      await saveReviewTrackers([...filtered, updatedTracker]);
       setTracker(updatedTracker);
     } catch (err) {
       console.error('Failed to delete tracker item:', err);

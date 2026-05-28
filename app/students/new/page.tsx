@@ -21,7 +21,7 @@ export default function NewStudentPage() {
   const [examDate, setExamDate] = useState('2026-06-17'); // 기본값 예시
   const [subjectsString, setSubjectsString] = useState('국어, 영어, 수학, 과학');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!name || !school || !examDate) {
@@ -123,17 +123,17 @@ export default function NewStudentPage() {
 
     // 로컬 스토리지 데이터 로드 및 추가 저장
     try {
-      const students = getStudents();
-      const exams = getExams();
-      const cycles = getCycles();
-      const plans = getD21Plans();
-      const trackers = getReviewTrackers();
+      const students = await getStudents();
+      const exams = await getExams();
+      const cycles = await getCycles();
+      const plans = await getD21Plans();
+      const trackers = await getReviewTrackers();
 
-      saveStudents([newStudent, ...students]);
-      saveExams([newExam, ...exams]);
-      saveCycles([newCycle, ...cycles]);
-      saveD21Plans([newD21Plan, ...plans]);
-      saveReviewTrackers([newTracker, ...trackers]);
+      await saveStudents([newStudent, ...students]);
+      await saveExams([newExam, ...exams]);
+      await saveCycles([newCycle, ...cycles]);
+      await saveD21Plans([newD21Plan, ...plans]);
+      await saveReviewTrackers([newTracker, ...trackers]);
 
       alert('학생이 성공적으로 등록되었습니다.');
       router.push('/students');
