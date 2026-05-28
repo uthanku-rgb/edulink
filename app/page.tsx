@@ -1,101 +1,72 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import React, { useState, useEffect } from 'react';
+import Header from '../components/Header';
+import SectionNav from '../components/SectionNav';
+import CrisisAlerts from '../components/CrisisAlerts';
+import TodayTasks from '../components/TodayTasks';
+import StudentStatusList from '../components/StudentStatusList';
+import WeekStats from '../components/WeekStats';
+import { getAlerts, getStudentStatuses } from '../lib/storage';
+import { mockTodayTasks, mockWeekStats } from '../data/mockData';
+import { Alert, StudentStatus } from '../types';
+
+export default function DashboardPage() {
+  const [alerts, setAlerts] = useState<Alert[]>([]);
+  const [statuses, setStatuses] = useState<StudentStatus[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // 로컬 스토리지 데이터 로드 (클라이언트 사이드 전용)
+    const loadDashboardData = () => {
+      try {
+        setAlerts(getAlerts());
+        setStatuses(getStudentStatuses());
+      } catch (err) {
+        console.error('Failed to load storage data in Dashboard:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadDashboardData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#FAF9F6] flex items-center justify-center font-normal text-xs text-slate-400">
+        데이터 로드 중...
+      </div>
+    );
+  }
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="min-h-screen bg-[#FAF9F6] flex flex-col pb-12">
+      {/* 헤더 */}
+      <Header 
+        title="대시보드" 
+        studentCount={statuses.length} 
+        managerName="정수진" 
+        dateString="2026.05.27 (월)" 
+      />
+      
+      {/* 탭 네비게이션 */}
+      <SectionNav />
+      
+      {/* 대시보드 주요 콘텐츠 영역 */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 md:px-8 mt-4">
+        {/* 1. 위기 시그널 알림 카드 */}
+        <CrisisAlerts alerts={alerts} />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+        {/* 2. 오늘 할 일 */}
+        <TodayTasks tasks={mockTodayTasks} />
+
+        {/* 3. 담당 학생 현황 (상태별 카드 & 테이블 토글) */}
+        <StudentStatusList initialStatuses={statuses} />
+
+        {/* 4. 이번 주 통계 */}
+        <WeekStats stats={mockWeekStats} />
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
 }
