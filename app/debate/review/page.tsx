@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import SectionNav from '@/components/SectionNav';
 import { DebatePrep, ElementaryStudent, DebateTopic } from '@/types';
 import { mockElementaryStudents } from '@/data/mockData';
 import { debateTopics } from '@/data/debateTopics';
@@ -109,6 +110,8 @@ export default function CoachReviewPage() {
           </div>
         </div>
       </header>
+
+      <SectionNav />
 
       {/* Main Grid View */}
       <main className="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col md:flex-row gap-6">

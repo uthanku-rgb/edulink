@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
@@ -14,6 +14,7 @@ import {
   ClipboardCheck,
   Presentation,
   BookMarked,
+  Home,
   LucideIcon
 } from 'lucide-react';
 
@@ -26,8 +27,40 @@ interface NavItem {
 
 export default function SectionNav() {
   const pathname = usePathname();
+  const [coachingMode, setCoachingMode] = useState<'middle-high' | 'elementary'>('middle-high');
 
-  const navItems: NavItem[] = [
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if (
+        pathname.startsWith('/middle-high') ||
+        pathname.startsWith('/students') ||
+        pathname.startsWith('/reports') ||
+        pathname.startsWith('/question-bank') ||
+        pathname.startsWith('/performance') ||
+        pathname.startsWith('/analysis')
+      ) {
+        setCoachingMode('middle-high');
+        localStorage.setItem('coaching-mode', 'middle-high');
+      } else if (
+        pathname.startsWith('/elementary') ||
+        pathname.startsWith('/english') ||
+        pathname.startsWith('/debate')
+      ) {
+        setCoachingMode('elementary');
+        localStorage.setItem('coaching-mode', 'elementary');
+      } else if (pathname.startsWith('/workshop')) {
+        const stored = localStorage.getItem('coaching-mode');
+        if (stored === 'elementary') {
+          setCoachingMode('elementary');
+        } else {
+          setCoachingMode('middle-high');
+        }
+      }
+    }
+  }, [pathname]);
+
+  const allItems: NavItem[] = [
+    { label: '포털 홈', href: '/', icon: Home },
     { label: '대시보드(중고등)', href: '/middle-high', icon: Gauge },
     { label: '학생 28', href: '/students', icon: Users, count: 28 },
     { label: '학부모 리포트', href: '/reports', icon: MessageSquare },
@@ -41,15 +74,41 @@ export default function SectionNav() {
     { label: '워크샵 진행', href: '/workshop', icon: Presentation },
   ];
 
+  // 필터링된 메뉴 아이템 구성
+  const navItems = allItems.filter(item => {
+    // 포털 홈과 워크샵은 양쪽 모두 노출
+    if (item.href === '/' || item.href === '/workshop') return true;
+
+    if (coachingMode === 'middle-high') {
+      // 중고등 전용 메뉴 리스트
+      return [
+        '/middle-high',
+        '/students',
+        '/reports',
+        '/question-bank',
+        '/performance',
+        '/analysis'
+      ].includes(item.href);
+    } else {
+      // 초등 전용 메뉴 리스트
+      return [
+        '/elementary',
+        '/elementary/input',
+        '/english/review',
+        '/debate/review'
+      ].includes(item.href);
+    }
+  });
+
   return (
     <nav className="w-full bg-[#FAF9F6] py-3 no-print">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         {/* 가로 스크롤 가능한 알약 스타일 탭 컨테이너 */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
           {navItems.map((item) => {
-            // 활성화 상태 결정 (대시보드는 exact, 그 외에는 prefix 매칭)
-            const isActive = item.href === '/' 
-              ? pathname === '/' 
+            // 활성화 상태 결정 (홈, 중고등 대시보드, 초등 대시보드는 exact 매칭, 그 외에는 prefix 매칭)
+            const isActive = (item.href === '/' || item.href === '/middle-high' || item.href === '/elementary')
+              ? pathname === item.href
               : pathname.startsWith(item.href);
 
             const Icon = item.icon;
@@ -83,3 +142,4 @@ export default function SectionNav() {
     </nav>
   );
 }
+

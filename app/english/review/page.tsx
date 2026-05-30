@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import SectionNav from '@/components/SectionNav';
 import { 
   ExpressionItem, 
   EnglishOutput, 
@@ -321,6 +322,8 @@ export default function EnglishCoachReviewPage() {
           </div>
         </div>
       </header>
+
+      <SectionNav />
 
       {/* Main Console */}
       <main className="flex-1 max-w-5xl w-full mx-auto px-4 mt-6 no-print">

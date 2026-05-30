@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { LayoutDashboard } from 'lucide-react';
+import Link from 'next/link';
 
 interface HeaderProps {
   title: string;
@@ -21,9 +22,9 @@ export default function Header({
       <div className="max-w-7xl mx-auto px-4 md:px-8 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
         {/* 좌측 영역 */}
         <div className="flex flex-col">
-          <span className="text-xs text-slate-400 font-normal">
+          <Link href="/" className="text-xs text-slate-400 font-normal hover:text-slate-650 transition-colors">
             정연학원 · 매니저 포털
-          </span>
+          </Link>
           <div className="flex items-center gap-2 mt-1">
             <LayoutDashboard className="w-5 h-5 text-slate-800" strokeWidth={1.5} />
             <h1 className="text-xl md:text-2xl font-medium text-slate-900 leading-tight">
