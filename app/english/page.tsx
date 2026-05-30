@@ -1312,7 +1312,7 @@ export default function EnglishModulePage() {
               <strong>표현 주머니</strong>와 <strong>영어 금고</strong>에 예쁘게 저장되었어요!<br />
               {celebrationP3Synced ? (
                 <span className="text-[#2C9C8F] font-bold block mt-2">
-                  ✨ 오늘은 영어 요일이라 루틴 P3(메인) 미션이 자동으로 완수 처리되었습니다! (/today에서 확인 가능)
+                  ✨ 오늘은 영어 요일이라 루틴 P3(메인) 미션이 자동으로 완수 처리되었습니다! (/elementary에서 확인 가능)
                 </span>
               ) : (
                 <span className="text-stone-400 block mt-2">

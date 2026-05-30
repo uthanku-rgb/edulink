@@ -19,7 +19,9 @@ import {
   ChevronRight,
   Shield,
   User,
-  GraduationCap
+  GraduationCap,
+  Calendar,
+  Gauge
 } from 'lucide-react';
 import { mockStudents } from '@/data/mockData';
 
@@ -97,9 +99,12 @@ export default function AdminPage() {
 
             <div className="space-y-3">
               {[
-                { path: '/', label: '종합 대시보드 (Dashboard)', desc: '오늘 할 일, 알림, 기록 대기열, 코호트 현황', icon: LayoutDashboard, color: 'text-indigo-600 bg-indigo-50 border-indigo-100' },
-                { path: '/students', label: '전체 학생 목록', desc: '담당 학생 검색 및 리스트 관리', icon: Users, color: 'text-blue-600 bg-blue-50 border-blue-100' },
-                { path: '/students/new', label: '신규 학생 등록', desc: '학생 기본 정보(이름, 학교, 학년) 추가', icon: UserPlus, color: 'text-sky-600 bg-sky-50 border-sky-100' },
+                { path: '/', label: '통합 포탈 (Unified Portal)', desc: '초등 루틴 센터 및 중고등 코칭 센터의 통합 진입로', icon: Shield, color: 'text-indigo-600 bg-indigo-50 border-indigo-100' },
+                { path: '/middle-high', label: '중고등 코칭 대시보드', desc: '중고등 학생 현황, 기록 승인 대기 큐, 위기 알림', icon: Gauge, color: 'text-violet-600 bg-violet-50 border-violet-100' },
+                { path: '/elementary', label: '초등 루틴 대시보드', desc: '초등 코호트 주간 기둥 현황 및 케어 시그널 확인', icon: Calendar, color: 'text-emerald-600 bg-emerald-50 border-emerald-100' },
+                { path: '/elementary/input', label: '초등 루틴 수동 입력', desc: '코호트 등원 출결 체크 및 루틴 단계 체크 모달', icon: CheckSquare, color: 'text-teal-600 bg-teal-50 border-teal-100' },
+                { path: '/students', label: '전체 학생 목록', desc: '중고등 담당 학생 검색 및 프로필 리스트', icon: Users, color: 'text-blue-600 bg-blue-50 border-blue-100' },
+                { path: '/students/new', label: '신규 학생 등록', desc: '학생 정보 추가 및 시험 계획 템플릿 자동 세팅', icon: UserPlus, color: 'text-sky-600 bg-sky-50 border-sky-100' },
                 { path: '/english/review', label: '초등 영어 코치 점검판', desc: '리틀팍스 결과물 확인, 피드백 및 리포트 인쇄', icon: BookOpen, color: 'text-emerald-600 bg-emerald-50 border-emerald-100' },
                 { path: '/debate/review', label: '디베이트 코치 점검판', desc: '찬반 개요서 및 제출 문서 확인, 피드백', icon: MessageSquare, color: 'text-amber-600 bg-amber-50 border-amber-100' },
                 { path: '/workshop', label: '워크숍 선택 및 진행', desc: '라이브 세션 타이머, 오버레이 제어 및 P2 완료 연동', icon: Timer, color: 'text-purple-600 bg-purple-50 border-purple-100' },
@@ -138,10 +143,8 @@ export default function AdminPage() {
 
             <div className="space-y-3">
               {[
-                { path: '/today', label: '오늘의 등원 루틴판 (Check-in)', desc: '등원 출석 체크 및 P1~P4 일일 루틴 체크인', icon: CheckSquare, color: 'text-emerald-600 bg-emerald-50 border-emerald-100' },
-                { path: '/english', label: '초등 리틀팍스 영어 학습', desc: '소리 듣기 -> 단어 줍기 -> 녹음 -> 영작 4단계', icon: Sparkles, color: 'text-teal-600 bg-teal-50 border-teal-100' },
-                { path: '/debate', label: '디베이트 준비 도우미', desc: '중고등 토론 워크시트 개요 작성 6단계', icon: MessageSquare, color: 'text-orange-600 bg-orange-50 border-orange-100' },
-                { path: '/input', label: '루틴 데이터 수동 작성', desc: '학생/학부모 수동 일일 이력 입력 페이지', icon: Database, color: 'text-slate-600 bg-slate-50 border-slate-100' },
+                { path: '/english', label: '초등 리틀팍스 영어 학습', desc: '듣기 -> 섀도잉 -> 표현 줍기 -> 아웃풋 제출 4단계', icon: Sparkles, color: 'text-teal-600 bg-teal-50 border-teal-100' },
+                { path: '/debate', label: '디베이트 준비 도우미', desc: '찬반 입장 정하기, 자료 수집, 글쓰기 및 반박 6단계', icon: MessageSquare, color: 'text-orange-600 bg-orange-50 border-orange-100' },
               ].map(route => {
                 const Icon = route.icon;
                 return (
@@ -206,10 +209,10 @@ export default function AdminPage() {
 
             <div className="space-y-3">
               {[
-                { path: '/analysis', label: '종합 통계 분석 (Analysis)', desc: '센터 전체 루틴 이행 수준 및 이력 분석', icon: PieChart, color: 'text-purple-600 bg-purple-50 border-purple-100' },
-                { path: '/performance', label: '학생별 수행도 시각화 (Performance)', desc: '학생 개별 이행 추이 및 루틴 차트 지표', icon: FileBarChart, color: 'text-violet-600 bg-violet-50 border-violet-100' },
-                { path: '/reports', label: '학습 보고서 센터 (Reports)', desc: '학생 개별 코칭 리포트 및 학부모 보고서 출력', icon: Award, color: 'text-fuchsia-600 bg-fuchsia-50 border-fuchsia-100' },
-                { path: '/question-bank', label: '내신 대비 문제 은행', desc: '학원 보유 학교별 기출 및 고난도 문제 은행 관리', icon: Database, color: 'text-pink-600 bg-pink-50 border-pink-100' },
+                { path: '/analysis', label: '시험 오답 분석 (Analysis)', desc: '내신/모의고사 정오답 분류 및 취약 분석 리포트', icon: PieChart, color: 'text-purple-600 bg-purple-50 border-purple-100' },
+                { path: '/performance', label: '수행평가 대비 (Performance)', desc: '학교별 수행평가 마감일 및 단계별 진행/피드백', icon: FileBarChart, color: 'text-violet-600 bg-violet-50 border-violet-100' },
+                { path: '/reports', label: '학습 보고서 센터 (Reports)', desc: '주간/시즌 통계 자동 합산 및 카톡 전송/인쇄', icon: Award, color: 'text-fuchsia-600 bg-fuchsia-50 border-fuchsia-100' },
+                { path: '/question-bank', label: '내신 대비 문제 은행', desc: '학원 기출 자료 필터링 검색 및 맞춤 학습 처방', icon: Database, color: 'text-pink-600 bg-pink-50 border-pink-100' },
               ].map(route => {
                 const Icon = route.icon;
                 return (
