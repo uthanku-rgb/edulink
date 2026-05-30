@@ -7,12 +7,14 @@ import { useRouter } from 'next/navigation';
 
 interface TodayTasksProps {
   tasks: TodayTasksType;
+  pendingCount?: number;
 }
 
-export default function TodayTasks({ tasks }: TodayTasksProps) {
+export default function TodayTasks({ tasks, pendingCount = 0 }: TodayTasksProps) {
   const router = useRouter();
 
   const taskList = [
+    ...(pendingCount > 0 ? [{ label: '기록 확인 대기', value: `${pendingCount}건`, href: '#pending-queue' }] : []),
     { label: '학부모 리포트 컨펌', value: `${tasks.parentReportsToConfirm}건`, href: '/reports' },
     { label: '일일 코멘트 자동초안', value: `${tasks.dailyCommentsToAdd}명`, href: '/students' },
     { label: '신규 학생 OJT', value: tasks.newStudentOJT, href: '/students/new' },
@@ -34,7 +36,16 @@ export default function TodayTasks({ tasks }: TodayTasksProps) {
         {taskList.map((task) => (
           <div
             key={task.label}
-            onClick={() => router.push(task.href)}
+            onClick={() => {
+              if (task.href.startsWith('#')) {
+                const el = document.getElementById(task.href.substring(1));
+                if (el) {
+                  el.scrollIntoView({ behavior: 'smooth' });
+                }
+              } else {
+                router.push(task.href);
+              }
+            }}
             className="flex items-center justify-between bg-[#F5F5F4] hover:bg-[#EBEBE9] cursor-pointer rounded-lg px-3 py-2.5 transition-colors duration-150 group"
           >
             {/* 작업 이름 */}

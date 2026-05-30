@@ -7,33 +7,86 @@ import CrisisAlerts from '../components/CrisisAlerts';
 import TodayTasks from '../components/TodayTasks';
 import StudentStatusList from '../components/StudentStatusList';
 import WeekStats from '../components/WeekStats';
-import { getAlerts, getStudentStatuses, seedMockDataIfEmpty } from '../lib/storage';
-import { mockTodayTasks, mockWeekStats } from '../data/mockData';
-import { Alert, StudentStatus } from '../types';
+import PendingDraftQueue from '../components/PendingDraftQueue';
+import { 
+  getAlerts, 
+  getStudentStatuses, 
+  seedMockDataIfEmpty,
+  getStudents,
+  getDailyRecords,
+  saveDailyRecords
+} from '../lib/storage';
+import { mockTodayTasks } from '../data/mockData';
+import { Alert, StudentStatus, DailyRecord, Student } from '../types';
 
 export default function DashboardPage() {
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [statuses, setStatuses] = useState<StudentStatus[]>([]);
+  const [students, setStudents] = useState<Student[]>([]);
+  const [dailyRecords, setDailyRecords] = useState<DailyRecord[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // 로컬 스토리지 데이터 로드 (클라이언트 사이드 전용)
-    const loadDashboardData = async () => {
-      try {
-        await seedMockDataIfEmpty();
-        const loadedAlerts = await getAlerts();
-        const loadedStatuses = await getStudentStatuses();
-        setAlerts(loadedAlerts);
-        setStatuses(loadedStatuses);
-      } catch (err) {
-        console.error('Failed to load storage data in Dashboard:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const loadDashboardData = async () => {
+    try {
+      await seedMockDataIfEmpty();
+      const loadedAlerts = await getAlerts();
+      const loadedStatuses = await getStudentStatuses();
+      const loadedStudents = await getStudents();
+      const loadedRecords = await getDailyRecords();
+      
+      setAlerts(loadedAlerts);
+      setStatuses(loadedStatuses);
+      setStudents(loadedStudents);
+      setDailyRecords(loadedRecords);
+    } catch (err) {
+      console.error('Failed to load storage data in Dashboard:', err);
+    }
+  };
 
-    loadDashboardData();
+  useEffect(() => {
+    const init = async () => {
+      setLoading(true);
+      await loadDashboardData();
+      setLoading(false);
+    };
+    init();
   }, []);
+
+  const handleConfirm = async (recordId: string) => {
+    try {
+      const allRecords = await getDailyRecords();
+      const updated = allRecords.map(r => {
+        if (r.id === recordId) {
+          return {
+            ...r,
+            status: 'confirmed' as const,
+            confirmedAt: new Date().toISOString()
+          };
+        }
+        return r;
+      });
+      await saveDailyRecords(updated);
+      await loadDashboardData();
+      alert('승인되었습니다.');
+    } catch (err) {
+      console.error('Failed to confirm draft record:', err);
+      alert('승인 처리에 실패했습니다.');
+    }
+  };
+
+  const handleSaveAndConfirm = async (updatedRecord: DailyRecord) => {
+    try {
+      const allRecords = await getDailyRecords();
+      const filtered = allRecords.filter(r => r.id !== updatedRecord.id);
+      const updated = [updatedRecord, ...filtered];
+      await saveDailyRecords(updated);
+      await loadDashboardData();
+      alert('수정 및 승인이 완료되었습니다.');
+    } catch (err) {
+      console.error('Failed to edit and confirm record:', err);
+      alert('저장 처리에 실패했습니다.');
+    }
+  };
 
   if (loading) {
     return (
@@ -42,6 +95,27 @@ export default function DashboardPage() {
       </div>
     );
   }
+
+  // 대시보드 "기록 확인 대기" 계산
+  const pendingRecords = dailyRecords.filter(r => r.status === 'draft' && r.submittedBy === 'student');
+  const pendingCount = pendingRecords.length;
+
+  // 동적 위크 스탯 연산
+  const totalStudents = statuses.length;
+  const avgProgressPercent = totalStudents > 0
+    ? statuses.reduce((acc, cur) => acc + cur.progressPercent, 0) / totalStudents
+    : 0;
+  const avgAttendancePercent = totalStudents > 0
+    ? statuses.reduce((acc, cur) => acc + cur.attendance7d, 0) / totalStudents
+    : 0;
+  const crisisCount = statuses.filter(s => s.state === 'crisis').length;
+
+  const dynamicWeekStats = {
+    totalStudents,
+    avgProgressPercent,
+    avgAttendancePercent,
+    crisisCount
+  };
 
   return (
     <div className="min-h-screen bg-[#FAF9F6] flex flex-col pb-12">
@@ -62,13 +136,21 @@ export default function DashboardPage() {
         <CrisisAlerts alerts={alerts} />
 
         {/* 2. 오늘 할 일 */}
-        <TodayTasks tasks={mockTodayTasks} />
+        <TodayTasks tasks={mockTodayTasks} pendingCount={pendingCount} />
+
+        {/* 2.5 기록 확인 대기 큐 */}
+        <PendingDraftQueue
+          pendingRecords={pendingRecords}
+          students={students}
+          onConfirm={handleConfirm}
+          onSaveAndConfirm={handleSaveAndConfirm}
+        />
 
         {/* 3. 담당 학생 현황 (상태별 카드 & 테이블 토글) */}
         <StudentStatusList initialStatuses={statuses} />
 
         {/* 4. 이번 주 통계 */}
-        <WeekStats stats={mockWeekStats} />
+        <WeekStats stats={dynamicWeekStats} />
       </main>
     </div>
   );

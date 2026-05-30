@@ -13,7 +13,12 @@ import {
   Grade,
   Phase,
   Attendance,
-  AlertSeverity
+  AlertSeverity,
+  DailyCard,
+  ElementaryStudent,
+  Pillar,
+  ExpressionItem,
+  EnglishOutput
 } from '../types';
 
 // 날짜 오프셋 계산 헬퍼 (YYYY-MM-DD 형식 반환)
@@ -125,16 +130,47 @@ export const mockDailyRecords: DailyRecord[] = (() => {
         continue;
       }
 
+      // v2 학생 초안 / 확정 여부 결정
+      let status: 'draft' | 'confirmed' = 'confirmed';
+      let submittedBy: 'student' | 'manager' = 'manager';
+      let studyMinutes = attendance === '결석' ? 0 : 240 + (randSeed * 45);
+      let reviewStage = (randSeed % 3 + 1) as 1 | 2 | 3;
+      let completedPlan = attendance === '결석' ? false : randSeed !== 4;
+      let condition = (randSeed % 5 + 1) as 1 | 2 | 3 | 4 | 5;
+      let managerNote = attendance === '결석' ? '연락 두절 상태' : '무난하게 학습 진행';
+
+      if (dayOffset === 0) {
+        if (student.id === 'stu_01') {
+          status = 'draft';
+          submittedBy = 'student';
+          studyMinutes = 180;
+          reviewStage = 2;
+          completedPlan = false;
+          condition = 3;
+          managerNote = '오늘 영어 단어와 수학 기출 분석을 했습니다. 약간 졸렸습니다.';
+        } else if (student.id === 'stu_05') {
+          status = 'draft';
+          submittedBy = 'student';
+          studyMinutes = 320;
+          reviewStage = 3;
+          completedPlan = true;
+          condition = 5;
+          managerNote = '오늘 역산 플랜에 있는 것 전부 마쳤습니다! 내일도 열심히 하겠습니다.';
+        }
+      }
+
       records.push({
         id: `dr_${student.id.split('_')[1]}_${recordDate.replace(/-/g, '')}`,
         studentId: student.id,
         date: recordDate,
         attendance,
-        studyMinutes: attendance === '결석' ? 0 : 240 + (randSeed * 45),
-        reviewStage: (randSeed % 3 + 1) as 1 | 2 | 3,
-        completedPlan: attendance === '결석' ? false : randSeed !== 4,
-        condition: (randSeed % 5 + 1) as 1 | 2 | 3 | 4 | 5,
-        managerNote: attendance === '결석' ? '연락 두절 상태' : '무난하게 학습 진행'
+        studyMinutes,
+        reviewStage,
+        completedPlan,
+        condition,
+        managerNote,
+        status,
+        submittedBy,
       });
     }
   });
@@ -281,3 +317,383 @@ export const mockQuestions: QuestionBankItem[] = [
 export const mockPrescriptions: Prescription[] = [
   { id: 'pre_01', studentId: 'stu_01', studentName: '김민준', managerId: 'mgr_01', questionIds: ['q_01', 'q_05'], prescriptionDate: getDateOffsetString(-1), status: 'completed' }
 ];
+
+// 초등 루틴 모드 모의 데이터
+export const mockElementaryStudents: ElementaryStudent[] = [
+  { id: 'estu_01', name: '김동현', grade: '초4', school: '한빛초등학교' },
+  { id: 'estu_02', name: '이서진', grade: '초5', school: '가람초등학교' },
+  { id: 'estu_03', name: '박민아', grade: '초3', school: '누리초등학교' },
+  { id: 'estu_04', name: '최주원', grade: '초6', school: '새롬초등학교' },
+  { id: 'estu_05', name: '정예은', grade: '초5', school: '도담초등학교' },
+  { id: 'estu_06', name: '윤하준', grade: '초4', school: '하늘초등학교' }
+];
+
+// 기준일: 2026-05-30
+export const mockDailyCards: DailyCard[] = [
+  // 5월 28일 (그저께)
+  {
+    id: 'dc_estu_01_20260528',
+    studentId: 'estu_01',
+    date: '2026-05-28',
+    attendance: '정상',
+    phasesDone: { P1: true, P2: true, P3: true, P4: false },
+    pillarToday: '수학',
+    helpPoints: [],
+    condition: 4
+  },
+  {
+    id: 'dc_estu_02_20260528',
+    studentId: 'estu_02',
+    date: '2026-05-28',
+    attendance: '정상',
+    phasesDone: { P1: true, P2: true, P3: true, P4: true },
+    pillarToday: '수학',
+    helpPoints: [],
+    condition: 4
+  },
+  {
+    id: 'dc_estu_03_20260528',
+    studentId: 'estu_03',
+    date: '2026-05-28',
+    attendance: '정상',
+    phasesDone: { P1: true, P2: true, P3: true, P4: false },
+    pillarToday: '수학',
+    helpPoints: ['나눗셈 세로셈법 도움 요청'],
+    condition: 4
+  },
+  {
+    id: 'dc_estu_04_20260528',
+    studentId: 'estu_04',
+    date: '2026-05-28',
+    attendance: '정상',
+    phasesDone: { P1: true, P2: true, P3: true, P4: true },
+    pillarToday: '수학',
+    helpPoints: [],
+    condition: 5
+  },
+  {
+    id: 'dc_estu_05_20260528',
+    studentId: 'estu_05',
+    date: '2026-05-28',
+    attendance: '정상',
+    phasesDone: { P1: true, P2: true, P3: true, P4: true },
+    pillarToday: '수학',
+    helpPoints: [],
+    condition: 4
+  },
+  {
+    id: 'dc_estu_06_20260528',
+    studentId: 'estu_06',
+    date: '2026-05-28',
+    attendance: '정상',
+    phasesDone: { P1: true, P2: true, P3: true, P4: true },
+    pillarToday: '수학',
+    helpPoints: [],
+    condition: 4
+  },
+
+  // 5월 29일 (어제)
+  {
+    id: 'dc_estu_01_20260529',
+    studentId: 'estu_01',
+    date: '2026-05-29',
+    attendance: '정상',
+    phasesDone: { P1: true, P2: true, P3: true, P4: true },
+    pillarToday: '토론',
+    helpPoints: [],
+    condition: 5
+  },
+  {
+    id: 'dc_estu_02_20260529',
+    studentId: 'estu_02',
+    date: '2026-05-29',
+    attendance: '지각',
+    phasesDone: { P1: true, P2: true, P3: true, P4: false },
+    pillarToday: '토론',
+    helpPoints: [],
+    condition: 3
+  },
+  {
+    id: 'dc_estu_03_20260529',
+    studentId: 'estu_03',
+    date: '2026-05-29',
+    attendance: '정상',
+    phasesDone: { P1: true, P2: true, P3: true, P4: true },
+    pillarToday: '토론',
+    helpPoints: ['토론 주제 리서치 도움 요청'],
+    condition: 4
+  },
+  {
+    id: 'dc_estu_04_20260529',
+    studentId: 'estu_04',
+    date: '2026-05-29',
+    attendance: '정상',
+    phasesDone: { P1: true, P2: true, P3: true, P4: true },
+    pillarToday: '토론',
+    helpPoints: [],
+    condition: 5
+  },
+  {
+    id: 'dc_estu_05_20260529',
+    studentId: 'estu_05',
+    date: '2026-05-29',
+    attendance: '정상',
+    phasesDone: { P1: true, P2: true, P3: true, P4: true },
+    pillarToday: '토론',
+    helpPoints: [],
+    condition: 4
+  },
+  {
+    id: 'dc_estu_06_20260529',
+    studentId: 'estu_06',
+    date: '2026-05-29',
+    attendance: '정상',
+    phasesDone: { P1: true, P2: true, P3: true, P4: true },
+    pillarToday: '토론',
+    helpPoints: [],
+    condition: 5
+  },
+
+  // 5월 30일 (오늘)
+  {
+    id: 'dc_estu_01_20260530',
+    studentId: 'estu_01',
+    date: '2026-05-30',
+    attendance: '결석',
+    phasesDone: { P1: false, P2: false, P3: false, P4: false },
+    pillarToday: '토론', // (오늘이 토요일인 경우 기둥은 토론 혹은 임의 설정)
+    helpPoints: [],
+    condition: 1
+  },
+  {
+    id: 'dc_estu_02_20260530',
+    studentId: 'estu_02',
+    date: '2026-05-30',
+    attendance: '정상',
+    phasesDone: { P1: true, P2: true, P3: false, P4: false },
+    pillarToday: '토론',
+    helpPoints: [],
+    condition: 2
+  },
+  {
+    id: 'dc_estu_03_20260530',
+    studentId: 'estu_03',
+    date: '2026-05-30',
+    attendance: '정상',
+    phasesDone: { P1: true, P2: true, P3: true, P4: true },
+    pillarToday: '토론',
+    helpPoints: ['영어 스피킹 파트 도움 필요'],
+    condition: 4
+  },
+  {
+    id: 'dc_estu_04_20260530',
+    studentId: 'estu_04',
+    date: '2026-05-30',
+    attendance: '지각',
+    phasesDone: { P1: true, P2: true, P3: true, P4: false },
+    pillarToday: '토론',
+    helpPoints: [],
+    condition: 4
+  },
+  {
+    id: 'dc_estu_05_20260530',
+    studentId: 'estu_05',
+    date: '2026-05-30',
+    attendance: '정상',
+    phasesDone: { P1: true, P2: true, P3: true, P4: true },
+    pillarToday: '토론',
+    helpPoints: [],
+    condition: 3
+  },
+  {
+    id: 'dc_estu_06_20260530',
+    studentId: 'estu_06',
+    date: '2026-05-30',
+    attendance: '정상',
+    phasesDone: { P1: true, P2: true, P3: true, P4: true },
+    pillarToday: '토론',
+    helpPoints: [],
+    condition: 5
+  }
+];
+
+export const mockExpressionItems: ExpressionItem[] = [
+  // estu_01 (김동현, 초4)
+  { id: 'exp_01', studentId: 'estu_01', date: '2026-05-28', text: "make up one's mind", meaning: "결심하다", sourceBook: "Peter Pan", reviewed: true },
+  { id: 'exp_02', studentId: 'estu_01', date: '2026-05-28', text: "once upon a time", meaning: "옛날 옛적에", sourceBook: "Peter Pan", reviewed: true },
+  { id: 'exp_03', studentId: 'estu_01', date: '2026-05-28', text: "run away", meaning: "도망치다", sourceBook: "Peter Pan", reviewed: false },
+  { id: 'exp_04', studentId: 'estu_01', date: '2026-05-29', text: "as soon as possible", meaning: "가능한 한 빨리", sourceBook: "Space Patrol", reviewed: false },
+  { id: 'exp_05', studentId: 'estu_01', date: '2026-05-29', text: "all of a sudden", meaning: "갑자기", sourceBook: "Space Patrol", reviewed: false },
+  { id: 'exp_06', studentId: 'estu_01', date: '2026-05-29', text: "give up", meaning: "포기하다", sourceBook: "Space Patrol", reviewed: true },
+
+  // estu_02 (이서진, 초5)
+  { id: 'exp_07', studentId: 'estu_02', date: '2026-05-29', text: "keep in mind", meaning: "명심하다", sourceBook: "Aladdin", reviewed: true },
+  { id: 'exp_08', studentId: 'estu_02', date: '2026-05-29', text: "look forward to", meaning: "기대하다", sourceBook: "Aladdin", reviewed: false },
+  { id: 'exp_09', studentId: 'estu_02', date: '2026-05-29', text: "by the way", meaning: "그런데", sourceBook: "Aladdin", reviewed: false },
+  { id: 'exp_10', studentId: 'estu_02', date: '2026-05-30', text: "depend on", meaning: "의존하다", sourceBook: "Wizard of Oz", reviewed: false },
+  { id: 'exp_11', studentId: 'estu_02', date: '2026-05-30', text: "get along with", meaning: "사이좋게 지내다", sourceBook: "Wizard of Oz", reviewed: true },
+
+  // estu_03 (박민아, 초3)
+  { id: 'exp_12', studentId: 'estu_03', date: '2026-05-28', text: "take a look", meaning: "살펴보다", sourceBook: "Red Riding Hood", reviewed: true },
+  { id: 'exp_13', studentId: 'estu_03', date: '2026-05-28', text: "figure out", meaning: "알아내다", sourceBook: "Red Riding Hood", reviewed: false },
+  { id: 'exp_14', studentId: 'estu_03', date: '2026-05-28', text: "in front of", meaning: "앞에", sourceBook: "Red Riding Hood", reviewed: false },
+  { id: 'exp_15', studentId: 'estu_03', date: '2026-05-30', text: "make a decision", meaning: "결정하다", sourceBook: "Cinderella", reviewed: false },
+  { id: 'exp_16', studentId: 'estu_03', date: '2026-05-30', text: "day by day", meaning: "나날이", sourceBook: "Cinderella", reviewed: true },
+
+  // estu_04 (최주원, 초6)
+  { id: 'exp_17', studentId: 'estu_04', date: '2026-05-27', text: "make an effort", meaning: "노력하다", sourceBook: "Robin Hood", reviewed: true },
+  { id: 'exp_18', studentId: 'estu_04', date: '2026-05-27', text: "take care of", meaning: "돌보다", sourceBook: "Robin Hood", reviewed: false },
+  { id: 'exp_19', studentId: 'estu_04', date: '2026-05-27', text: "instead of", meaning: "대신에", sourceBook: "Robin Hood", reviewed: true },
+  { id: 'exp_20', studentId: 'estu_04', date: '2026-05-29', text: "lead to", meaning: "이끌다", sourceBook: "Wind in the Willows", reviewed: false },
+  { id: 'exp_21', studentId: 'estu_04', date: '2026-05-29', text: "no longer", meaning: "더 이상 ~않다", sourceBook: "Wind in the Willows", reviewed: false },
+
+  // estu_05 (정예은, 초5)
+  { id: 'exp_22', studentId: 'estu_05', date: '2026-05-29', text: "get tired of", meaning: "실증나다", sourceBook: "Danny's Dino", reviewed: true },
+  { id: 'exp_23', studentId: 'estu_05', date: '2026-05-29', text: "deal with", meaning: "다루다", sourceBook: "Danny's Dino", reviewed: true },
+  { id: 'exp_24', studentId: 'estu_05', date: '2026-05-29', text: "keep up with", meaning: "따라잡다", sourceBook: "Danny's Dino", reviewed: false },
+  { id: 'exp_25', studentId: 'estu_05', date: '2026-05-29', text: "take part in", meaning: "참여하다", sourceBook: "Danny's Dino", reviewed: false },
+
+  // estu_06 (윤하준, 초4)
+  { id: 'exp_26', studentId: 'estu_06', date: '2026-05-28', text: "be good at", meaning: "~을 잘하다", sourceBook: "Space Patrol", reviewed: true },
+  { id: 'exp_27', studentId: 'estu_06', date: '2026-05-28', text: "stand up for", meaning: "옹호하다", sourceBook: "Space Patrol", reviewed: false },
+  { id: 'exp_28', studentId: 'estu_06', date: '2026-05-28', text: "agree with", meaning: "동의하다", sourceBook: "Space Patrol", reviewed: true },
+  { id: 'exp_29', studentId: 'estu_06', date: '2026-05-28', text: "on purpose", meaning: "고의로", sourceBook: "Space Patrol", reviewed: false }
+];
+
+export const mockEnglishOutputs: EnglishOutput[] = [
+  // estu_01 (김동현, 초4)
+  {
+    id: 'out_01',
+    studentId: 'estu_01',
+    date: '2026-05-28',
+    book: 'Peter Pan',
+    minutes: 50,
+    level: '4',
+    retellNote: 'Wendy and Peter fly to Neverland.',
+    hasRecording: true,
+    writing: 'I want to fly to Neverland with Peter Pan. It looks so fun.',
+    writingType: 'diary'
+  },
+  {
+    id: 'out_02',
+    studentId: 'estu_01',
+    date: '2026-05-29',
+    book: 'Space Patrol',
+    minutes: 45,
+    level: '4',
+    retellNote: 'Aliens attack the ship.',
+    hasRecording: false,
+    writing: 'The alien was scary but patrol saved the ship.',
+    writingType: 'bookreport'
+  },
+
+  // estu_02 (이서진, 초5)
+  {
+    id: 'out_03',
+    studentId: 'estu_02',
+    date: '2026-05-29',
+    book: 'Aladdin',
+    minutes: 60,
+    level: '5',
+    retellNote: 'Aladdin finds the magic lamp.',
+    hasRecording: true,
+    writing: 'Aladdin is a poor boy but he got a magic lamp and three wishes.',
+    writingType: 'bookreport'
+  },
+  {
+    id: 'out_04',
+    studentId: 'estu_02',
+    date: '2026-05-30',
+    book: 'Wizard of Oz',
+    minutes: 50,
+    level: '5',
+    retellNote: 'Dorothy meets the Scarecrow.',
+    hasRecording: false,
+    writing: 'Dorothy met nice friends in Oz. They walked to Emerald City.',
+    writingType: 'diary'
+  },
+
+  // estu_03 (박민아, 초3)
+  {
+    id: 'out_05',
+    studentId: 'estu_03',
+    date: '2026-05-28',
+    book: 'Red Riding Hood',
+    minutes: 40,
+    level: '3',
+    retellNote: 'Wolf eats grandma.',
+    hasRecording: true,
+    writing: 'The wolf was very bad. He lied to Red Riding Hood.',
+    writingType: 'diary'
+  },
+  {
+    id: 'out_06',
+    studentId: 'estu_03',
+    date: '2026-05-30',
+    book: 'Cinderella',
+    minutes: 55,
+    level: '3',
+    retellNote: 'Glass shoe fits Cinderella.',
+    hasRecording: true,
+    writing: 'Cinderella went to the ball and lost her glass shoe.',
+    writingType: 'bookreport'
+  },
+
+  // estu_04 (최주원, 초6)
+  {
+    id: 'out_07',
+    studentId: 'estu_04',
+    date: '2026-05-27',
+    book: 'Robin Hood',
+    minutes: 60,
+    level: '6',
+    retellNote: 'Robin steals from the rich.',
+    hasRecording: true,
+    writing: 'Robin Hood helped poor people in Sherwood Forest. He is a hero.',
+    writingType: 'bookreport'
+  },
+  {
+    id: 'out_08',
+    studentId: 'estu_04',
+    date: '2026-05-29',
+    book: 'Wind in the Willows',
+    minutes: 55,
+    level: '6',
+    retellNote: 'Mole visits Toad.',
+    hasRecording: true,
+    writing: 'Toad loves driving fast cars. His friends try to stop him.',
+    writingType: 'diary'
+  },
+
+  // estu_05 (정예은, 초5)
+  {
+    id: 'out_09',
+    studentId: 'estu_05',
+    date: '2026-05-29',
+    book: "Danny's Dino",
+    minutes: 40,
+    level: '4',
+    retellNote: 'Danny plays with dinosaur.',
+    hasRecording: false,
+    writing: "Danny has a giant dinosaur friend. They went to the zoo together.",
+    writingType: 'diary'
+  },
+
+  // estu_06 (윤하준, 초4)
+  {
+    id: 'out_10',
+    studentId: 'estu_06',
+    date: '2026-05-28',
+    book: 'Space Patrol',
+    minutes: 50,
+    level: '4',
+    retellNote: 'Captain Star solves problem.',
+    hasRecording: true,
+    writing: 'Captain Star is very brave. He saved the galaxy.',
+    writingType: 'bookreport'
+  }
+];
+
+
+
+

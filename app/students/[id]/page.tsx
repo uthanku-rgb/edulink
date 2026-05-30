@@ -177,6 +177,9 @@ export default function StudentDetailPage() {
       completedPlan: att === '결석' ? false : compPlan,
       condition: cond as 1 | 2 | 3 | 4 | 5,
       managerNote: note,
+      status: 'confirmed',
+      submittedBy: 'manager',
+      confirmedAt: new Date().toISOString()
     };
 
     try {
@@ -195,6 +198,38 @@ export default function StudentDetailPage() {
       console.error('Failed to save daily record:', err);
       alert('저장에 실패했습니다.');
     }
+  };
+
+  const handleConfirmRecord = async (rec: DailyRecord) => {
+    try {
+      const allRecords = await getDailyRecords();
+      const updated = allRecords.map(r => {
+        if (r.id === rec.id) {
+          return {
+            ...r,
+            status: 'confirmed' as const,
+            confirmedAt: new Date().toISOString()
+          };
+        }
+        return r;
+      });
+      await saveDailyRecords(updated);
+      setDailyRecords(updated.filter(r => r.studentId === studentId));
+      alert('해당 기록이 승인되었습니다.');
+    } catch (err) {
+      console.error('Failed to confirm record:', err);
+      alert('승인에 실패했습니다.');
+    }
+  };
+
+  const handleLoadDraftForEdit = (rec: DailyRecord) => {
+    setRecordDate(rec.date);
+    setAtt(rec.attendance || '정상');
+    setStudyMin(rec.studyMinutes);
+    setRevStage(rec.reviewStage);
+    setCompPlan(rec.completedPlan);
+    setCond(rec.condition);
+    setNote(rec.managerNote || '');
   };
 
   // 2. 플래너 셀 클릭 편집 개시
@@ -536,12 +571,13 @@ export default function StudentDetailPage() {
                       <th className="py-2 px-1 text-center">계획 완수</th>
                       <th className="py-2 px-1">컨디션</th>
                       <th className="py-2 px-1">매니저 메모</th>
+                      <th className="py-2 px-1 text-center w-28">상태 및 승인</th>
                     </tr>
                   </thead>
                   <tbody>
                     {dailyRecords.length === 0 ? (
                       <tr>
-                        <td colSpan={6} className="py-6 text-center text-slate-400 font-normal">
+                        <td colSpan={7} className="py-6 text-center text-slate-400 font-normal">
                           아직 기록된 일일 일지가 없습니다.
                         </td>
                       </tr>
@@ -573,6 +609,28 @@ export default function StudentDetailPage() {
                             </td>
                             <td className="py-2 px-1 max-w-[150px] truncate" title={rec.managerNote}>
                               {rec.managerNote || '-'}
+                            </td>
+                            <td className="py-2 px-1 text-center">
+                              {rec.status === 'draft' ? (
+                                <div className="flex items-center justify-center gap-1 no-print">
+                                  <button
+                                    onClick={() => handleConfirmRecord(rec)}
+                                    className="px-1.5 py-0.5 bg-slate-800 text-white rounded text-[10px] hover:bg-slate-700 font-medium active:scale-95 transition-all"
+                                  >
+                                    승인
+                                  </button>
+                                  <button
+                                    onClick={() => handleLoadDraftForEdit(rec)}
+                                    className="px-1.5 py-0.5 bg-white border border-slate-250 text-slate-650 rounded text-[10px] hover:bg-slate-50 font-medium"
+                                  >
+                                    수정
+                                  </button>
+                                </div>
+                              ) : (
+                                <span className="px-1.5 py-0.5 bg-green-50 border border-green-150 text-green-700 text-[10px] rounded font-semibold">
+                                  확정
+                                </span>
+                              )}
                             </td>
                           </tr>
                         ))

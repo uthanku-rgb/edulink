@@ -16,7 +16,12 @@ import {
   Grade,
   ExamType,
   Attendance,
-  AlertSeverity
+  AlertSeverity,
+  DailyCard,
+  PillarSchedule,
+  DebatePrep,
+  ExpressionItem,
+  EnglishOutput
 } from '../types';
 import * as mockData from '../data/mockData';
 import { supabase } from './supabaseClient';
@@ -31,6 +36,9 @@ const KEYS = {
   ALERTS: 'edulink_alerts',
   QUESTIONS: 'edulink_questions',
   PRESCRIPTIONS: 'edulink_prescriptions',
+  DEBATE_PREPS: 'edulink_debatepreps',
+  EXPR_BANK: 'edulink_expr_bank',
+  ENG_OUTPUT: 'edulink_eng_output',
 };
 
 const getStorageItem = <T>(key: string, defaultValue: T): T => {
@@ -198,6 +206,9 @@ export const getDailyRecords = async (): Promise<DailyRecord[]> => {
         completedPlan: r.completed_plan,
         condition: r.condition,
         managerNote: r.manager_note || '',
+        status: r.status || 'confirmed',
+        submittedBy: r.submitted_by || r.submittedBy || 'manager',
+        confirmedAt: r.confirmed_at || r.confirmedAt || undefined,
       }));
       setStorageItem(KEYS.DAILY_RECORDS, mapped);
       return mapped;
@@ -205,7 +216,18 @@ export const getDailyRecords = async (): Promise<DailyRecord[]> => {
   } catch (err) {
     console.error('Supabase getDailyRecords failed:', err);
   }
-  return local.length > 0 ? local : mockData.mockDailyRecords;
+  const mappedLocal = local.map(r => ({
+    ...r,
+    status: r.status || 'confirmed',
+    submittedBy: r.submittedBy || 'manager',
+    confirmedAt: r.confirmedAt
+  }));
+  return mappedLocal.length > 0 ? mappedLocal : mockData.mockDailyRecords.map(r => ({
+    ...r,
+    status: r.status || 'confirmed',
+    submittedBy: r.submittedBy || 'manager',
+    confirmedAt: r.confirmedAt
+  }));
 };
 
 export const saveDailyRecords = async (records: DailyRecord[]): Promise<void> => {
@@ -220,7 +242,10 @@ export const saveDailyRecords = async (records: DailyRecord[]): Promise<void> =>
       review_stage: r.reviewStage,
       completed_plan: r.completedPlan,
       condition: r.condition,
-      manager_note: r.managerNote
+      manager_note: r.managerNote,
+      status: r.status,
+      submitted_by: r.submittedBy,
+      confirmed_at: r.confirmedAt
     }));
     const { error } = await supabase.from('daily_records').upsert(payload);
     if (error) throw error;
@@ -546,7 +571,8 @@ export const getStudentStatuses = async (): Promise<StudentStatus[]> => {
     }
 
     const studentRecords = dailyRecords.filter(r => r.studentId === student.id);
-    const sortedRecords = [...studentRecords].sort((a, b) => b.date.localeCompare(a.date));
+    const confirmedStudentRecords = studentRecords.filter(r => r.status === 'confirmed');
+    const sortedRecords = [...confirmedStudentRecords].sort((a, b) => b.date.localeCompare(a.date));
     const latestRecord = sortedRecords[0];
     const reviewStage = latestRecord ? latestRecord.reviewStage : 1;
 
@@ -555,7 +581,7 @@ export const getStudentStatuses = async (): Promise<StudentStatus[]> => {
       d.setDate(d.getDate() - i);
       return d.toISOString().split('T')[0];
     });
-    const recordsIn7Days = studentRecords.filter(r => recent7Days.includes(r.date));
+    const recordsIn7Days = confirmedStudentRecords.filter(r => recent7Days.includes(r.date));
     const presentRecords = recordsIn7Days.filter(r => r.attendance !== '결석');
     const attendance7d = recordsIn7Days.length > 0 
       ? Math.round((presentRecords.length / recordsIn7Days.length) * 100)
@@ -614,3 +640,182 @@ export const seedMockDataIfEmpty = async (): Promise<void> => {
     console.error('Failed to seed mock data:', err);
   }
 };
+
+// --- 초등 루틴 모드 관련 헬퍼 함수 ---
+const ELEM_KEYS = {
+  DAILY_CARDS: 'edulink_dailycards',
+  PILLAR_SCHEDULE: 'edulink_pillarschedule'
+};
+
+export const getDailyCards = (): DailyCard[] => {
+  return getStorageItem<DailyCard[]>(ELEM_KEYS.DAILY_CARDS, []);
+};
+
+export const saveDailyCards = (cards: DailyCard[]): void => {
+  setStorageItem(ELEM_KEYS.DAILY_CARDS, cards);
+};
+
+export const getPillarSchedule = (): PillarSchedule => {
+  const defaultSchedule: PillarSchedule = {
+    byWeekday: { '월': '수학', '화': '영어', '수': '수학', '목': '영어', '금': '토론' }
+  };
+  return getStorageItem<PillarSchedule>(ELEM_KEYS.PILLAR_SCHEDULE, defaultSchedule);
+};
+
+export const savePillarSchedule = (schedule: PillarSchedule): void => {
+  setStorageItem(ELEM_KEYS.PILLAR_SCHEDULE, schedule);
+};
+
+export const seedElementaryMockDataIfEmpty = async (): Promise<void> => {
+  if (typeof window === 'undefined') return;
+  try {
+    const cards = getDailyCards();
+    if (cards.length === 0) {
+      console.log('Seeding elementary mock data to localStorage...');
+      
+      const today = new Date();
+      const getOffsetDateStr = (offset: number) => {
+        const d = new Date(today);
+        d.setDate(d.getDate() + offset);
+        return d.toISOString().split('T')[0];
+      };
+      
+      const t0 = getOffsetDateStr(0);   // 오늘
+      const t1 = getOffsetDateStr(-1);  // 어제
+      const t2 = getOffsetDateStr(-2);  // 그저께
+      
+      const seededCards = mockData.mockDailyCards.map(card => {
+        let newDate = card.date;
+        if (card.date === '2026-05-30') newDate = t0;
+        else if (card.date === '2026-05-29') newDate = t1;
+        else if (card.date === '2026-05-28') newDate = t2;
+        
+        return {
+          ...card,
+          id: `dc_${card.studentId}_${newDate.replace(/-/g, '')}`,
+          date: newDate
+        };
+      });
+
+      saveDailyCards(seededCards);
+      
+      const defaultSchedule: PillarSchedule = {
+        byWeekday: { '월': '수학', '화': '영어', '수': '수학', '목': '영어', '금': '토론' }
+      };
+      savePillarSchedule(defaultSchedule);
+      console.log('Successfully seeded elementary mock data!');
+    }
+  } catch (err) {
+    console.error('Failed to seed elementary mock data:', err);
+  }
+};
+
+// --- 토론 준비 도우미 관련 헬퍼 함수 ---
+export const getDebatePreps = (): DebatePrep[] => {
+  return getStorageItem<DebatePrep[]>(KEYS.DEBATE_PREPS, []);
+};
+
+export const saveDebatePreps = (preps: DebatePrep[]): void => {
+  setStorageItem(KEYS.DEBATE_PREPS, preps);
+};
+
+export const seedDebatePrepsIfEmpty = (): void => {
+  if (typeof window === 'undefined') return;
+  try {
+    const preps = getDebatePreps();
+    if (preps.length === 0) {
+      console.log('Seeding mock debate preps to localStorage...');
+      const mockPreps: DebatePrep[] = [
+        {
+          id: 'dp_estu_01_lie',
+          studentId: 'estu_01',
+          topicId: 'lie',
+          date: '2026-05-29',
+          side: '찬성',
+          evidence: [
+            {
+              id: 'ev_01',
+              content: '친구가 상처받지 않게 하기 위해서 거짓말이 필요할 때가 있다.',
+              source: '부모님 말씀',
+              side: '찬성'
+            }
+          ],
+          essay: {
+            intro: '우리는 살아가면서 정직해야 한다고 배우지만, 가끔은 친구를 위해 착한 거짓말을 해야 합니다.',
+            body: '왜냐하면 친구의 기분을 상하게 하지 않고 마음을 지켜줄 수 있기 때문입니다. 부모님께서도 상황에 따라 배려가 정직보다 중요할 수 있다고 말씀하셨습니다.',
+            concl: '따라서 친구의 마음을 따뜻하게 지켜주는 착한 거짓말은 해도 된다고 생각합니다.'
+          },
+          rebuttal: {
+            their: '정직하지 않으면 결국 서로의 믿음이 깨질 수 있다고 생각할 수 있습니다.',
+            mine: '하지만 오직 친구를 도우려는 순수한 마음에서 우러나온 거짓말은 믿음을 깨지 않고 우정을 더 깊어지게 만듭니다.'
+          },
+          status: 'done'
+        },
+        {
+          id: 'dp_estu_02_zoo',
+          studentId: 'estu_02',
+          topicId: 'zoo',
+          date: '2026-05-30',
+          side: '반대',
+          evidence: [
+            {
+              id: 'ev_02',
+              content: '동물들이 좁은 우리 안에서 스트레스를 받아 이상 행동을 보인다.',
+              source: '어린이 신문 기사',
+              side: '반대'
+            }
+          ],
+          essay: {
+            intro: '동물원에 가면 신기한 동물들을 가까이서 볼 수 있어 즐겁습니다. 하지만 저는 동물원이 없어지거나 달라져야 한다고 생각합니다.',
+            body: '어린이 신문에서 보았듯이 동물들이 좁은 우리에 갇히면 아주 심한 스트레스를 받습니다.',
+            concl: ''
+          },
+          rebuttal: {
+            their: '동물원은 멸종 위기 동물을 보호하고 생명을 교육하는 훌륭한 장소라고 할 수 있습니다.',
+            mine: '그렇지만 동물을 좁은 철창에 가두지 않고도 자연 상태에서 보호하고 공부할 수 있는 대체 방법이 필요합니다.'
+          },
+          status: 'in_progress'
+        }
+      ];
+      saveDebatePreps(mockPreps);
+      console.log('Successfully seeded debate preps mock data!');
+    }
+  } catch (err) {
+    console.error('Failed to seed debate preps:', err);
+  }
+};
+
+export const getExpressionItems = (): ExpressionItem[] => {
+  return getStorageItem<ExpressionItem[]>(KEYS.EXPR_BANK, []);
+};
+
+export const saveExpressionItems = (items: ExpressionItem[]): void => {
+  setStorageItem(KEYS.EXPR_BANK, items);
+};
+
+export const getEnglishOutputs = (): EnglishOutput[] => {
+  return getStorageItem<EnglishOutput[]>(KEYS.ENG_OUTPUT, []);
+};
+
+export const saveEnglishOutputs = (outputs: EnglishOutput[]): void => {
+  setStorageItem(KEYS.ENG_OUTPUT, outputs);
+};
+
+export const seedEnglishMockDataIfEmpty = (): void => {
+  if (typeof window === 'undefined') return;
+  try {
+    const exprs = getExpressionItems();
+    const outputs = getEnglishOutputs();
+    if (exprs.length === 0 && outputs.length === 0) {
+      console.log('Seeding english mock data to localStorage...');
+      saveExpressionItems(mockData.mockExpressionItems);
+      saveEnglishOutputs(mockData.mockEnglishOutputs);
+      console.log('Successfully seeded english mock data!');
+    }
+  } catch (err) {
+    console.error('Failed to seed english mock data:', err);
+  }
+};
+
+
+

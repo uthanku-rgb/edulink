@@ -44,6 +44,9 @@ export interface DailyRecord {
   completedPlan: boolean;      // 오늘 계획 완수 여부
   condition: 1 | 2 | 3 | 4 | 5;// 컨디션
   managerNote: string;         // 매니저 관찰 메모
+  status: 'draft' | 'confirmed';   // 초안 / 확정
+  submittedBy: 'student' | 'manager';
+  confirmedAt?: string;            // ISO datetime
 }
 
 // D-21 역산 플랜 (매니저가 작성/조정)
@@ -147,3 +150,126 @@ export interface Prescription {
   prescriptionDate: string;    // ISO Date
   status: 'pending' | 'completed';
 }
+
+// 초등 루틴 모드 관련 타입
+export type Pillar = '수학' | '영어' | '토론';
+export type ElementaryPhase = 'P1' | 'P2' | 'P3' | 'P4';
+export type CareState = 'care' | 'watch' | 'good';   // 케어 / 관심 / 순항
+
+export interface DailyCard {
+  id: string;
+  studentId: string;
+  date: string;                         // ISO date
+  attendance: '정상' | '지각' | '결석';
+  phasesDone: Record<ElementaryPhase, boolean>;   // P1~P4 완수
+  pillarToday: Pillar;                  // 그날 메인 클래스 기둥(요일로 자동)
+  helpPoints: string[];                 // "도움 받고 싶어요" 한 줄들
+  condition: 1 | 2 | 3 | 4 | 5;         // 컨디션(이모지)
+  coachNote?: string;
+}
+
+export interface PillarSchedule {
+  byWeekday: Record<'월'|'화'|'수'|'목'|'금', Pillar>;
+}
+
+export interface CareSignal {
+  studentId: string;
+  studentName: string;
+  state: CareState;
+  reason: string;                       // "도움 포인트 3회 · 컨디션 하락"
+}
+
+export interface ElementaryStudent {
+  id: string;
+  name: string;
+  grade: string;
+  school: string;
+}
+
+export interface DebateTopic {
+  id: string;
+  q: string;
+  values: [string, string];
+  desc: string;
+  questions: string[];
+  keywords: string[];
+}
+
+export interface EvidenceItem {
+  id: string;
+  content: string;
+  source: string;
+  side: '찬성' | '반대';
+}
+
+export interface DebatePrep {
+  id: string;
+  studentId: string;
+  topicId: string;
+  date: string;
+  side: '찬성' | '반대' | null;
+  evidence: EvidenceItem[];
+  essay: {
+    intro: string;
+    body: string;
+    concl: string;
+  };
+  rebuttal: {
+    their: string;
+    mine: string;
+  };
+  status: 'in_progress' | 'done';
+}
+
+export interface WorkshopPhase {
+  name: string;
+  min: number;
+  say: string;
+  students: string;
+  tip: string;
+  showBig: string;
+  showSub: string;
+  present?: boolean;
+}
+
+export interface Workshop {
+  id: string;
+  title: string;
+  topic: string;
+  phases: WorkshopPhase[];
+}
+
+export interface ExpressionItem {       // 표현 은행 한 줄
+  id: string; studentId: string; date: string;
+  text: string;                  // 건진 영어 표현/단어
+  meaning?: string;              // 뜻(선택)
+  sourceBook?: string;           // 어느 책에서
+  reviewed: boolean;             // 복습 체크
+}
+
+export type WritingType = 'diary' | 'bookreport';
+
+export interface EnglishOutput {        // 오늘의 아웃풋 산출물
+  id: string; studentId: string; date: string;
+  book: string;                  // 오늘 들은 책
+  minutes: number;               // 학습 시간(분)
+  retellNote?: string;           // 리텔링 준비 메모(말하기 전 키워드)
+  hasRecording: boolean;         // 녹음 제출
+  recordingId?: string;          // IndexedDB 키 (오디오 blob)
+  writing?: string;              // 한 줄 영작
+  writingType?: WritingType;
+  level: string;                 // 오늘 리틀팍스 레벨
+  coachNote?: string;            // 코치 한 줄 피드백
+}
+
+export interface EnglishProgress {       // 학생별 누적(파생값, 계산해서 채움)
+  studentId: string;
+  littlefoxLevel: string;         // 현재 리틀팍스 레벨(가장 최근 EnglishOutput.level)
+  ourStage: number;               // 우리 단계 1~N (STAGE_MAP로 매핑)
+  booksCumulative: number;        // 누적 책 수
+  expressionsCount: number;       // 표현 은행 누적
+  recordingsCount: number;        // 녹음 누적
+  writingsCount: number;          // 영작 누적
+  weekMinutes: number;            // 이번 주 학습 시간 합
+}
+

@@ -11,6 +11,10 @@ import {
   BookOpen, 
   GraduationCap, 
   BarChart3,
+  Calendar,
+  ClipboardCheck,
+  Presentation,
+  BookMarked,
   LucideIcon
 } from 'lucide-react';
 
@@ -32,6 +36,10 @@ export default function SectionNav() {
     { label: '문제 은행', href: '/question-bank', icon: BookOpen },
     { label: '수행평가', href: '/performance', icon: GraduationCap },
     { label: '시험 분석', href: '/analysis', icon: BarChart3 },
+    { label: '오늘(초등)', href: '/today', icon: Calendar },
+    { label: '입력(초등)', href: '/input', icon: ClipboardCheck },
+    { label: '워크샵 진행', href: '/workshop', icon: Presentation },
+    { label: '영어(초등)', href: '/english', icon: BookMarked },
   ];
 
   return (
