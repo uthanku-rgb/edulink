@@ -6,7 +6,6 @@ import { usePathname } from 'next/navigation';
 import { 
   Gauge, 
   Users, 
-  FileText, 
   MessageSquare, 
   BookOpen, 
   GraduationCap, 
@@ -29,17 +28,17 @@ export default function SectionNav() {
   const pathname = usePathname();
 
   const navItems: NavItem[] = [
-    { label: '대시보드', href: '/', icon: Gauge },
+    { label: '대시보드(중고등)', href: '/middle-high', icon: Gauge },
     { label: '학생 28', href: '/students', icon: Users, count: 28 },
-    { label: '일일 리포트', href: '/students', icon: FileText }, // 일일 기록은 학생 상세/목록에서 연동
     { label: '학부모 리포트', href: '/reports', icon: MessageSquare },
     { label: '문제 은행', href: '/question-bank', icon: BookOpen },
     { label: '수행평가', href: '/performance', icon: GraduationCap },
     { label: '시험 분석', href: '/analysis', icon: BarChart3 },
-    { label: '오늘(초등)', href: '/today', icon: Calendar },
-    { label: '입력(초등)', href: '/input', icon: ClipboardCheck },
+    { label: '대시보드(초등)', href: '/elementary', icon: Calendar },
+    { label: '입력(초등)', href: '/elementary/input', icon: ClipboardCheck },
+    { label: '영어 점검(초등)', href: '/english/review', icon: BookMarked },
+    { label: '토론 점검(초등)', href: '/debate/review', icon: MessageSquare },
     { label: '워크샵 진행', href: '/workshop', icon: Presentation },
-    { label: '영어(초등)', href: '/english', icon: BookMarked },
   ];
 
   return (

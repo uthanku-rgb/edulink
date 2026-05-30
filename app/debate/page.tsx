@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { EvidenceItem, DebatePrep, ElementaryStudent } from '@/types';
 import { mockElementaryStudents } from '@/data/mockData';
 import { debateTopics } from '@/data/debateTopics';
@@ -230,8 +231,16 @@ export default function DebatePrepPage() {
             </div>
           </div>
           
-          <div className="text-center mt-8">
+          <div className="text-center mt-8 space-y-2">
             <p className="text-xs text-stone-400">학습 매니저 전용 대시보드는 다른 주소로 접속해주세요.</p>
+            <div>
+              <Link 
+                href="/"
+                className="text-xs text-[#2C9C8F] hover:text-[#207f74] underline font-bold"
+              >
+                통합포탈로 돌아가기
+              </Link>
+            </div>
           </div>
         </div>
       </div>
@@ -257,13 +266,21 @@ export default function DebatePrepPage() {
               <span className="text-sm text-stone-500 ml-1">친구의 토론 준비방</span>
             </div>
           </div>
-          <button 
-            onClick={handleLogoutStudent}
-            className="flex items-center gap-1 text-xs text-stone-500 hover:text-[#E8765A] border border-stone-200 hover:border-[#E8765A] px-3 py-1.5 rounded-full transition-all"
-          >
-            <RefreshCw className="w-3.5 h-3.5" />
-            이름 바꾸기
-          </button>
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={handleLogoutStudent}
+              className="flex items-center gap-1 text-xs text-stone-500 hover:text-[#E8765A] border border-stone-200 hover:border-[#E8765A] px-3 py-1.5 rounded-full transition-all"
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+              이름 바꾸기
+            </button>
+            <Link 
+              href="/"
+              className="flex items-center gap-1 text-xs text-stone-500 hover:text-stone-800 border border-stone-200 hover:border-stone-300 px-3 py-1.5 rounded-full transition-all"
+            >
+              대시보드 나가기
+            </Link>
+          </div>
         </div>
       </header>
 

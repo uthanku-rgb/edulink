@@ -104,7 +104,7 @@ export default function CoachReviewPage() {
               href="/"
               className="text-xs font-bold text-stone-500 hover:text-stone-700 bg-stone-100 hover:bg-stone-200 px-4 py-2 rounded-lg transition-colors"
             >
-              매니저 대시보드로 돌아가기
+              통합포탈로 돌아가기
             </Link>
           </div>
         </div>

@@ -1,16 +1,16 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Header from '../../components/Header';
-import SectionNav from '../../components/SectionNav';
+import Header from '../../../components/Header';
+import SectionNav from '../../../components/SectionNav';
 import { 
   getDailyCards, 
   saveDailyCards, 
   getPillarSchedule, 
   seedElementaryMockDataIfEmpty 
-} from '../../lib/storage';
-import { mockElementaryStudents } from '../../data/mockData';
-import { DailyCard, ElementaryStudent, Pillar, ElementaryPhase, PillarSchedule } from '../../types';
+} from '../../../lib/storage';
+import { mockElementaryStudents } from '../../../data/mockData';
+import { DailyCard, ElementaryStudent, Pillar, ElementaryPhase, PillarSchedule } from '../../../types';
 import { Check, ClipboardList, AlertCircle, X, HelpCircle } from 'lucide-react';
 
 export default function InputPage() {
@@ -158,8 +158,6 @@ export default function InputPage() {
   const isCompletedToday = (studentId: string) => {
     return dailyCards.some((c) => c.studentId === studentId && c.date === todayStr);
   };
-
-
 
   if (loading) {
     return (

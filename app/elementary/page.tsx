@@ -21,7 +21,7 @@ import {
   Info
 } from 'lucide-react';
 
-export default function TodayPage() {
+export default function ElementaryDashboardPage() {
   const [students] = useState<ElementaryStudent[]>(mockElementaryStudents);
   const [dailyCards, setDailyCards] = useState<DailyCard[]>([]);
   const [pillarSchedule, setPillarSchedule] = useState<PillarSchedule | null>(null);
@@ -218,7 +218,7 @@ export default function TodayPage() {
   return (
     <div className="min-h-screen bg-[#FAF9F6] flex flex-col pb-12">
       <Header 
-        title="코치 대시보드 (초등)" 
+        title="초등 대시보드" 
         studentCount={students.length} 
         managerName="정수진 코치" 
         dateString={`${todayStr.replace(/-/g, '.')} (${todayWeekday})`} 

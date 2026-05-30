@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import { 
   ExpressionItem, 
   EnglishOutput, 
@@ -451,6 +452,15 @@ export default function EnglishModulePage() {
               ))}
             </div>
           </div>
+          
+          <div className="text-center mt-6">
+            <Link 
+              href="/"
+              className="text-xs text-stone-400 hover:text-stone-600 underline font-medium"
+            >
+              통합포탈로 돌아가기
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -506,6 +516,12 @@ export default function EnglishModulePage() {
               <RefreshCw className="w-3.5 h-3.5" />
               이름 바꾸기
             </button>
+            <Link 
+              href="/"
+              className="flex items-center gap-1 text-xs text-stone-500 hover:text-stone-800 border border-stone-200 hover:border-stone-300 px-3 py-2 rounded-full transition-all"
+            >
+              대시보드 나가기
+            </Link>
           </div>
         </div>
       </header>

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import { 
   ExpressionItem, 
   EnglishOutput, 
@@ -282,33 +283,41 @@ export default function EnglishCoachReviewPage() {
             </div>
           </div>
           
-          <div className="flex bg-stone-100 p-1 rounded-full border border-stone-200/50">
-            <button
-              onClick={() => {
-                setActiveTab('roadmap');
-                setSelectedStudentId(null);
-              }}
-              className={`text-xs font-bold px-4 py-2 rounded-full transition-all ${
-                activeTab === 'roadmap'
-                  ? 'bg-[#2C9C8F] text-white shadow-sm'
-                  : 'text-stone-500 hover:text-stone-800'
-              }`}
+          <div className="flex items-center gap-3">
+            <div className="flex bg-stone-100 p-1 rounded-full border border-stone-200/50">
+              <button
+                onClick={() => {
+                  setActiveTab('roadmap');
+                  setSelectedStudentId(null);
+                }}
+                className={`text-xs font-bold px-4 py-2 rounded-full transition-all ${
+                  activeTab === 'roadmap'
+                    ? 'bg-[#2C9C8F] text-white shadow-sm'
+                    : 'text-stone-500 hover:text-stone-800'
+                }`}
+              >
+                🗺️ 진도 로드맵
+              </button>
+              <button
+                onClick={() => {
+                  setActiveTab('review');
+                  setSelectedStudentId(mockElementaryStudents[0]?.id || null);
+                }}
+                className={`text-xs font-bold px-4 py-2 rounded-full transition-all ${
+                  activeTab === 'review'
+                    ? 'bg-[#2C9C8F] text-white shadow-sm'
+                    : 'text-stone-500 hover:text-stone-800'
+                }`}
+              >
+                📋 오늘 코치 점검판
+              </button>
+            </div>
+            <Link 
+              href="/"
+              className="text-xs font-bold text-stone-500 hover:text-stone-700 bg-stone-100 hover:bg-stone-200 px-4 py-2 rounded-lg transition-colors"
             >
-              🗺️ 진도 로드맵
-            </button>
-            <button
-              onClick={() => {
-                setActiveTab('review');
-                setSelectedStudentId(mockElementaryStudents[0]?.id || null);
-              }}
-              className={`text-xs font-bold px-4 py-2 rounded-full transition-all ${
-                activeTab === 'review'
-                  ? 'bg-[#2C9C8F] text-white shadow-sm'
-                  : 'text-stone-500 hover:text-stone-800'
-              }`}
-            >
-              📋 오늘 코치 점검판
-            </button>
+              통합포탈로 돌아가기
+            </Link>
           </div>
         </div>
       </header>
