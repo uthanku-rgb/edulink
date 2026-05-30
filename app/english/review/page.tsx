@@ -4,7 +4,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   ExpressionItem, 
   EnglishOutput, 
-  ElementaryStudent, 
   EnglishProgress 
 } from '@/types';
 import { mockElementaryStudents } from '@/data/mockData';
@@ -16,24 +15,15 @@ import {
 } from '@/lib/storage';
 import { getAudio } from '@/lib/audioStore';
 import { 
-  BookOpen, 
   Award, 
-  Play, 
   Pause, 
   Printer, 
   Volume2, 
   Check, 
-  Calendar, 
-  Search, 
-  FileText, 
-  MessageSquare, 
-  Bookmark, 
   Mic, 
   Edit, 
   Globe, 
-  Info,
-  RefreshCw,
-  Sparkles
+  Info
 } from 'lucide-react';
 
 // STAGE_MAP: 리틀팍스 레벨 → 코호트 '우리 단계' 매핑 테이블
@@ -58,7 +48,7 @@ const STAGE_INFOS = [
 
 export default function EnglishCoachReviewPage() {
   const [mounted, setMounted] = useState(false);
-  const [loading, setLoading] = useState(true);
+
 
   // 데이터 상태
   const [expressionItems, setExpressionItems] = useState<ExpressionItem[]>([]);
@@ -74,7 +64,7 @@ export default function EnglishCoachReviewPage() {
   const [saveSuccess, setSaveSuccess] = useState(false);
 
   // 오디오 컨트롤 관련
-  const [activeAudioUrl, setActiveAudioUrl] = useState<string | null>(null);
+
   const [isPlaying, setIsPlaying] = useState(false);
   const audioPlayerRef = useRef<HTMLAudioElement | null>(null);
 
@@ -85,7 +75,6 @@ export default function EnglishCoachReviewPage() {
       
       setExpressionItems(getExpressionItems());
       setEnglishOutputs(getEnglishOutputs());
-      setLoading(false);
     }
   }, []);
 
@@ -177,7 +166,6 @@ export default function EnglishCoachReviewPage() {
         return;
       }
       const url = URL.createObjectURL(blob);
-      setActiveAudioUrl(url);
 
       if (!audioPlayerRef.current) {
         audioPlayerRef.current = new Audio(url);
@@ -241,6 +229,7 @@ export default function EnglishCoachReviewPage() {
       audioPlayerRef.current?.pause();
       setIsPlaying(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedStudentId, activeTab]);
 
   // Clean print handler
@@ -531,16 +520,16 @@ export default function EnglishCoachReviewPage() {
               <div className="bg-white border-2 border-[#FFF0E0] rounded-2xl p-4 shadow-sm space-y-3">
                 <span className="text-xs font-bold text-stone-400 block">📋 아웃풋 제출 상태 필터</span>
                 <div className="grid grid-cols-2 gap-2">
-                  {[
+                  {([
                     { key: 'all', label: '모두 보기' },
                     { key: 'unsubmitted', label: '오늘 미제출' },
                     { key: 'no_recording', label: '오늘 녹음 없음' },
                     { key: 'no_writing', label: '오늘 영작 없음' }
-                  ].map(f => (
+                  ] as const).map(f => (
                     <button
                       key={f.key}
                       onClick={() => {
-                        setReviewFilter(f.key as any);
+                        setReviewFilter(f.key);
                         setSelectedStudentId(null);
                       }}
                       className={`py-2 px-2 rounded-xl border text-[11px] font-bold transition-all text-center ${

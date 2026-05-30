@@ -21,7 +21,6 @@ import {
 } from '@/lib/storage';
 import { saveAudio, getAudio, deleteAudio } from '@/lib/audioStore';
 import { 
-  BookOpen, 
   Sparkles, 
   Mic, 
   Square, 
@@ -38,10 +37,7 @@ import {
   ChevronLeft, 
   Trophy, 
   Filter,
-  CheckCircle,
-  HelpCircle,
-  Heart,
-  FileText
+  CheckCircle
 } from 'lucide-react';
 
 const LITTLEFOX_FLOW = [
@@ -76,7 +72,7 @@ export default function EnglishModulePage() {
   // Step 3 specific states (Recording)
   const [retellNote, setRetellNote] = useState('');
   const [isRecording, setIsRecording] = useState(false);
-  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
+
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [recordingId, setRecordingId] = useState<string | undefined>(undefined);
@@ -159,7 +155,6 @@ export default function EnglishModulePage() {
     setTodayExpressions([]);
     setRetellNote('');
     setIsRecording(false);
-    setAudioBlob(null);
     setAudioUrl(null);
     setIsPlaying(false);
     setRecordingId(undefined);
@@ -222,7 +217,6 @@ export default function EnglishModulePage() {
         
         await saveAudio(recId, blob);
         
-        setAudioBlob(blob);
         const url = URL.createObjectURL(blob);
         setAudioUrl(url);
         setRecordingId(recId);
@@ -273,7 +267,6 @@ export default function EnglishModulePage() {
     if (recordingId) {
       await deleteAudio(recordingId);
     }
-    setAudioBlob(null);
     setAudioUrl(null);
     setRecordingId(undefined);
     setHasRecording(false);
@@ -899,7 +892,7 @@ export default function EnglishModulePage() {
                       // 3. Fallback manually checked
                       <div className="space-y-4 py-3">
                         <span className="text-xs text-[#E8765A] font-bold block">
-                          📢 "녹음 완료" 수동 체크가 활성화되었어요!
+                          📢 &ldquo;녹음 완료&rdquo; 수동 체크가 활성화되었어요!
                         </span>
                         <p className="text-[11px] text-stone-400 leading-normal max-w-xs mx-auto">
                           부모님 앞에서 직접 큰소리로 말했거나, 기기 사정으로 녹음이 안 되는 상황일 때 체크하면 루틴에 온전히 반영돼요.
