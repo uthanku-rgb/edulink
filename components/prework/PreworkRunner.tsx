@@ -10,11 +10,11 @@ import numlogicBankLow from '@/lib/prework/banks/numlogic.low.json';
 import metaBankLow from '@/lib/prework/banks/meta.low.json';
 
 // Load Adapters
-import { pickSpeedStimulus } from '@/lib/prework/adapters/speedAdapter';
-import { pickMemoryStimulus } from '@/lib/prework/adapters/memoryAdapter';
-import { pickFocusStimuli } from '@/lib/prework/adapters/focusAdapter';
-import { pickNumLogicStimulus } from '@/lib/prework/adapters/numlogicAdapter';
-import { pickMetaStimuli } from '@/lib/prework/adapters/metaAdapter';
+import { pickSpeedStimulus, type SpeedBank } from '@/lib/prework/adapters/speedAdapter';
+import { pickMemoryStimulus, type MemoryBank } from '@/lib/prework/adapters/memoryAdapter';
+import { pickFocusStimuli, type FocusBank } from '@/lib/prework/adapters/focusAdapter';
+import { pickNumLogicStimulus, type NumLogicBank } from '@/lib/prework/adapters/numlogicAdapter';
+import { pickMetaStimuli, type MetaBank } from '@/lib/prework/adapters/metaAdapter';
 
 // Load Components
 import { SpeedTapModule } from './modules/SpeedTapModule';
@@ -83,17 +83,17 @@ export default function PreworkRunner({
       // Select appropriate bank and pick stimulus
       switch (cfg.slotIndex) {
         case 0:
-          return pickSpeedStimulus(speedBankLow as any, difficulty, seed);
+          return pickSpeedStimulus(speedBankLow as unknown as SpeedBank, difficulty, seed);
         case 1: {
           const bank = gradeTrack === 'high' ? memoryBankHigh : memoryBankLow;
-          return pickMemoryStimulus(bank as any, difficulty, seed);
+          return pickMemoryStimulus(bank as unknown as MemoryBank, difficulty, seed);
         }
         case 2:
-          return pickFocusStimuli(focusBankLow as any, difficulty, 1, seed)[0];
+          return pickFocusStimuli(focusBankLow as unknown as FocusBank, difficulty, 1, seed)[0];
         case 3:
-          return pickNumLogicStimulus(numlogicBankLow as any, difficulty, seed);
+          return pickNumLogicStimulus(numlogicBankLow as unknown as NumLogicBank, difficulty, seed);
         case 4:
-          return pickMetaStimuli(metaBankLow as any, 1, seed)[0];
+          return pickMetaStimuli(metaBankLow as unknown as MetaBank, 1, seed)[0];
         default:
           return null;
       }

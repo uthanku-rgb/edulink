@@ -59,7 +59,7 @@ export function MemoryModule({ isPlaying, onProgress, onComplete, onResponseLog,
   // ─ 카테고리 라벨 (level_curve에서)
   const categoryLabel = useMemo(() => {
     const key = `L${currentModuleLevel}`;
-    const curve = ((bank as any).level_curve as Record<string, { category?: string }>)?.[key];
+    const curve = bank.level_curve?.[key];
     return curve?.category ?? '';
   }, [currentModuleLevel, bank]);
 

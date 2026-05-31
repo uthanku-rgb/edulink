@@ -33,12 +33,21 @@ export interface MemoryStimulus {
   };
 }
 
+export interface MemoryLevelCurve {
+  items: number;
+  removed: number;
+  preview_ms: number;
+  c3_difficulty: number;
+  category?: string;
+}
+
 export interface MemoryBank {
   module_id: 'memory_disappeared';
   module_name: string;
   primary_domain: 'Memory';
   grade_track: 'low' | 'high';
   version: string;
+  level_curve?: Record<string, MemoryLevelCurve>;
   stimuli: MemoryStimulus[];
 }
 
