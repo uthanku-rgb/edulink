@@ -21,7 +21,11 @@ import {
   PillarSchedule,
   DebatePrep,
   ExpressionItem,
-  EnglishOutput
+  EnglishOutput,
+  MasteryTopic,
+  RecallMethod,
+  MasteryCheck,
+  Gap
 } from '../types';
 import * as mockData from '../data/mockData';
 import { supabase } from './supabaseClient';
@@ -39,6 +43,9 @@ const KEYS = {
   DEBATE_PREPS: 'edulink_debatepreps',
   EXPR_BANK: 'edulink_expr_bank',
   ENG_OUTPUT: 'edulink_eng_output',
+  MASTERY_TOPICS: 'edulink_mastery_topic',
+  MASTERY_CHECKS: 'edulink_mastery_check',
+  GAPS: 'edulink_gap',
 };
 
 const getStorageItem = <T>(key: string, defaultValue: T): T => {
@@ -814,6 +821,204 @@ export const seedEnglishMockDataIfEmpty = (): void => {
     }
   } catch (err) {
     console.error('Failed to seed english mock data:', err);
+  }
+};
+
+// --- 완전학습 (Mastery Learning) CRUD 및 동적 연동 헬퍼 ---
+export const getMasteryTopics = (): MasteryTopic[] => {
+  return getStorageItem<MasteryTopic[]>(KEYS.MASTERY_TOPICS, []);
+};
+
+export const saveMasteryTopics = (topics: MasteryTopic[]): void => {
+  setStorageItem(KEYS.MASTERY_TOPICS, topics);
+};
+
+export const getMasteryChecks = (): MasteryCheck[] => {
+  return getStorageItem<MasteryCheck[]>(KEYS.MASTERY_CHECKS, []);
+};
+
+export const saveMasteryChecks = (checks: MasteryCheck[]): void => {
+  setStorageItem(KEYS.MASTERY_CHECKS, checks);
+  
+  // 초등 DailyCard P1 연동:
+  // 최신 저장된 MasteryCheck의 날짜 기준, 해당 학생의 오늘 DailyCard가 있다면 P1(복습 단계)을 완료(true) 처리합니다.
+  if (checks.length > 0) {
+    const latestCheck = checks[checks.length - 1];
+    const checkDate = latestCheck.date;
+    const cards = getDailyCards();
+    const cardIndex = cards.findIndex(c => c.studentId === latestCheck.studentId && c.date === checkDate);
+    if (cardIndex >= 0) {
+      cards[cardIndex] = {
+        ...cards[cardIndex],
+        phasesDone: {
+          ...cards[cardIndex].phasesDone,
+          P1: true
+        }
+      };
+      saveDailyCards(cards);
+    }
+  }
+};
+
+export const getGaps = (): Gap[] => {
+  return getStorageItem<Gap[]>(KEYS.GAPS, []);
+};
+
+export const saveGaps = (gaps: Gap[]): void => {
+  setStorageItem(KEYS.GAPS, gaps);
+};
+
+export const seedMasteryMockDataIfEmpty = (): void => {
+  if (typeof window === 'undefined') return;
+  try {
+    const topics = getMasteryTopics();
+    const checks = getMasteryChecks();
+    const gaps = getGaps();
+    
+    if (topics.length === 0 && checks.length === 0 && gaps.length === 0) {
+      console.log('Seeding mastery mock data to localStorage...');
+      
+      const today = new Date();
+      const getOffsetDateStr = (offset: number) => {
+        const d = new Date(today);
+        d.setDate(d.getDate() + offset);
+        return d.toISOString().split('T')[0];
+      };
+      
+      const t0 = getOffsetDateStr(0);   // 오늘
+      const t1 = getOffsetDateStr(-1);  // 어제
+      
+      // 1. MasteryTopics Seeding
+      const mockTopics: MasteryTopic[] = [
+        {
+          id: 'mt_01',
+          date: t1,
+          subject: '수학',
+          topic: '일차방정식의 풀이',
+          keyPoints: [
+            { id: 'kp_01_1', text: '이항할 때 부호가 반대로 바뀌는 원리 이해' },
+            { id: 'kp_01_2', text: '양변에 같은 수를 곱하거나 나누는 등식의 성질 적용' },
+            { id: 'kp_01_3', text: '괄호가 있는 경우 분배법칙을 전개하여 정리' }
+          ]
+        },
+        {
+          id: 'mt_02',
+          date: t1,
+          subject: '과학',
+          topic: '소화계와 영양소 흡수',
+          keyPoints: [
+            { id: 'kp_02_1', text: '아밀레이스, 펩신 등 소화 효소의 영양소 분해 기능 작용' },
+            { id: 'kp_02_2', text: '소장의 융털 구조가 표면적을 넓혀 흡수율을 높이는 이유' },
+            { id: 'kp_02_3', text: '지용성 영양소와 수용성 영양소의 이동 경로 차이 설명' }
+          ]
+        },
+        {
+          id: 'mt_03',
+          date: t0,
+          subject: '영어',
+          topic: '관계대명사의 한정적 용법',
+          keyPoints: [
+            { id: 'kp_03_1', text: '주격 관계대명사(who/which/that) 뒤에 동사 결합 구조' },
+            { id: 'kp_03_2', text: '목적격 관계대명사 생략 가능한 조건 판단' },
+            { id: 'kp_03_3', text: '선행사 수식 형태를 한국어 구문으로 대입 변환' }
+          ]
+        }
+      ];
+      
+      // 2. MasteryChecks Seeding (인출률 50~100% 분포)
+      const mockChecks: MasteryCheck[] = [
+        {
+          id: 'mc_01',
+          studentId: 'estu_01', // 김민준
+          topicId: 'mt_01',
+          date: t1,
+          method: 'blank_write',
+          results: [
+            { pointId: 'kp_01_1', recalled: true },
+            { pointId: 'kp_01_2', recalled: true },
+            { pointId: 'kp_01_3', recalled: false }
+          ],
+          retrievalScore: 67,
+          studentDump: '이항할 때 부호가 바뀐다. 등식의 성질로 양변을 나눈다.',
+          note: '괄호가 있을 때 분배법칙 전개 시 가끔 상수를 빠뜨리는 습관 있음.'
+        },
+        {
+          id: 'mc_02',
+          studentId: 'estu_02', // 박지민
+          topicId: 'mt_01',
+          date: t1,
+          method: 'verbal',
+          results: [
+            { pointId: 'kp_01_1', recalled: true },
+            { pointId: 'kp_01_2', recalled: true },
+            { pointId: 'kp_01_3', recalled: true }
+          ],
+          retrievalScore: 100,
+          studentDump: '말하기 구술로 완벽하게 3가지 포인트 다 이야기함.',
+          note: '방정식 풀이 논리 구조가 아주 탄탄함.'
+        },
+        {
+          id: 'mc_03',
+          studentId: 'estu_03', // 이준우
+          topicId: 'mt_02',
+          date: t1,
+          method: 'peer_explain',
+          results: [
+            { pointId: 'kp_02_1', recalled: true },
+            { pointId: 'kp_02_2', recalled: false },
+            { pointId: 'kp_02_3', recalled: false }
+          ],
+          retrievalScore: 33,
+          studentDump: '소화효소가 음식물을 쪼갠다는 것은 아는데 융털이나 경로를 잘 설명 못함.',
+          note: '융털의 생물학적 구조 암기 필요.'
+        }
+      ];
+      
+      // 3. Gaps Seeding (open / closed 혼재)
+      const mockGaps: Gap[] = [
+        {
+          id: 'gap_01',
+          studentId: 'estu_01',
+          subject: '수학',
+          topic: '일차방정식의 풀이',
+          pointId: 'kp_01_3',
+          pointText: '괄호가 있는 경우 분배법칙을 전개하여 정리',
+          status: 'open',
+          createdDate: t1,
+          sourceTopicId: 'mt_01'
+        },
+        {
+          id: 'gap_02',
+          studentId: 'estu_03',
+          subject: '과학',
+          topic: '소화계와 영양소 흡수',
+          pointId: 'kp_02_2',
+          pointText: '소장의 융털 구조가 표면적을 넓혀 흡수율을 높이는 이유',
+          status: 'open',
+          createdDate: t1,
+          sourceTopicId: 'mt_02'
+        },
+        {
+          id: 'gap_03',
+          studentId: 'estu_03',
+          subject: '과학',
+          topic: '소화계와 영양소 흡수',
+          pointId: 'kp_02_3',
+          pointText: '지용성 영양소와 수용성 영양소의 이동 경로 차이 설명',
+          status: 'closed',
+          createdDate: t1,
+          closedDate: t0,
+          sourceTopicId: 'mt_02'
+        }
+      ];
+
+      saveMasteryTopics(mockTopics);
+      saveMasteryChecks(mockChecks);
+      saveGaps(mockGaps);
+      console.log('Successfully seeded mastery mock data!');
+    }
+  } catch (err) {
+    console.error('Failed to seed mastery mock data:', err);
   }
 };
 

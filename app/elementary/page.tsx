@@ -1,15 +1,18 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import Header from '../../components/Header';
 import SectionNav from '../../components/SectionNav';
 import { 
   getDailyCards, 
   seedElementaryMockDataIfEmpty, 
-  getPillarSchedule 
+  getPillarSchedule,
+  getMasteryChecks,
+  getGaps
 } from '../../lib/storage';
 import { mockElementaryStudents } from '../../data/mockData';
-import { DailyCard, ElementaryStudent, CareSignal, CareState, PillarSchedule } from '../../types';
+import { DailyCard, ElementaryStudent, CareSignal, CareState, PillarSchedule, MasteryCheck, Gap } from '../../types';
 import { 
   Users, 
   CheckCircle, 
@@ -18,13 +21,19 @@ import {
   ChevronRight, 
   BookOpen, 
   HeartHandshake, 
-  Info
+  Info,
+  MessageSquare,
+  Presentation,
+  Calculator,
+  Target
 } from 'lucide-react';
 
 export default function ElementaryDashboardPage() {
   const [students] = useState<ElementaryStudent[]>(mockElementaryStudents);
   const [dailyCards, setDailyCards] = useState<DailyCard[]>([]);
   const [pillarSchedule, setPillarSchedule] = useState<PillarSchedule | null>(null);
+  const [masteryChecks, setMasteryChecks] = useState<MasteryCheck[]>([]);
+  const [gaps, setGaps] = useState<Gap[]>([]);
   const [selectedStudent, setSelectedStudent] = useState<ElementaryStudent | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -60,6 +69,8 @@ export default function ElementaryDashboardPage() {
         await seedElementaryMockDataIfEmpty();
         setDailyCards(getDailyCards());
         setPillarSchedule(getPillarSchedule());
+        setMasteryChecks(getMasteryChecks());
+        setGaps(getGaps());
       } catch (error) {
         console.error('초등 오늘 화면 데이터 로딩 실패:', error);
       } finally {
@@ -114,6 +125,46 @@ export default function ElementaryDashboardPage() {
         activeConditionCards.length
       ).toFixed(1)
     : '0.0';
+
+  // === 완전학습 메트릭 연산 (초등) ===
+  const elementaryStudentIds = students.map(s => s.id);
+  
+  // 1. 반 평균 인출률: 초등 학생들의 모든 MasteryCheck의 retrievalScore 평균
+  const elChecks = masteryChecks.filter(c => elementaryStudentIds.includes(c.studentId));
+  const classAvgRecall = elChecks.length > 0
+    ? Math.round(elChecks.reduce((acc, cur) => acc + cur.retrievalScore, 0) / elChecks.length)
+    : 0;
+
+  // 2. 구멍 누적 탑 학생: 초등 학생들 중 open 상태인 Gap이 가장 많은 학생
+  const elOpenGaps = gaps.filter(g => g.status === 'open' && elementaryStudentIds.includes(g.studentId));
+  
+  // Count open gaps per student
+  const gapCounts: Record<string, number> = {};
+  elementaryStudentIds.forEach(id => {
+    gapCounts[id] = 0;
+  });
+  elOpenGaps.forEach(g => {
+    gapCounts[g.studentId] = (gapCounts[g.studentId] || 0) + 1;
+  });
+
+  let topGapStudentId = '';
+  let maxGapsCount = 0;
+  Object.entries(gapCounts).forEach(([studentId, count]) => {
+    if (count > maxGapsCount) {
+      maxGapsCount = count;
+      topGapStudentId = studentId;
+    }
+  });
+
+  const topGapStudentName = topGapStudentId
+    ? students.find(s => s.id === topGapStudentId)?.name || '알 수 없음'
+    : '';
+
+  // 3. 오늘 백지 테스트 미실시: 초등 학생 수 (6) - 오늘 MasteryCheck가 등록된 초등 학생 수
+  const todayTestedStudentIds = new Set(
+    elChecks.filter(c => c.date === todayStr).map(c => c.studentId)
+  );
+  const todayUntestedCount = Math.max(0, students.length - todayTestedStudentIds.size);
 
   // 2. 케어 시그널 계산 규칙
   const getStudentCareSignal = (student: ElementaryStudent): CareSignal => {
@@ -260,6 +311,92 @@ export default function ElementaryDashboardPage() {
           </div>
         </div>
 
+        {/* 초등 전용 피드백 및 수업 도구 */}
+        <section className="bg-white border border-slate-200/60 rounded-2xl p-5 shadow-sm mb-6">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-sm font-bold text-slate-800 flex items-center gap-2">
+              <BookOpen className="w-4.5 h-4.5 text-[#2C9C8F]" />
+              초등 전용 피드백 및 수업 도구
+            </h2>
+            <span className="text-[11px] text-slate-400">과목별 전문 코칭 앱 바로 실행</span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            {/* 영어 */}
+            <Link 
+              href="/english/review"
+              className="group border border-slate-100 hover:border-[#2C9C8F] bg-slate-50/40 hover:bg-[#E8F6F4]/10 rounded-xl p-4 transition-all duration-200 flex flex-col justify-between h-28 shadow-sm hover:shadow"
+            >
+              <div>
+                <div className="w-8 h-8 rounded-lg bg-[#E8F6F4] text-[#2C9C8F] flex items-center justify-center mb-2">
+                  <BookOpen className="w-4.5 h-4.5" />
+                </div>
+                <span className="text-xs font-bold text-slate-800 block group-hover:text-[#2C9C8F] transition-colors">영어 피드백 콘솔</span>
+                <span className="text-[10px] text-slate-400 font-medium block mt-0.5 leading-tight">리틀팍스 스피킹 녹음 및 영작 피드백</span>
+              </div>
+            </Link>
+
+            {/* 토론 */}
+            <Link 
+              href="/debate/review"
+              className="group border border-slate-100 hover:border-teal-500 bg-slate-50/40 hover:bg-teal-50/10 rounded-xl p-4 transition-all duration-200 flex flex-col justify-between h-28 shadow-sm hover:shadow"
+            >
+              <div>
+                <div className="w-8 h-8 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center mb-2">
+                  <MessageSquare className="w-4.5 h-4.5" />
+                </div>
+                <span className="text-xs font-bold text-slate-800 block group-hover:text-teal-600 transition-colors">토론 관찰 피드백</span>
+                <span className="text-[10px] text-slate-400 font-medium block mt-0.5 leading-tight">디베이트 개요서 및 에세이 첨삭</span>
+              </div>
+            </Link>
+
+            {/* 수학 */}
+            <Link 
+              href="/math/review"
+              className="group border border-slate-100 hover:border-indigo-400 bg-slate-50/40 hover:bg-indigo-50/10 rounded-xl p-4 transition-all duration-200 flex flex-col justify-between h-28 shadow-sm hover:shadow"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                    <Calculator className="w-4.5 h-4.5" />
+                  </div>
+                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-600 border border-indigo-100">준비 중</span>
+                </div>
+                <span className="text-xs font-bold text-slate-800 block group-hover:text-indigo-600 transition-colors">수학 스토리텔링</span>
+                <span className="text-[10px] text-slate-400 font-medium block mt-0.5 leading-tight">수학 논리력 진단 및 피드백</span>
+              </div>
+            </Link>
+
+            {/* 워크숍 */}
+            <Link 
+              href="/workshop"
+              className="group border border-slate-100 hover:border-purple-400 bg-slate-50/40 hover:bg-purple-50/10 rounded-xl p-4 transition-all duration-200 flex flex-col justify-between h-28 shadow-sm hover:shadow"
+            >
+              <div>
+                <div className="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center mb-2">
+                  <Presentation className="w-4.5 h-4.5" />
+                </div>
+                <span className="text-xs font-bold text-slate-800 block group-hover:text-purple-600 transition-colors">라이브 워크숍 진행</span>
+                <span className="text-[10px] text-slate-400 font-medium block mt-0.5 leading-tight">세션 타이머 및 오버레이 컨트롤</span>
+              </div>
+            </Link>
+
+            {/* 완전학습 */}
+            <Link 
+              href="/mastery"
+              className="group border border-slate-100 hover:border-[#4F46E5] bg-slate-50/40 hover:bg-[#EEEDFC]/10 rounded-xl p-4 transition-all duration-200 flex flex-col justify-between h-28 shadow-sm hover:shadow"
+            >
+              <div>
+                <div className="w-8 h-8 rounded-lg bg-[#EEEDFC] text-[#4F46E5] flex items-center justify-center mb-2">
+                  <Target className="w-4.5 h-4.5" />
+                </div>
+                <span className="text-xs font-bold text-slate-800 block group-hover:text-[#4F46E5] transition-colors">완전학습 점검판</span>
+                <span className="text-[10px] text-slate-400 font-medium block mt-0.5 leading-tight">백지 인출 채점 및 결손(구멍) 케어</span>
+              </div>
+            </Link>
+          </div>
+        </section>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* 좌측/중앙 영역 (기둥 스케줄 & 오늘 챙길 학생) */}
           <div className="lg:col-span-2 flex flex-col gap-6">
@@ -296,6 +433,58 @@ export default function ElementaryDashboardPage() {
                     </div>
                   );
                 })}
+              </div>
+            </div>
+
+            {/* 완전학습 (Mastery Learning) 현황 위젯 */}
+            <div className="bg-white border border-slate-200/60 rounded-2xl p-5 shadow-sm">
+              <div className="flex justify-between items-center mb-4 border-b border-slate-100 pb-2">
+                <h2 className="text-sm font-bold text-slate-800 flex items-center gap-2">
+                  <Target className="w-4.5 h-4.5 text-[#4F46E5]" />
+                  완전학습 (Mastery Learning) 현황
+                </h2>
+                <Link 
+                  href="/mastery"
+                  className="text-[11px] text-[#4F46E5] hover:underline font-semibold flex items-center gap-0.5"
+                >
+                  완전학습 관리관 가기 <ChevronRight className="w-3 h-3" />
+                </Link>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-normal">
+                <div className="bg-slate-50 border border-slate-100 rounded-xl p-3 flex flex-col justify-between">
+                  <span className="text-slate-400 text-[10px] font-medium block">반 평균 인출률</span>
+                  <div className="flex items-baseline gap-1 mt-1">
+                    <span className="text-lg font-bold text-slate-800">{classAvgRecall}%</span>
+                    <span className="text-[9px] text-slate-400 font-medium">초등 평균</span>
+                  </div>
+                </div>
+
+                <div className="bg-slate-50 border border-slate-100 rounded-xl p-3 flex flex-col justify-between">
+                  <span className="text-slate-400 text-[10px] font-medium block">구멍 누적 학생 (케어 신호)</span>
+                  <div className="flex items-baseline mt-1">
+                    {maxGapsCount > 0 ? (
+                      <Link 
+                        href="/mastery"
+                        className="text-xs font-bold text-amber-600 hover:underline flex items-center gap-1"
+                      >
+                        ⚠️ {topGapStudentName} ({maxGapsCount}개 구멍)
+                      </Link>
+                    ) : (
+                      <span className="text-xs font-semibold text-[#2C9C8F]">✅ 없음 (순항 중)</span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="bg-slate-50 border border-slate-100 rounded-xl p-3 flex flex-col justify-between">
+                  <span className="text-slate-400 text-[10px] font-medium block">오늘 백지 테스트 미실시</span>
+                  <div className="flex items-baseline gap-1 mt-1">
+                    <span className={`text-lg font-bold ${todayUntestedCount > 0 ? 'text-amber-600' : 'text-[#2C9C8F]'}`}>
+                      {todayUntestedCount}명
+                    </span>
+                    <span className="text-[9px] text-slate-400 font-medium">/ 총 {students.length}명</span>
+                  </div>
+                </div>
               </div>
             </div>
 

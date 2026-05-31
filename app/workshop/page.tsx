@@ -3,7 +3,6 @@
 import React from 'react';
 import Link from 'next/link';
 import Header from '../../components/Header';
-import SectionNav from '../../components/SectionNav';
 import { mockWorkshops } from '../../data/workshops';
 import { BookOpen, Clock, ArrowRight } from 'lucide-react';
 
@@ -18,8 +17,15 @@ export default function WorkshopListPage() {
         dateString="2026.05.30 (토)" 
       />
       
-      {/* 탭 네비게이션 */}
-      <SectionNav />
+      {/* 뒤로가기 버튼 */}
+      <div className="max-w-4xl w-full mx-auto px-4 md:px-8 mt-6">
+        <Link 
+          href="/elementary" 
+          className="inline-flex items-center gap-1.5 text-xs text-slate-600 hover:text-slate-800 bg-white border border-slate-200 px-3.5 py-2 rounded-xl shadow-sm transition-all hover:scale-[1.01]"
+        >
+          ← 초등 대시보드로 돌아가기
+        </Link>
+      </div>
       
       {/* 본문 내용 */}
       <main className="flex-1 max-w-4xl w-full mx-auto px-4 md:px-8 mt-8">

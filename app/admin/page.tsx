@@ -20,7 +20,9 @@ import {
   User,
   GraduationCap,
   Calendar,
-  Gauge
+  Gauge,
+  Calculator,
+  Target
 } from 'lucide-react';
 import { mockStudents } from '@/data/mockData';
 
@@ -104,9 +106,12 @@ export default function AdminPage() {
                 { path: '/elementary/input', label: '초등 루틴 수동 입력', desc: '코호트 등원 출결 체크 및 루틴 단계 체크 모달', icon: CheckSquare, color: 'text-teal-600 bg-teal-50 border-teal-100' },
                 { path: '/students', label: '전체 학생 목록', desc: '중고등 담당 학생 검색 및 프로필 리스트', icon: Users, color: 'text-blue-600 bg-blue-50 border-blue-100' },
                 { path: '/students/new', label: '신규 학생 등록', desc: '학생 정보 추가 및 시험 계획 템플릿 자동 세팅', icon: UserPlus, color: 'text-sky-600 bg-sky-50 border-sky-100' },
-                { path: '/english/review', label: '초등 영어 코치 점검판', desc: '리틀팍스 결과물 확인, 피드백 및 리포트 인쇄', icon: BookOpen, color: 'text-emerald-600 bg-emerald-50 border-emerald-100' },
-                { path: '/debate/review', label: '디베이트 코치 점검판', desc: '찬반 개요서 및 제출 문서 확인, 피드백', icon: MessageSquare, color: 'text-amber-600 bg-amber-50 border-amber-100' },
-                { path: '/workshop', label: '워크숍 선택 및 진행', desc: '라이브 세션 타이머, 오버레이 제어 및 P2 완료 연동', icon: Timer, color: 'text-purple-600 bg-purple-50 border-purple-100' },
+                // 초등 전용 특화 도구
+                { path: '/english/review', label: '초등 영어 코치 점검판 (전용 도구)', desc: '리틀팍스 결과물 확인, 피드백 및 리포트 인쇄', icon: BookOpen, color: 'text-emerald-600 bg-[#E8F6F4]/50 border-emerald-100' },
+                { path: '/debate/review', label: '초등 토론 코치 점검판 (전용 도구)', desc: '디베이트 개요서 및 제출 에세이 피드백 작성', icon: MessageSquare, color: 'text-amber-600 bg-amber-50 border-amber-100' },
+                { path: '/math/review', label: '초등 수학 스토리텔링 (전용 도구 · 준비 중)', desc: '수학 논리력 진단 및 서술형 피드백 점검판', icon: Calculator, color: 'text-indigo-600 bg-indigo-50 border-indigo-100' },
+                { path: '/workshop', label: '초등 라이브 워크숍 진행 (전용 도구)', desc: '세션 선택, 타이머 제어 및 P2 완료 연동', icon: Timer, color: 'text-purple-600 bg-purple-50 border-purple-100' },
+                { path: '/mastery', label: '초등 완전학습 점검판 (전용 도구)', desc: '핵심 개념 등록, 백지 인출 채점 및 결손(구멍) 케어', icon: Target, color: 'text-indigo-600 bg-[#EEEDFC]/50 border-indigo-100' },
               ].map(route => {
                 const Icon = route.icon;
                 return (

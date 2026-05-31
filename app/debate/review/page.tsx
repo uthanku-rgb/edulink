@@ -102,16 +102,14 @@ export default function CoachReviewPage() {
               학생 화면 테스트하기
             </Link>
             <Link 
-              href="/"
+              href="/elementary"
               className="text-xs font-bold text-stone-500 hover:text-stone-700 bg-stone-100 hover:bg-stone-200 px-4 py-2 rounded-lg transition-colors"
             >
-              통합포탈로 돌아가기
+              초등 대시보드로 돌아가기
             </Link>
           </div>
         </div>
       </header>
-
-      <SectionNav />
 
       {/* Main Grid View */}
       <main className="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col md:flex-row gap-6">

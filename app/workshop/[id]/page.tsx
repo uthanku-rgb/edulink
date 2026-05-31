@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '../../../components/Header';
-import SectionNav from '../../../components/SectionNav';
 import { mockWorkshops } from '../../../data/workshops';
 import { mockElementaryStudents } from '../../../data/mockData';
 import { getDailyCards, saveDailyCards, getPillarSchedule } from '../../../lib/storage';
@@ -236,8 +235,7 @@ export default function WorkshopDetailPage({ params }: PageProps) {
         dateString={`${todayStr.replace(/-/g, '.')} (${todayWeekday})`} 
       />
       
-      {/* 탭 네비게이션 */}
-      <SectionNav />
+
 
       {/* 워크샵 메인 콘솔 */}
       <main className="flex-1 max-w-5xl w-full mx-auto px-4 md:px-8 mt-6">

@@ -69,15 +69,12 @@ export default function SectionNav() {
     { label: '시험 분석', href: '/analysis', icon: BarChart3 },
     { label: '대시보드(초등)', href: '/elementary', icon: Calendar },
     { label: '입력(초등)', href: '/elementary/input', icon: ClipboardCheck },
-    { label: '영어 점검(초등)', href: '/english/review', icon: BookMarked },
-    { label: '토론 점검(초등)', href: '/debate/review', icon: MessageSquare },
-    { label: '워크샵 진행', href: '/workshop', icon: Presentation },
   ];
 
   // 필터링된 메뉴 아이템 구성
   const navItems = allItems.filter(item => {
-    // 포털 홈과 워크샵은 양쪽 모두 노출
-    if (item.href === '/' || item.href === '/workshop') return true;
+    // 포털 홈은 양쪽 모두 노출
+    if (item.href === '/') return true;
 
     if (coachingMode === 'middle-high') {
       // 중고등 전용 메뉴 리스트
@@ -93,9 +90,7 @@ export default function SectionNav() {
       // 초등 전용 메뉴 리스트
       return [
         '/elementary',
-        '/elementary/input',
-        '/english/review',
-        '/debate/review'
+        '/elementary/input'
       ].includes(item.href);
     }
   });

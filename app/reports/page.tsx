@@ -11,8 +11,8 @@ import {
 } from 'lucide-react';
 import Header from '../../components/Header';
 import SectionNav from '../../components/SectionNav';
-import { getStudents, getDailyRecords, getExams, getCycles } from '../../lib/storage';
-import { Student } from '../../types';
+import { getStudents, getDailyRecords, getExams, getCycles, getMasteryChecks, getGaps } from '../../lib/storage';
+import { Student, MasteryCheck, Gap } from '../../types';
 
 export default function ReportsPage() {
   const router = useRouter();
@@ -28,6 +28,14 @@ export default function ReportsPage() {
   const [attendanceCount, setAttendanceCount] = useState({ total: 0, present: 0, absent: 0 });
   const [latestReviewStage, setLatestReviewStage] = useState(1);
   const [dDayStr, setDDayStr] = useState('');
+  const [masteryStats, setMasteryStats] = useState({
+    blankTestCount: 0,
+    avgRecallRate: 0,
+    peerExplainCount: 0,
+    closedGapsCount: 0,
+    openGapsCount: 0,
+    summary: ''
+  });
   
   // 편집 입력란
   const [managerComment, setManagerComment] = useState('');
@@ -58,10 +66,19 @@ export default function ReportsPage() {
     const allRecords = await getDailyRecords();
     const studentRecords = allRecords.filter(r => r.studentId === selectedStudentId);
     
-    // 최근 7일 필터링 (주간 리포트 기준)
-    const today = new Date('2026-05-27');
+    // 최근 7일 필터링 (주간 리포트 기준 - 동적 baseDate 설정)
+    let baseDate = new Date('2026-05-27');
+    if (studentRecords.length > 0) {
+      const sortedRecords = [...studentRecords].sort((a, b) => b.date.localeCompare(a.date));
+      const latestDateStr = sortedRecords[0].date;
+      const parsedDate = new Date(latestDateStr);
+      if (!isNaN(parsedDate.getTime())) {
+        baseDate = parsedDate;
+      }
+    }
+
     const recentDates = Array.from({ length: 7 }, (_, i) => {
-      const d = new Date(today);
+      const d = new Date(baseDate);
       d.setDate(d.getDate() - i);
       return d.toISOString().split('T')[0];
     });
@@ -97,9 +114,33 @@ export default function ReportsPage() {
     let dDayString = '';
     if (exam) {
       const examDate = new Date(exam.examDate);
-      const diff = Math.ceil((examDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+      const diff = Math.ceil((examDate.getTime() - baseDate.getTime()) / (1000 * 60 * 60 * 24));
       dDayString = cycle?.phase === 'Autopsy' ? `Autopsy (시험후 T+${Math.abs(diff)}일)` : `${cycle?.phase || 'Build'} 단계 (시험대비 D-${diff}일)`;
     }
+
+    // 완전학습 (Mastery Learning) 통계 계산
+    const studentChecks = getMasteryChecks().filter(c => c.studentId === selectedStudentId);
+    const weeklyChecks = studentChecks.filter(c => recentDates.includes(c.date));
+    const blankTestCount = weeklyChecks.length;
+    const avgRecallRate = blankTestCount > 0
+      ? Math.round(weeklyChecks.reduce((acc, cur) => acc + cur.retrievalScore, 0) / blankTestCount)
+      : 0;
+    const peerExplainCount = weeklyChecks.filter(c => c.method === 'peer_explain').length;
+
+    const studentGaps = getGaps().filter(g => g.studentId === selectedStudentId);
+    const closedGapsCount = studentGaps.filter(
+      g => g.status === 'closed' && g.closedDate && recentDates.includes(g.closedDate)
+    ).length;
+    const openGapsCount = studentGaps.filter(g => g.status === 'open').length;
+
+    let totalPoints = 0;
+    let totalRecalled = 0;
+    weeklyChecks.forEach(c => {
+      totalPoints += c.results.length;
+      totalRecalled += c.results.filter(r => r.recalled).length;
+    });
+
+    const masterySummary = `이번 주 핵심 개념 ${totalPoints}개 중 ${totalRecalled}개를 완전히 체득했고, 남은 ${openGapsCount}개는 다음 주에 다시 점검합니다.`;
 
     setTotalStudyMin(totalMinutes);
     setCompletedPlanRate(planRate);
@@ -107,6 +148,14 @@ export default function ReportsPage() {
     setAttendanceCount({ total: totalCount, present: presentCount, absent: absentCount });
     setLatestReviewStage(latestStage);
     setDDayStr(dDayString);
+    setMasteryStats({
+      blankTestCount,
+      avgRecallRate,
+      peerExplainCount,
+      closedGapsCount,
+      openGapsCount,
+      summary: masterySummary
+    });
 
     // 자동 추천 목표 작성
     setNextWeekGoal(`${student.name} 학생의 다음 주 목표:\n1. 시험 과목별 2회독 문제 풀이 전원 완료\n2. 취약한 오답 노트 분석 100% 정리\n3. 학습 계획 완수율 90% 이상 유지`);
@@ -133,10 +182,17 @@ export default function ReportsPage() {
 
 2. 현재 회독 수준: ${latestReviewStage}회독 진행 중
 
-3. 매니저 주간 코멘트
+3. 이번 주 완전학습 (Mastery Learning)
+ - 백지 테스트: ${masteryStats.blankTestCount}회 실시 (평균 인출률 ${masteryStats.avgRecallRate}%)
+ - 또래설명 완료: ${masteryStats.peerExplainCount}회
+ - 이번 주 메운 구멍(결손): ${masteryStats.closedGapsCount}개
+ - 남은 구멍(재테스트 예정): ${masteryStats.openGapsCount}개
+ - 완전학습 요약: ${masteryStats.summary}
+
+4. 매니저 주간 코멘트
 ${managerComment}
 
-4. 다음 주 주요 학습 방향
+5. 다음 주 주요 학습 방향
 ${nextWeekGoal}
 
 ※ 에듀링크 시스템을 통해 관리자가 매일 면밀히 점검하고 있습니다. 문의사항은 학원으로 연락 주세요.`;
@@ -354,10 +410,47 @@ ${nextWeekGoal}
                   </div>
                 </div>
 
+                {/* 이번 주 완전학습 */}
+                <div className="flex flex-col gap-2">
+                  <h3 className="font-medium text-slate-900 border-l-2 border-slate-750 pl-2 mb-1">
+                    3. 이번 주 완전학습 (Mastery Learning)
+                  </h3>
+                  <div className="bg-[#FAF9F6] border border-slate-200 rounded-lg p-3 space-y-3">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
+                      <div className="bg-white border border-slate-150 rounded p-2">
+                        <span className="text-[10px] text-slate-400 block">백지테스트 횟수</span>
+                        <span className="text-xs font-semibold text-slate-800 mt-0.5 block">{masteryStats.blankTestCount}회</span>
+                      </div>
+                      <div className="bg-white border border-slate-150 rounded p-2">
+                        <span className="text-[10px] text-slate-400 block">평균 인출률</span>
+                        <span className="text-xs font-semibold text-slate-800 mt-0.5 block">{masteryStats.avgRecallRate}%</span>
+                      </div>
+                      <div className="bg-white border border-slate-150 rounded p-2">
+                        <span className="text-[10px] text-slate-400 block">또래설명 횟수</span>
+                        <span className="text-xs font-semibold text-slate-800 mt-0.5 block">{masteryStats.peerExplainCount}회</span>
+                      </div>
+                      <div className="bg-white border border-slate-150 rounded p-2">
+                        <span className="text-[10px] text-slate-400 block">메운 / 남은 구멍</span>
+                        <span className="text-xs font-semibold text-slate-800 mt-0.5 block">
+                          <span className="text-[#2C9C8F]">{masteryStats.closedGapsCount}</span>
+                          <span className="text-slate-400 mx-1">/</span>
+                          <span className={masteryStats.openGapsCount > 0 ? 'text-amber-600 font-bold' : 'text-slate-800'}>
+                            {masteryStats.openGapsCount}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                    <div className="bg-white border border-slate-150 rounded p-2.5 text-slate-700 leading-relaxed">
+                      <span className="text-[10px] text-slate-400 block mb-0.5">완전학습 요약 리포트</span>
+                      <p className="text-xs font-medium text-slate-800">{masteryStats.summary}</p>
+                    </div>
+                  </div>
+                </div>
+
                 {/* 코멘트 */}
                 <div className="flex flex-col gap-2">
                   <h3 className="font-medium text-slate-900 border-l-2 border-slate-750 pl-2 mb-1">
-                    3. 매니저 관찰 종합 의견
+                    4. 매니저 관찰 종합 의견
                   </h3>
                   <div className="bg-[#FAF9F6] border border-slate-200 rounded-lg p-3 min-h-[80px] leading-relaxed text-slate-700 whitespace-pre-wrap">
                     {managerComment}
@@ -367,7 +460,7 @@ ${nextWeekGoal}
                 {/* 다음 주 주요 지침 */}
                 <div className="flex flex-col gap-2">
                   <h3 className="font-medium text-slate-900 border-l-2 border-slate-750 pl-2 mb-1">
-                    4. 다음 주 집중 극복 처방
+                    5. 다음 주 집중 극복 처방
                   </h3>
                   <div className="bg-[#FAF9F6] border border-slate-200 rounded-lg p-3 min-h-[80px] leading-relaxed text-slate-700 whitespace-pre-wrap">
                     {nextWeekGoal}
