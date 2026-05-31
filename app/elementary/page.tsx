@@ -326,6 +326,8 @@ export default function ElementaryDashboardPage() {
             {/* 영어 */}
             <Link 
               href="/english/review"
+              target="_blank"
+              rel="noopener noreferrer"
               className="group border border-slate-100 hover:border-[#2C9C8F] bg-slate-50/40 hover:bg-[#E8F6F4]/10 rounded-xl p-4 transition-all duration-200 flex flex-col justify-between h-28 shadow-sm hover:shadow"
             >
               <div>
@@ -340,6 +342,8 @@ export default function ElementaryDashboardPage() {
             {/* 토론 */}
             <Link 
               href="/debate/review"
+              target="_blank"
+              rel="noopener noreferrer"
               className="group border border-slate-100 hover:border-teal-500 bg-slate-50/40 hover:bg-teal-50/10 rounded-xl p-4 transition-all duration-200 flex flex-col justify-between h-28 shadow-sm hover:shadow"
             >
               <div>
@@ -354,6 +358,8 @@ export default function ElementaryDashboardPage() {
             {/* 수학 */}
             <Link 
               href="/math/review"
+              target="_blank"
+              rel="noopener noreferrer"
               className="group border border-slate-100 hover:border-indigo-400 bg-slate-50/40 hover:bg-indigo-50/10 rounded-xl p-4 transition-all duration-200 flex flex-col justify-between h-28 shadow-sm hover:shadow"
             >
               <div>
@@ -371,6 +377,8 @@ export default function ElementaryDashboardPage() {
             {/* 워크숍 */}
             <Link 
               href="/workshop"
+              target="_blank"
+              rel="noopener noreferrer"
               className="group border border-slate-100 hover:border-purple-400 bg-slate-50/40 hover:bg-purple-50/10 rounded-xl p-4 transition-all duration-200 flex flex-col justify-between h-28 shadow-sm hover:shadow"
             >
               <div>
@@ -385,6 +393,8 @@ export default function ElementaryDashboardPage() {
             {/* 완전학습 */}
             <Link 
               href="/mastery"
+              target="_blank"
+              rel="noopener noreferrer"
               className="group border border-slate-100 hover:border-[#4F46E5] bg-slate-50/40 hover:bg-[#EEEDFC]/10 rounded-xl p-4 transition-all duration-200 flex flex-col justify-between h-28 shadow-sm hover:shadow"
             >
               <div>
@@ -399,6 +409,8 @@ export default function ElementaryDashboardPage() {
             {/* 프리워크 */}
             <Link 
               href="/prework-demo"
+              target="_blank"
+              rel="noopener noreferrer"
               className="group border border-slate-100 hover:border-indigo-400 bg-slate-50/40 hover:bg-indigo-50/10 rounded-xl p-4 transition-all duration-200 flex flex-col justify-between h-28 shadow-sm hover:shadow"
             >
               <div>
