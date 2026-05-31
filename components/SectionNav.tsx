@@ -12,8 +12,6 @@ import {
   BarChart3,
   Calendar,
   ClipboardCheck,
-  Presentation,
-  BookMarked,
   Home,
   LucideIcon
 } from 'lucide-react';

@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import SectionNav from '@/components/SectionNav';
 import { 
   ExpressionItem, 
   EnglishOutput, 

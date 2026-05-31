@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import SectionNav from '@/components/SectionNav';
 import { DebatePrep, ElementaryStudent, DebateTopic } from '@/types';
 import { mockElementaryStudents } from '@/data/mockData';
 import { debateTopics } from '@/data/debateTopics';

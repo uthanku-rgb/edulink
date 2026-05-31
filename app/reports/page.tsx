@@ -12,7 +12,7 @@ import {
 import Header from '../../components/Header';
 import SectionNav from '../../components/SectionNav';
 import { getStudents, getDailyRecords, getExams, getCycles, getMasteryChecks, getGaps } from '../../lib/storage';
-import { Student, MasteryCheck, Gap } from '../../types';
+import { Student } from '../../types';
 
 export default function ReportsPage() {
   const router = useRouter();

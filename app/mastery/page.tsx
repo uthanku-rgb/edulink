@@ -3,19 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
-  Target, 
   ArrowLeft, 
   Plus, 
   Trash2, 
   CheckCircle2, 
-  XCircle, 
-  FileText, 
   Activity, 
   ClipboardList, 
-  UserCheck, 
-  Check, 
-  HelpCircle,
-  Clock
+  Check
 } from 'lucide-react';
 import { 
   mockElementaryStudents 

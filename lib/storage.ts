@@ -23,7 +23,6 @@ import {
   ExpressionItem,
   EnglishOutput,
   MasteryTopic,
-  RecallMethod,
   MasteryCheck,
   Gap
 } from '../types';
