@@ -4,8 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
   ArrowLeft, 
-  Sparkles, 
-  ClipboardList, 
   CheckCircle, 
   AlertTriangle, 
   Send, 
@@ -265,7 +263,7 @@ export default function CoachReviewQueuePage() {
           ].map(tab => (
             <button
               key={tab.id}
-              onClick={() => setFilter(tab.id as any)}
+              onClick={() => setFilter(tab.id as 'all' | 'queue' | 'approved' | 'sent')}
               className={`pb-2.5 px-4 -mb-px transition-colors flex items-center gap-1.5 border-b-2 ${
                 filter === tab.id
                   ? 'border-slate-800 text-slate-950 font-bold'
@@ -294,9 +292,6 @@ export default function CoachReviewQueuePage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {filteredInstances.map(inst => {
-              const hasHold = inst.flags.some(f => f.action === 'hold');
-              const hasReview = inst.flags.some(f => f.action === 'review');
-              
               // Status Badge color
               let badgeClass = '';
               let statusLabel = '';
@@ -391,7 +386,7 @@ export default function CoachReviewQueuePage() {
                           <MessageSquare className="w-3.5 h-3.5" />
                           기록된 코치 피드백
                         </span>
-                        <p className="text-slate-700 italic font-medium">"{inst.coachComment}"</p>
+                        <p className="text-slate-700 italic font-medium">&quot;{inst.coachComment}&quot;</p>
                       </div>
                     )}
                   </div>

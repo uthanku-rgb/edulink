@@ -4,12 +4,10 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
   ArrowLeft, 
-  Users, 
   ToggleLeft, 
   ToggleRight, 
   RefreshCw, 
   Search, 
-  Sparkles,
   Shield,
   CheckCircle,
   HelpCircle
@@ -170,14 +168,10 @@ export default function DeskConsolePage() {
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {filteredStudents.map(student => {
-                    const coreEnroll = enrollments.find(
-                      e => e.studentId === student.id && e.programId === 'core'
-                    );
                     const preworkEnroll = enrollments.find(
                       e => e.studentId === student.id && e.programId === 'prework'
                     );
 
-                    const isCoreActive = coreEnroll ? coreEnroll.active : true;
                     const isPreworkActive = preworkEnroll ? preworkEnroll.active : false;
                     const isUpdating = updatingId === `${student.id}_prework`;
 

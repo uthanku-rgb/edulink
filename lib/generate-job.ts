@@ -54,7 +54,7 @@ export async function runReportGenerationJob(
       // 다양한 게이트 규칙 재현을 위한 학생별 모의 세팅
       let finalValidSessions = validSessions;
       let finalAvgCondition = avgCondition;
-      let mockPwiThis = 75;
+      const mockPwiThis = 75;
       let mockPwiLast: number | null = 80;
 
       // 특정 학생 ID별로 hold, needs_review 상태가 골고루 생성되도록 분기

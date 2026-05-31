@@ -183,13 +183,19 @@ export interface SendResult {
 
 export async function dispatch(
   instance: ReportInstance,
-  type: ReportType,
+  _type: ReportType,
 ): Promise<SendResult> {
   if (instance.status !== "auto_ready" && instance.status !== "approved") {
     return { ok: false, sentAt: null, error: "검수 미통과" };
   }
+  
+  // Validate report type configuration is present
+  if (!_type.id || !_type.channel) {
+    return { ok: false, sentAt: null, error: "잘못된 리포트 타입 정의" };
+  }
+  
   // 채널 어댑터로 위임 (kakao 알림톡 API / 인쇄 PDF).
   // templateId + 학생 데이터만 넘긴다 — 타입별 분기 없음.
-  // return await channelAdapter[type.channel].send(type.templateId, instance);
+  // return await channelAdapter[_type.channel].send(_type.templateId, instance);
   return { ok: true, sentAt: new Date().toISOString() };
 }

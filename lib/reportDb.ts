@@ -1,8 +1,35 @@
 import { supabase } from './supabaseClient';
 import { Enrollment, ReportInstance, ReviewStatus, ReviewFlag, REPORT_TYPES, dispatch } from './report-engine-spec';
 
+interface DbEnrollment {
+  student_id: string;
+  program_id: "core" | "prework";
+  active: boolean;
+  billing: "included" | "addon";
+  started_at: string;
+  ended_at: string | null;
+}
+
+interface DbReportInstance {
+  id: string;
+  report_type_id: string;
+  student_id: string;
+  period_start: string;
+  period_end: string;
+  status: string;
+  flags: ReviewFlag[] | string | null;
+  coach_comment: string | null;
+  generated_at: string;
+  sent_at: string | null;
+  student?: {
+    name: string;
+    grade: string;
+    school: string;
+  };
+}
+
 // Helper to map DB enrollment to TS enrollment
-function mapDbEnrollment(row: any): Enrollment {
+function mapDbEnrollment(row: DbEnrollment): Enrollment {
   return {
     studentId: row.student_id,
     programId: row.program_id,
@@ -26,7 +53,7 @@ function mapTsEnrollment(enrollment: Enrollment) {
 }
 
 // Helper to map DB report instance to TS report instance
-function mapDbReportInstance(row: any): ReportInstance & { student?: { name: string; grade: string; school: string } } {
+function mapDbReportInstance(row: DbReportInstance): ReportInstance & { student?: { name: string; grade: string; school: string } } {
   return {
     id: row.id,
     reportTypeId: row.report_type_id,
@@ -34,7 +61,7 @@ function mapDbReportInstance(row: any): ReportInstance & { student?: { name: str
     periodStart: row.period_start,
     periodEnd: row.period_end,
     status: row.status as ReviewStatus,
-    flags: (row.flags || []) as ReviewFlag[],
+    flags: (typeof row.flags === 'string' ? JSON.parse(row.flags) : (row.flags || [])) as ReviewFlag[],
     coachComment: row.coach_comment,
     generatedAt: row.generated_at,
     sentAt: row.sent_at,
@@ -167,7 +194,12 @@ export async function insertReportInstances(instances: ReportInstance[]): Promis
 }
 
 export async function updateReportInstance(id: string, updates: Partial<ReportInstance>): Promise<boolean> {
-  const dbUpdates: any = {};
+  const dbUpdates: Partial<{
+    status: ReviewStatus;
+    coach_comment: string | null;
+    flags: string;
+    sent_at: string | null;
+  }> = {};
   if (updates.status !== undefined) dbUpdates.status = updates.status;
   if (updates.coachComment !== undefined) dbUpdates.coach_comment = updates.coachComment;
   if (updates.flags !== undefined) dbUpdates.flags = JSON.stringify(updates.flags);
