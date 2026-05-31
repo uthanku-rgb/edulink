@@ -80,7 +80,6 @@ export default function AdminPage() {
               <Sparkles className="w-5 h-5 text-amber-300 animate-pulse" />
               <h2 className="text-lg font-bold">에듀링크 페이지 네비게이터</h2>
             </div>
-            <p className="text-sm text-indigo-100 font-medium">원하는 대상(코치/학생)과 도메인(루틴/영어/디베이트/워크숍)에 따라 빠르게 이동해 보세요.</p>
           </div>
           <div className="bg-white/10 backdrop-blur-md rounded-xl p-3 text-xs border border-white/10 shrink-0 font-mono">
             💡 로컬 포트에서 이동 시 편리하게 사용 가능합니다.
@@ -90,31 +89,26 @@ export default function AdminPage() {
         {/* Categories Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 
-          {/* 1. 코치 / 관리자용 페이지 */}
+          {/* 1. 중고등 코칭 & 관리 */}
           <div className="space-y-6">
             <div className="flex items-center gap-2 pb-2 border-b border-slate-200">
               <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
                 <Shield className="w-4 h-4" />
               </div>
-              <h3 className="text-base font-bold text-slate-900">1. 코치 / 관리자용 대시보드</h3>
+              <h3 className="text-base font-bold text-slate-900">1. 중고등 코칭 & 관리</h3>
             </div>
 
             <div className="space-y-3">
               {[
-                { path: '/', label: '통합 포탈 (Unified Portal)', desc: '초등 루틴 센터 및 중고등 코칭 센터의 통합 진입로', icon: Shield, color: 'text-indigo-600 bg-indigo-50 border-indigo-100' },
                 { path: '/middle-high', label: '중고등 코칭 대시보드', desc: '중고등 학생 현황, 기록 승인 대기 큐, 위기 알림', icon: Gauge, color: 'text-violet-600 bg-violet-50 border-violet-100' },
-                { path: '/elementary', label: '초등 루틴 대시보드', desc: '초등 코호트 주간 기둥 현황 및 케어 시그널 확인', icon: Calendar, color: 'text-emerald-600 bg-emerald-50 border-emerald-100' },
-                { path: '/elementary/input', label: '초등 루틴 수동 입력', desc: '코호트 등원 출결 체크 및 루틴 단계 체크 모달', icon: CheckSquare, color: 'text-teal-600 bg-teal-50 border-teal-100' },
                 { path: '/students', label: '전체 학생 목록', desc: '중고등 담당 학생 검색 및 프로필 리스트', icon: Users, color: 'text-blue-600 bg-blue-50 border-blue-100' },
                 { path: '/students/new', label: '신규 학생 등록', desc: '학생 정보 추가 및 시험 계획 템플릿 자동 세팅', icon: UserPlus, color: 'text-sky-600 bg-sky-50 border-sky-100' },
-                // 초등 전용 특화 도구
-                { path: '/english/review', label: '초등 영어 코치 점검판 (전용 도구)', desc: '리틀팍스 결과물 확인, 피드백 및 리포트 인쇄', icon: BookOpen, color: 'text-emerald-600 bg-[#E8F6F4]/50 border-emerald-100' },
-                { path: '/debate/review', label: '초등 토론 코치 점검판 (전용 도구)', desc: '디베이트 개요서 및 제출 에세이 피드백 작성', icon: MessageSquare, color: 'text-amber-600 bg-amber-50 border-amber-100' },
-                { path: '/math/review', label: '초등 수학 스토리텔링 (전용 도구 · 준비 중)', desc: '수학 논리력 진단 및 서술형 피드백 점검판', icon: Calculator, color: 'text-indigo-600 bg-indigo-50 border-indigo-100' },
-                { path: '/workshop', label: '초등 라이브 워크숍 진행 (전용 도구)', desc: '세션 선택, 타이머 제어 및 P2 완료 연동', icon: Timer, color: 'text-purple-600 bg-purple-50 border-purple-100' },
-                { path: '/mastery', label: '초등 완전학습 점검판 (전용 도구)', desc: '핵심 개념 등록, 백지 인출 채점 및 결손(구멍) 케어', icon: Target, color: 'text-indigo-600 bg-[#EEEDFC]/50 border-indigo-100' },
+                { path: '/reports', label: '학습 보고서 센터 (Reports)', desc: '주간/시즌 통계 자동 합산 및 카톡 전송/인쇄', icon: Award, color: 'text-fuchsia-600 bg-fuchsia-50 border-fuchsia-100' },
                 { path: '/reports/review', label: '리포트 검수 큐 (Coach Review Queue)', desc: 'needs_review/hold 인스턴스 코치 의견 기입 및 알림톡 발송', icon: ClipboardCheck, color: 'text-indigo-600 bg-indigo-50 border-indigo-100' },
                 { path: '/desk', label: '데스크 등록 콘솔 (Desk Console)', desc: '학생별 프리워크 수강 ON/OFF 등록 및 데이터베이스 동기화', icon: Users, color: 'text-emerald-600 bg-emerald-50 border-emerald-100' },
+                { path: '/analysis', label: '시험 오답 분석 (Analysis)', desc: '내신/모의고사 정오답 분류 및 취약 분석 리포트', icon: PieChart, color: 'text-purple-600 bg-purple-50 border-purple-100' },
+                { path: '/performance', label: '수행평가 대비 (Performance)', desc: '학교별 수행평가 마감일 및 단계별 진행/피드백', icon: FileBarChart, color: 'text-violet-600 bg-violet-50 border-violet-100' },
+                { path: '/question-bank', label: '내신 대비 문제 은행', desc: '학원 기출 자료 필터링 검색 및 맞춤 학습 처방', icon: Database, color: 'text-pink-600 bg-pink-50 border-pink-100' },
               ].map(route => {
                 const Icon = route.icon;
                 return (
@@ -136,22 +130,56 @@ export default function AdminPage() {
                   </Link>
                 );
               })}
+
+              {/* Coach Student Management Detail Jumper */}
+              <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm space-y-4">
+                <span className="text-xs font-bold text-slate-500 block flex items-center gap-1">
+                  <User className="w-3.5 h-3.5 text-purple-500" />
+                  코치용 학생 상세 정보 숏컷 (`/students/[id]`)
+                </span>
+                <div className="space-y-2">
+                  <select 
+                    value={selectedStuId}
+                    onChange={(e) => setSelectedStuId(e.target.value)}
+                    className="w-full rounded-xl border-slate-200 text-xs p-2.5 border focus:outline-none focus:ring-1 focus:ring-purple-500 font-medium bg-slate-50"
+                  >
+                    {mockStudents.map(student => (
+                      <option key={student.id} value={student.id}>
+                        {student.name} ({student.grade} · {student.school})
+                      </option>
+                    ))}
+                  </select>
+                  <Link 
+                    href={`/students/${selectedStuId}`}
+                    className="w-full py-2.5 bg-purple-650 hover:bg-purple-750 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1 transition-all shadow-sm shadow-purple-100"
+                  >
+                    상세 프로필 보기
+                    <ExternalLink className="w-3 h-3" />
+                  </Link>
+                </div>
+              </div>
+
             </div>
           </div>
 
-          {/* 2. 학생용 페이지 & 개별 포털 바로가기 */}
+          {/* 2. 초등 루틴 & 전문 피드백 */}
           <div className="space-y-6">
             <div className="flex items-center gap-2 pb-2 border-b border-slate-200">
               <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                <GraduationCap className="w-4 h-4" />
+                <Calendar className="w-4 h-4" />
               </div>
-              <h3 className="text-base font-bold text-slate-900">2. 학생 루틴 / 자기주도 학습</h3>
+              <h3 className="text-base font-bold text-slate-900">2. 초등 루틴 & 전문 피드백</h3>
             </div>
 
             <div className="space-y-3">
               {[
-                { path: '/english', label: '초등 리틀팍스 영어 학습', desc: '듣기 -> 섀도잉 -> 표현 줍기 -> 아웃풋 제출 4단계', icon: Sparkles, color: 'text-teal-600 bg-teal-50 border-teal-100' },
-                { path: '/debate', label: '디베이트 준비 도우미', desc: '찬반 입장 정하기, 자료 수집, 글쓰기 및 반박 6단계', icon: MessageSquare, color: 'text-orange-600 bg-orange-50 border-orange-100' },
+                { path: '/elementary', label: '초등 루틴 대시보드', desc: '초등 코호트 주간 기둥 현황 및 케어 시그널 확인', icon: Calendar, color: 'text-emerald-600 bg-emerald-50 border-emerald-100' },
+                { path: '/elementary/input', label: '초등 루틴 수동 입력', desc: '코호트 등원 출결 체크 및 루틴 단계 체크 모달', icon: CheckSquare, color: 'text-teal-600 bg-teal-50 border-teal-100' },
+                { path: '/english/review', label: '초등 영어 코치 점검판 (전용 도구)', desc: '리틀팍스 결과물 확인, 피드백 및 리포트 인쇄', icon: BookOpen, color: 'text-emerald-600 bg-[#E8F6F4]/50 border-emerald-100' },
+                { path: '/debate/review', label: '초등 토론 코치 점검판 (전용 도구)', desc: '디베이트 개요서 및 제출 에세이 피드백 작성', icon: MessageSquare, color: 'text-amber-600 bg-amber-50 border-amber-100' },
+                { path: '/math/review', label: '초등 수학 스토리텔링 (전용 도구 · 준비 중)', desc: '수학 논리력 진단 및 서술형 피드백 점검판', icon: Calculator, color: 'text-indigo-600 bg-indigo-50 border-indigo-100' },
+                { path: '/workshop', label: '초등 라이브 워크숍 진행 (전용 도구)', desc: '세션 선택, 타이머 제어 및 P2 완료 연동', icon: Timer, color: 'text-purple-600 bg-purple-50 border-purple-100' },
+                { path: '/mastery', label: '초등 완전학습 점검판 (전용 도구)', desc: '핵심 개념 등록, 백지 인출 채점 및 결손(구멍) 케어', icon: Target, color: 'text-indigo-600 bg-[#EEEDFC]/50 border-indigo-100' },
               ].map(route => {
                 const Icon = route.icon;
                 return (
@@ -169,6 +197,44 @@ export default function AdminPage() {
                         <span className="text-[11px] text-slate-400 font-medium block mt-0.5 truncate">{route.desc}</span>
                       </div>
                       <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-emerald-600 self-center transition-colors" />
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* 3. 학생용 포털 & 통합 포털 */}
+          <div className="space-y-6">
+            <div className="flex items-center gap-2 pb-2 border-b border-slate-200">
+              <div className="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
+                <GraduationCap className="w-4 h-4" />
+              </div>
+              <h3 className="text-base font-bold text-slate-900">3. 학생용 포털 & 통합 포털</h3>
+            </div>
+
+            <div className="space-y-3">
+              {[
+                { path: '/', label: '통합 포탈 (Unified Portal)', desc: '초등 루틴 센터 및 중고등 코칭 센터의 통합 진입로', icon: Shield, color: 'text-indigo-600 bg-indigo-50 border-indigo-100' },
+                { path: '/english', label: '초등 리틀팍스 영어 학습', desc: '듣기 -> 섀도잉 -> 표현 줍기 -> 아웃풋 제출 4단계', icon: Sparkles, color: 'text-teal-600 bg-teal-50 border-teal-100' },
+                { path: '/debate', label: '디베이트 준비 도우미', desc: '찬반 입장 정하기, 자료 수집, 글쓰기 및 반박 6단계', icon: MessageSquare, color: 'text-orange-600 bg-orange-50 border-orange-100' },
+              ].map(route => {
+                const Icon = route.icon;
+                return (
+                  <Link 
+                    key={route.path}
+                    href={route.path}
+                    className="group block bg-white border border-slate-200 rounded-2xl p-4 shadow-sm hover:shadow-md hover:border-purple-300 transition-all active:scale-[0.99]"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center border shrink-0 transition-colors group-hover:scale-105 ${route.color}`}>
+                        <Icon className="w-5 h-5" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <span className="text-xs font-bold text-slate-800 block group-hover:text-purple-600 transition-colors">{route.label}</span>
+                        <span className="text-[11px] text-slate-400 font-medium block mt-0.5 truncate">{route.desc}</span>
+                      </div>
+                      <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-purple-600 self-center transition-colors" />
                     </div>
                   </Link>
                 );
@@ -197,74 +263,6 @@ export default function AdminPage() {
                     className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1 transition-all shadow-sm shadow-indigo-100"
                   >
                     포털 진입하기
-                    <ExternalLink className="w-3 h-3" />
-                  </Link>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-          {/* 3. 통계 및 보고서 & 학생 디테일 숏컷 */}
-          <div className="space-y-6">
-            <div className="flex items-center gap-2 pb-2 border-b border-slate-200">
-              <div className="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
-                <PieChart className="w-4 h-4" />
-              </div>
-              <h3 className="text-base font-bold text-slate-900">3. 수행 지표 & 종합 분석</h3>
-            </div>
-
-            <div className="space-y-3">
-              {[
-                { path: '/analysis', label: '시험 오답 분석 (Analysis)', desc: '내신/모의고사 정오답 분류 및 취약 분석 리포트', icon: PieChart, color: 'text-purple-600 bg-purple-50 border-purple-100' },
-                { path: '/performance', label: '수행평가 대비 (Performance)', desc: '학교별 수행평가 마감일 및 단계별 진행/피드백', icon: FileBarChart, color: 'text-violet-600 bg-violet-50 border-violet-100' },
-                { path: '/reports', label: '학습 보고서 센터 (Reports)', desc: '주간/시즌 통계 자동 합산 및 카톡 전송/인쇄', icon: Award, color: 'text-fuchsia-600 bg-fuchsia-50 border-fuchsia-100' },
-                { path: '/question-bank', label: '내신 대비 문제 은행', desc: '학원 기출 자료 필터링 검색 및 맞춤 학습 처방', icon: Database, color: 'text-pink-600 bg-pink-50 border-pink-100' },
-              ].map(route => {
-                const Icon = route.icon;
-                return (
-                  <Link 
-                    key={route.path}
-                    href={route.path}
-                    className="group block bg-white border border-slate-200 rounded-2xl p-4 shadow-sm hover:shadow-md hover:border-purple-300 transition-all active:scale-[0.99]"
-                  >
-                    <div className="flex items-start gap-3">
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center border shrink-0 transition-colors group-hover:scale-105 ${route.color}`}>
-                        <Icon className="w-5 h-5" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <span className="text-xs font-bold text-slate-800 block group-hover:text-purple-600 transition-colors">{route.label}</span>
-                        <span className="text-[11px] text-slate-400 font-medium block mt-0.5 truncate">{route.desc}</span>
-                      </div>
-                      <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-purple-600 self-center transition-colors" />
-                    </div>
-                  </Link>
-                );
-              })}
-
-              {/* Coach Student Management Detail Jumper */}
-              <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm space-y-4">
-                <span className="text-xs font-bold text-slate-500 block flex items-center gap-1">
-                  <User className="w-3.5 h-3.5 text-purple-500" />
-                  코치용 학생 상세 정보 숏컷 (`/students/[id]`)
-                </span>
-                <div className="space-y-2">
-                  <select 
-                    value={selectedStuId}
-                    onChange={(e) => setSelectedStuId(e.target.value)}
-                    className="w-full rounded-xl border-slate-200 text-xs p-2.5 border focus:outline-none focus:ring-1 focus:ring-purple-500 font-medium bg-slate-50"
-                  >
-                    {mockStudents.map(student => (
-                      <option key={student.id} value={student.id}>
-                        {student.name} ({student.grade} · {student.school})
-                      </option>
-                    ))}
-                  </select>
-                  <Link 
-                    href={`/students/${selectedStuId}`}
-                    className="w-full py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1 transition-all shadow-sm shadow-purple-100"
-                  >
-                    상세 프로필 보기
                     <ExternalLink className="w-3 h-3" />
                   </Link>
                 </div>
