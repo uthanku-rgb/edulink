@@ -29,6 +29,7 @@ import {
 } from '../types';
 import * as mockData from '../data/mockData';
 import { supabase } from './supabaseClient';
+import { seedEnrollmentsIfEmpty } from './reportDb';
 
 const KEYS = {
   STUDENTS: 'edulink_students',
@@ -642,6 +643,7 @@ export const seedMockDataIfEmpty = async (): Promise<void> => {
       await saveAlerts(mockData.mockAlerts);
       await saveQuestions(mockData.mockQuestions);
       await savePrescriptions(mockData.mockPrescriptions);
+      await seedEnrollmentsIfEmpty();
       console.log('Successfully seeded mock data!');
     }
   } catch (err) {

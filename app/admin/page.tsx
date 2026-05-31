@@ -22,7 +22,8 @@ import {
   Calendar,
   Gauge,
   Calculator,
-  Target
+  Target,
+  ClipboardCheck
 } from 'lucide-react';
 import { mockStudents } from '@/data/mockData';
 
@@ -112,6 +113,8 @@ export default function AdminPage() {
                 { path: '/math/review', label: '초등 수학 스토리텔링 (전용 도구 · 준비 중)', desc: '수학 논리력 진단 및 서술형 피드백 점검판', icon: Calculator, color: 'text-indigo-600 bg-indigo-50 border-indigo-100' },
                 { path: '/workshop', label: '초등 라이브 워크숍 진행 (전용 도구)', desc: '세션 선택, 타이머 제어 및 P2 완료 연동', icon: Timer, color: 'text-purple-600 bg-purple-50 border-purple-100' },
                 { path: '/mastery', label: '초등 완전학습 점검판 (전용 도구)', desc: '핵심 개념 등록, 백지 인출 채점 및 결손(구멍) 케어', icon: Target, color: 'text-indigo-600 bg-[#EEEDFC]/50 border-indigo-100' },
+                { path: '/reports/review', label: '리포트 검수 큐 (Coach Review Queue)', desc: 'needs_review/hold 인스턴스 코치 의견 기입 및 알림톡 발송', icon: ClipboardCheck, color: 'text-indigo-600 bg-indigo-50 border-indigo-100' },
+                { path: '/desk', label: '데스크 등록 콘솔 (Desk Console)', desc: '학생별 프리워크 수강 ON/OFF 등록 및 데이터베이스 동기화', icon: Users, color: 'text-emerald-600 bg-emerald-50 border-emerald-100' },
               ].map(route => {
                 const Icon = route.icon;
                 return (

@@ -206,6 +206,40 @@ export default function PortalPage() {
             </Link>
           </div>
         </section>
+
+        {/* 리포트 및 관리 시스템 바로가기 */}
+        <section className="mt-6 bg-white border border-[#E5E1DA] rounded-2xl p-5 max-w-3xl mx-auto w-full">
+          <h4 className="text-xs font-bold text-slate-500 mb-3 flex items-center gap-1.5 uppercase tracking-wider">
+            📊 에듀링크 리포트 및 등록 관리
+          </h4>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <Link 
+              href="/reports/review"
+              className="p-4 bg-indigo-50/20 hover:bg-indigo-50/50 border border-indigo-150 rounded-2xl font-semibold flex flex-col gap-1 text-slate-800 transition-colors"
+            >
+              <span className="text-indigo-600 text-[10px] font-bold block uppercase tracking-wider">코치 권한</span>
+              <span className="flex items-center justify-between text-sm">
+                리포트 검수 큐 바로가기 <ChevronRight className="w-4 h-4 text-indigo-500" />
+              </span>
+              <p className="text-[11px] text-slate-400 font-normal mt-1 leading-normal">
+                학습 주간 리포트 검수, 코치 의견 작성 및 승인, 리포트 카카오톡 알림톡 전송
+              </p>
+            </Link>
+
+            <Link 
+              href="/desk"
+              className="p-4 bg-emerald-50/20 hover:bg-emerald-50/50 border border-emerald-150 rounded-2xl font-semibold flex flex-col gap-1 text-slate-800 transition-colors"
+            >
+              <span className="text-emerald-600 text-[10px] font-bold block uppercase tracking-wider">데스크 권한</span>
+              <span className="flex items-center justify-between text-sm">
+                데스크 등록 관리 콘솔 바로가기 <ChevronRight className="w-4 h-4 text-emerald-500" />
+              </span>
+              <p className="text-[11px] text-slate-400 font-normal mt-1 leading-normal">
+                학생별 프리워크(추가과금) 수강 ON/OFF 토글 제어 및 데이터베이스 동기화
+              </p>
+            </Link>
+          </div>
+        </section>
       </main>
     </div>
   );

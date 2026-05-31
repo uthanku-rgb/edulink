@@ -62,6 +62,8 @@ export default function SectionNav() {
     { label: '대시보드(중고등)', href: '/middle-high', icon: Gauge },
     { label: '학생 28', href: '/students', icon: Users, count: 28 },
     { label: '학부모 리포트', href: '/reports', icon: MessageSquare },
+    { label: '리포트 검수 큐', href: '/reports/review', icon: ClipboardCheck },
+    { label: '데스크 토글', href: '/desk', icon: Users },
     { label: '문제 은행', href: '/question-bank', icon: BookOpen },
     { label: '수행평가', href: '/performance', icon: GraduationCap },
     { label: '시험 분석', href: '/analysis', icon: BarChart3 },
@@ -80,6 +82,8 @@ export default function SectionNav() {
         '/middle-high',
         '/students',
         '/reports',
+        '/reports/review',
+        '/desk',
         '/question-bank',
         '/performance',
         '/analysis'
