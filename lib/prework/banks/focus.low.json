@@ -1,0 +1,650 @@
+{
+  "module_id": "mod_low_s3_traffic_light",
+  "module_name": "신호등",
+  "primary_domain": "Focus",
+  "secondary_domain": "Flex",
+  "grade_track": "low",
+  "version": "v0.2-seed",
+  "generated_at": "2026-05-12",
+  "notes": "8레벨 x 4 variant = 32자극. 신호등 규칙+규칙전환. Go/NoGo 및 복합 규칙.",
+  "level_curve": {
+    "L1": {
+      "difficulty": 1,
+      "category": "초록=누르기",
+      "rule": "press_on_green"
+    },
+    "L2": {
+      "difficulty": 1,
+      "category": "초록=누르기(빠르게)",
+      "rule": "press_on_green"
+    },
+    "L3": {
+      "difficulty": 2,
+      "category": "빨간=멈추기 등장",
+      "rule": "press_on_green"
+    },
+    "L4": {
+      "difficulty": 2,
+      "category": "빨간+노란",
+      "rule": "press_on_green"
+    },
+    "L5": {
+      "difficulty": 3,
+      "category": "규칙전환: 빨간=누르기",
+      "rule": "press_on_red"
+    },
+    "L6": {
+      "difficulty": 3,
+      "category": "규칙전환(빠르게)",
+      "rule": "press_on_red"
+    },
+    "L7": {
+      "difficulty": 4,
+      "category": "색+모양 복합 규칙",
+      "rule": "press_on_shape"
+    },
+    "L8": {
+      "difficulty": 5,
+      "category": "마스터 혼합",
+      "rule": "alternating"
+    }
+  },
+  "stimuli": [
+    {
+      "id": "FOC-L01-001",
+      "domain": "Focus",
+      "difficulty_level": 1,
+      "module_level": 1,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 2000,
+      "stimulus_format": "click",
+      "skill_tags": [
+        "sustained_attention"
+      ],
+      "content_payload": {
+        "instruction": "🟢 초록불! 누르세요!",
+        "signal": "green",
+        "expected_action": "press"
+      }
+    },
+    {
+      "id": "FOC-L01-002",
+      "domain": "Focus",
+      "difficulty_level": 1,
+      "module_level": 1,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 2000,
+      "stimulus_format": "click",
+      "skill_tags": [
+        "sustained_attention"
+      ],
+      "content_payload": {
+        "instruction": "🟢 초록불이에요! 빠르게!",
+        "signal": "green",
+        "expected_action": "press"
+      }
+    },
+    {
+      "id": "FOC-L01-003",
+      "domain": "Focus",
+      "difficulty_level": 1,
+      "module_level": 1,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 2000,
+      "stimulus_format": "click",
+      "skill_tags": [
+        "sustained_attention"
+      ],
+      "content_payload": {
+        "instruction": "🟢 출발! 누르세요!",
+        "signal": "green",
+        "expected_action": "press"
+      }
+    },
+    {
+      "id": "FOC-L01-004",
+      "domain": "Focus",
+      "difficulty_level": 1,
+      "module_level": 1,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 2000,
+      "stimulus_format": "click",
+      "skill_tags": [
+        "sustained_attention"
+      ],
+      "content_payload": {
+        "instruction": "🟢 가세요! 누르세요!",
+        "signal": "green",
+        "expected_action": "press"
+      }
+    },
+    {
+      "id": "FOC-L02-001",
+      "domain": "Focus",
+      "difficulty_level": 1,
+      "module_level": 2,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 1800,
+      "stimulus_format": "click",
+      "skill_tags": [
+        "sustained_attention"
+      ],
+      "content_payload": {
+        "instruction": "🟢 초록불! 빨리 누르세요!",
+        "signal": "green",
+        "expected_action": "press"
+      }
+    },
+    {
+      "id": "FOC-L02-002",
+      "domain": "Focus",
+      "difficulty_level": 1,
+      "module_level": 2,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 1800,
+      "stimulus_format": "click",
+      "skill_tags": [
+        "sustained_attention"
+      ],
+      "content_payload": {
+        "instruction": "🟢 빠르게 눌러요!",
+        "signal": "green",
+        "expected_action": "press"
+      }
+    },
+    {
+      "id": "FOC-L02-003",
+      "domain": "Focus",
+      "difficulty_level": 1,
+      "module_level": 2,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 1800,
+      "stimulus_format": "click",
+      "skill_tags": [
+        "sustained_attention"
+      ],
+      "content_payload": {
+        "instruction": "🟢 재빨리! 누르세요!",
+        "signal": "green",
+        "expected_action": "press"
+      }
+    },
+    {
+      "id": "FOC-L02-004",
+      "domain": "Focus",
+      "difficulty_level": 1,
+      "module_level": 2,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 1800,
+      "stimulus_format": "click",
+      "skill_tags": [
+        "sustained_attention"
+      ],
+      "content_payload": {
+        "instruction": "🟢 출발 신호! 누르세요!",
+        "signal": "green",
+        "expected_action": "press"
+      }
+    },
+    {
+      "id": "FOC-L03-001",
+      "domain": "Focus",
+      "difficulty_level": 2,
+      "module_level": 3,
+      "grade_track": "low",
+      "is_trap": true,
+      "rt_expected_ms": 2500,
+      "stimulus_format": "none_response",
+      "skill_tags": [
+        "inhibition"
+      ],
+      "content_payload": {
+        "instruction": "🔴 빨간불! 멈추세요!",
+        "signal": "red",
+        "expected_action": "no_response"
+      }
+    },
+    {
+      "id": "FOC-L03-002",
+      "domain": "Focus",
+      "difficulty_level": 2,
+      "module_level": 3,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 2500,
+      "stimulus_format": "click",
+      "skill_tags": [
+        "sustained_attention"
+      ],
+      "content_payload": {
+        "instruction": "🟢 초록불! 누르세요!",
+        "signal": "green",
+        "expected_action": "press"
+      }
+    },
+    {
+      "id": "FOC-L03-003",
+      "domain": "Focus",
+      "difficulty_level": 2,
+      "module_level": 3,
+      "grade_track": "low",
+      "is_trap": true,
+      "rt_expected_ms": 2500,
+      "stimulus_format": "none_response",
+      "skill_tags": [
+        "inhibition"
+      ],
+      "content_payload": {
+        "instruction": "🔴 멈춰요! 누르면 안 돼요!",
+        "signal": "red",
+        "expected_action": "no_response"
+      }
+    },
+    {
+      "id": "FOC-L03-004",
+      "domain": "Focus",
+      "difficulty_level": 2,
+      "module_level": 3,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 2500,
+      "stimulus_format": "click",
+      "skill_tags": [
+        "sustained_attention"
+      ],
+      "content_payload": {
+        "instruction": "🟢 다시 초록! 누르세요!",
+        "signal": "green",
+        "expected_action": "press"
+      }
+    },
+    {
+      "id": "FOC-L04-001",
+      "domain": "Focus",
+      "difficulty_level": 2,
+      "module_level": 4,
+      "grade_track": "low",
+      "is_trap": true,
+      "rt_expected_ms": 2500,
+      "stimulus_format": "none_response",
+      "skill_tags": [
+        "inhibition"
+      ],
+      "content_payload": {
+        "instruction": "🟡 노란불! 기다리세요!",
+        "signal": "yellow",
+        "expected_action": "no_response"
+      }
+    },
+    {
+      "id": "FOC-L04-002",
+      "domain": "Focus",
+      "difficulty_level": 2,
+      "module_level": 4,
+      "grade_track": "low",
+      "is_trap": true,
+      "rt_expected_ms": 2500,
+      "stimulus_format": "none_response",
+      "skill_tags": [
+        "inhibition"
+      ],
+      "content_payload": {
+        "instruction": "🔴 빨간불! 참으세요!",
+        "signal": "red",
+        "expected_action": "no_response"
+      }
+    },
+    {
+      "id": "FOC-L04-003",
+      "domain": "Focus",
+      "difficulty_level": 2,
+      "module_level": 4,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 2500,
+      "stimulus_format": "click",
+      "skill_tags": [
+        "sustained_attention"
+      ],
+      "content_payload": {
+        "instruction": "🟢 초록! 지금 누르세요!",
+        "signal": "green",
+        "expected_action": "press"
+      }
+    },
+    {
+      "id": "FOC-L04-004",
+      "domain": "Focus",
+      "difficulty_level": 2,
+      "module_level": 4,
+      "grade_track": "low",
+      "is_trap": true,
+      "rt_expected_ms": 2500,
+      "stimulus_format": "none_response",
+      "skill_tags": [
+        "inhibition"
+      ],
+      "content_payload": {
+        "instruction": "🟡 조심! 기다려요!",
+        "signal": "yellow",
+        "expected_action": "no_response"
+      }
+    },
+    {
+      "id": "FOC-L05-001",
+      "domain": "Focus",
+      "difficulty_level": 3,
+      "module_level": 5,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 3000,
+      "stimulus_format": "click",
+      "skill_tags": [
+        "task_switch",
+        "inhibition"
+      ],
+      "content_payload": {
+        "instruction": "🔴 이제는 빨간불일 때 누르세요!",
+        "signal": "red",
+        "expected_action": "press",
+        "rule_change": true
+      }
+    },
+    {
+      "id": "FOC-L05-002",
+      "domain": "Focus",
+      "difficulty_level": 3,
+      "module_level": 5,
+      "grade_track": "low",
+      "is_trap": true,
+      "rt_expected_ms": 3000,
+      "stimulus_format": "none_response",
+      "skill_tags": [
+        "task_switch",
+        "inhibition"
+      ],
+      "content_payload": {
+        "instruction": "🟢 초록불이지만 누르면 안 돼요!",
+        "signal": "green",
+        "expected_action": "no_response",
+        "rule_change": true
+      }
+    },
+    {
+      "id": "FOC-L05-003",
+      "domain": "Focus",
+      "difficulty_level": 3,
+      "module_level": 5,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 3000,
+      "stimulus_format": "click",
+      "skill_tags": [
+        "task_switch",
+        "inhibition"
+      ],
+      "content_payload": {
+        "instruction": "🔴 빨간불! 누르세요!",
+        "signal": "red",
+        "expected_action": "press",
+        "rule_change": true
+      }
+    },
+    {
+      "id": "FOC-L05-004",
+      "domain": "Focus",
+      "difficulty_level": 3,
+      "module_level": 5,
+      "grade_track": "low",
+      "is_trap": true,
+      "rt_expected_ms": 3000,
+      "stimulus_format": "none_response",
+      "skill_tags": [
+        "task_switch",
+        "inhibition"
+      ],
+      "content_payload": {
+        "instruction": "🟢 참으세요! 빨간불만 누르는 거예요!",
+        "signal": "green",
+        "expected_action": "no_response",
+        "rule_change": true
+      }
+    },
+    {
+      "id": "FOC-L06-001",
+      "domain": "Focus",
+      "difficulty_level": 3,
+      "module_level": 6,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 2500,
+      "stimulus_format": "click",
+      "skill_tags": [
+        "task_switch",
+        "inhibition"
+      ],
+      "content_payload": {
+        "instruction": "🔴 빨간불! 빠르게!",
+        "signal": "red",
+        "expected_action": "press",
+        "rule_change": true
+      }
+    },
+    {
+      "id": "FOC-L06-002",
+      "domain": "Focus",
+      "difficulty_level": 3,
+      "module_level": 6,
+      "grade_track": "low",
+      "is_trap": true,
+      "rt_expected_ms": 2500,
+      "stimulus_format": "none_response",
+      "skill_tags": [
+        "task_switch",
+        "inhibition"
+      ],
+      "content_payload": {
+        "instruction": "🟢 초록이지만 NO!",
+        "signal": "green",
+        "expected_action": "no_response",
+        "rule_change": true
+      }
+    },
+    {
+      "id": "FOC-L06-003",
+      "domain": "Focus",
+      "difficulty_level": 3,
+      "module_level": 6,
+      "grade_track": "low",
+      "is_trap": true,
+      "rt_expected_ms": 2500,
+      "stimulus_format": "none_response",
+      "skill_tags": [
+        "task_switch",
+        "inhibition"
+      ],
+      "content_payload": {
+        "instruction": "🟡 노란불! 기다려요!",
+        "signal": "yellow",
+        "expected_action": "no_response",
+        "rule_change": true
+      }
+    },
+    {
+      "id": "FOC-L06-004",
+      "domain": "Focus",
+      "difficulty_level": 3,
+      "module_level": 6,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 2500,
+      "stimulus_format": "click",
+      "skill_tags": [
+        "task_switch",
+        "inhibition"
+      ],
+      "content_payload": {
+        "instruction": "🔴 빨간! 지금!",
+        "signal": "red",
+        "expected_action": "press",
+        "rule_change": true
+      }
+    },
+    {
+      "id": "FOC-L07-001",
+      "domain": "Focus",
+      "difficulty_level": 4,
+      "module_level": 7,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 3500,
+      "stimulus_format": "click",
+      "skill_tags": [
+        "sustained_attention"
+      ],
+      "content_payload": {
+        "instruction": "🔵 파란 동그라미만 누르세요!",
+        "signal": "blue_circle",
+        "expected_action": "press"
+      }
+    },
+    {
+      "id": "FOC-L07-002",
+      "domain": "Focus",
+      "difficulty_level": 4,
+      "module_level": 7,
+      "grade_track": "low",
+      "is_trap": true,
+      "rt_expected_ms": 3500,
+      "stimulus_format": "none_response",
+      "skill_tags": [
+        "inhibition"
+      ],
+      "content_payload": {
+        "instruction": "🔴 빨간 동그라미는 멈춰요!",
+        "signal": "red_circle",
+        "expected_action": "no_response"
+      }
+    },
+    {
+      "id": "FOC-L07-003",
+      "domain": "Focus",
+      "difficulty_level": 4,
+      "module_level": 7,
+      "grade_track": "low",
+      "is_trap": true,
+      "rt_expected_ms": 3500,
+      "stimulus_format": "none_response",
+      "skill_tags": [
+        "inhibition"
+      ],
+      "content_payload": {
+        "instruction": "💙 파란 별은 누르면 안 돼요!",
+        "signal": "blue_star",
+        "expected_action": "no_response"
+      }
+    },
+    {
+      "id": "FOC-L07-004",
+      "domain": "Focus",
+      "difficulty_level": 4,
+      "module_level": 7,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 3500,
+      "stimulus_format": "click",
+      "skill_tags": [
+        "sustained_attention"
+      ],
+      "content_payload": {
+        "instruction": "🔵 파란 동그라미! 눌러요!",
+        "signal": "blue_circle",
+        "expected_action": "press"
+      }
+    },
+    {
+      "id": "FOC-L08-001",
+      "domain": "Focus",
+      "difficulty_level": 5,
+      "module_level": 8,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 3000,
+      "stimulus_format": "click",
+      "skill_tags": [
+        "sustained_attention"
+      ],
+      "content_payload": {
+        "instruction": "🟢 초록=누르기! 빠르게!",
+        "signal": "green",
+        "expected_action": "press"
+      }
+    },
+    {
+      "id": "FOC-L08-002",
+      "domain": "Focus",
+      "difficulty_level": 5,
+      "module_level": 8,
+      "grade_track": "low",
+      "is_trap": true,
+      "rt_expected_ms": 3000,
+      "stimulus_format": "none_response",
+      "skill_tags": [
+        "inhibition"
+      ],
+      "content_payload": {
+        "instruction": "🔴 빨간=멈추기! 참으세요!",
+        "signal": "red",
+        "expected_action": "no_response"
+      }
+    },
+    {
+      "id": "FOC-L08-003",
+      "domain": "Focus",
+      "difficulty_level": 5,
+      "module_level": 8,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 3000,
+      "stimulus_format": "click",
+      "skill_tags": [
+        "task_switch",
+        "inhibition"
+      ],
+      "content_payload": {
+        "instruction": "🔴 규칙 전환! 빨간=누르기!",
+        "signal": "red",
+        "expected_action": "press",
+        "rule_change": true
+      }
+    },
+    {
+      "id": "FOC-L08-004",
+      "domain": "Focus",
+      "difficulty_level": 5,
+      "module_level": 8,
+      "grade_track": "low",
+      "is_trap": true,
+      "rt_expected_ms": 3000,
+      "stimulus_format": "none_response",
+      "skill_tags": [
+        "task_switch",
+        "inhibition"
+      ],
+      "content_payload": {
+        "instruction": "🟢 규칙 전환! 초록=멈추기!",
+        "signal": "green",
+        "expected_action": "no_response",
+        "rule_change": true
+      }
+    }
+  ]
+}

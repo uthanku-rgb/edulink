@@ -25,7 +25,8 @@ import {
   MessageSquare,
   Presentation,
   Calculator,
-  Target
+  Target,
+  Sparkles
 } from 'lucide-react';
 
 export default function ElementaryDashboardPage() {
@@ -321,7 +322,7 @@ export default function ElementaryDashboardPage() {
             <span className="text-[11px] text-slate-400">과목별 전문 코칭 앱 바로 실행</span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
             {/* 영어 */}
             <Link 
               href="/english/review"
@@ -392,6 +393,20 @@ export default function ElementaryDashboardPage() {
                 </div>
                 <span className="text-xs font-bold text-slate-800 block group-hover:text-[#4F46E5] transition-colors">완전학습 점검판</span>
                 <span className="text-[10px] text-slate-400 font-medium block mt-0.5 leading-tight">백지 인출 채점 및 결손(구멍) 케어</span>
+              </div>
+            </Link>
+
+            {/* 프리워크 */}
+            <Link 
+              href="/prework-demo"
+              className="group border border-slate-100 hover:border-indigo-400 bg-slate-50/40 hover:bg-indigo-50/10 rounded-xl p-4 transition-all duration-200 flex flex-col justify-between h-28 shadow-sm hover:shadow"
+            >
+              <div>
+                <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center mb-2">
+                  <Sparkles className="w-4.5 h-4.5" />
+                </div>
+                <span className="text-xs font-bold text-slate-800 block group-hover:text-indigo-600 transition-colors">프리워크 워밍업</span>
+                <span className="text-[10px] text-slate-400 font-medium block mt-0.5 leading-tight">두뇌 예열을 위한 5슬롯 인지 게임</span>
               </div>
             </Link>
           </div>
@@ -561,11 +576,20 @@ export default function ElementaryDashboardPage() {
               ) : (
                 <div className="flex-1 flex flex-col">
                   {/* 학생 기본정보 */}
-                  <div className="bg-slate-50 rounded-xl p-3.5 border border-slate-100 mb-5">
-                    <span className="text-xs font-bold text-slate-700 block">{selectedStudent.name}</span>
-                    <span className="text-[10px] text-slate-400 mt-0.5 block">
-                      {selectedStudent.school} · {selectedStudent.grade}
-                    </span>
+                  <div className="bg-slate-50 rounded-xl p-3.5 border border-slate-100 mb-5 flex flex-col gap-3">
+                    <div>
+                      <span className="text-xs font-bold text-slate-700 block">{selectedStudent.name}</span>
+                      <span className="text-[10px] text-slate-400 mt-0.5 block">
+                        {selectedStudent.school} · {selectedStudent.grade}
+                      </span>
+                    </div>
+                    <Link
+                      href={`/prework-demo?studentId=${selectedStudent.id}&studentName=${encodeURIComponent(selectedStudent.name)}`}
+                      className="w-full py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold rounded-xl text-[11px] flex items-center justify-center gap-1.5 transition-all border border-indigo-100/50"
+                    >
+                      <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+                      <span>프리워크 워밍업 실행</span>
+                    </Link>
                   </div>
 
                   {/* 타임라인 피드 */}

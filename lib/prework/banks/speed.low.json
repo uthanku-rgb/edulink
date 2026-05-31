@@ -1,0 +1,1129 @@
+{
+  "module_id": "mod_low_s1_star_tap",
+  "module_name": "별 모양 찾기",
+  "primary_domain": "Speed",
+  "secondary_domain": "Focus",
+  "grade_track": "low",
+  "version": "v0.2-seed",
+  "generated_at": "2026-05-12",
+  "notes": "8레벨 x 3 variant = 24자극. C6 v1 시드 기반 확장.",
+  "level_curve": {
+    "L1": {
+      "difficulty": 1,
+      "duration_ms": 20000,
+      "spawn_rate_ms": 1200,
+      "lifespan_ms": 3000,
+      "category": "별 찾기(워밍업)"
+    },
+    "L2": {
+      "difficulty": 1,
+      "duration_ms": 20000,
+      "spawn_rate_ms": 1100,
+      "lifespan_ms": 2800,
+      "category": "별 찾기(색상)"
+    },
+    "L3": {
+      "difficulty": 2,
+      "duration_ms": 20000,
+      "spawn_rate_ms": 1000,
+      "lifespan_ms": 2600,
+      "category": "동그라미 찾기"
+    },
+    "L4": {
+      "difficulty": 2,
+      "duration_ms": 20000,
+      "spawn_rate_ms": 1000,
+      "lifespan_ms": 2400,
+      "category": "색+모양 복합"
+    },
+    "L5": {
+      "difficulty": 3,
+      "duration_ms": 18000,
+      "spawn_rate_ms": 900,
+      "lifespan_ms": 2200,
+      "category": "빠른 반응"
+    },
+    "L6": {
+      "difficulty": 3,
+      "duration_ms": 18000,
+      "spawn_rate_ms": 800,
+      "lifespan_ms": 2000,
+      "category": "방해물 다수"
+    },
+    "L7": {
+      "difficulty": 4,
+      "duration_ms": 15000,
+      "spawn_rate_ms": 750,
+      "lifespan_ms": 1800,
+      "category": "고속 추적"
+    },
+    "L8": {
+      "difficulty": 5,
+      "duration_ms": 15000,
+      "spawn_rate_ms": 700,
+      "lifespan_ms": 1600,
+      "category": "마스터 챌린지"
+    }
+  },
+  "stimuli": [
+    {
+      "id": "SPD-L01-001",
+      "domain": "Speed",
+      "difficulty_level": 1,
+      "module_level": 1,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 1800,
+      "stimulus_format": "tap_target",
+      "skill_tags": [
+        "choice_rt",
+        "selective_attention"
+      ],
+      "content_payload": {
+        "instruction": "노란 별만 누르세요!",
+        "targets": [
+          {
+            "shape": "star",
+            "color": "yellow",
+            "emoji": "⭐"
+          }
+        ],
+        "distractors": [
+          {
+            "shape": "circle",
+            "color": "yellow",
+            "emoji": "🟡"
+          },
+          {
+            "shape": "star",
+            "color": "blue",
+            "emoji": "🔵"
+          }
+        ]
+      }
+    },
+    {
+      "id": "SPD-L01-002",
+      "domain": "Speed",
+      "difficulty_level": 1,
+      "module_level": 1,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 1800,
+      "stimulus_format": "tap_target",
+      "skill_tags": [
+        "choice_rt",
+        "selective_attention"
+      ],
+      "content_payload": {
+        "instruction": "노란 별만 누르세요!",
+        "targets": [
+          {
+            "shape": "star",
+            "color": "yellow",
+            "emoji": "⭐"
+          }
+        ],
+        "distractors": [
+          {
+            "shape": "triangle",
+            "color": "yellow",
+            "emoji": "🔺"
+          },
+          {
+            "shape": "circle",
+            "color": "blue",
+            "emoji": "🔵"
+          }
+        ]
+      }
+    },
+    {
+      "id": "SPD-L01-003",
+      "domain": "Speed",
+      "difficulty_level": 1,
+      "module_level": 1,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 1800,
+      "stimulus_format": "tap_target",
+      "skill_tags": [
+        "choice_rt",
+        "selective_attention"
+      ],
+      "content_payload": {
+        "instruction": "노란 별만 누르세요!",
+        "targets": [
+          {
+            "shape": "star",
+            "color": "yellow",
+            "emoji": "⭐"
+          }
+        ],
+        "distractors": [
+          {
+            "shape": "star",
+            "color": "red",
+            "emoji": "❤️"
+          },
+          {
+            "shape": "circle",
+            "color": "green",
+            "emoji": "🟢"
+          }
+        ]
+      }
+    },
+    {
+      "id": "SPD-L02-001",
+      "domain": "Speed",
+      "difficulty_level": 1,
+      "module_level": 2,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 1800,
+      "stimulus_format": "tap_target",
+      "skill_tags": [
+        "choice_rt",
+        "selective_attention"
+      ],
+      "content_payload": {
+        "instruction": "파란 별만 누르세요!",
+        "targets": [
+          {
+            "shape": "star",
+            "color": "blue",
+            "emoji": "💙"
+          }
+        ],
+        "distractors": [
+          {
+            "shape": "star",
+            "color": "yellow",
+            "emoji": "⭐"
+          },
+          {
+            "shape": "circle",
+            "color": "blue",
+            "emoji": "🔵"
+          }
+        ]
+      }
+    },
+    {
+      "id": "SPD-L02-002",
+      "domain": "Speed",
+      "difficulty_level": 1,
+      "module_level": 2,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 1800,
+      "stimulus_format": "tap_target",
+      "skill_tags": [
+        "choice_rt",
+        "selective_attention"
+      ],
+      "content_payload": {
+        "instruction": "파란 별만 누르세요!",
+        "targets": [
+          {
+            "shape": "star",
+            "color": "blue",
+            "emoji": "💙"
+          }
+        ],
+        "distractors": [
+          {
+            "shape": "star",
+            "color": "red",
+            "emoji": "❤️"
+          },
+          {
+            "shape": "triangle",
+            "color": "blue",
+            "emoji": "🔷"
+          }
+        ]
+      }
+    },
+    {
+      "id": "SPD-L02-003",
+      "domain": "Speed",
+      "difficulty_level": 1,
+      "module_level": 2,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 1800,
+      "stimulus_format": "tap_target",
+      "skill_tags": [
+        "choice_rt",
+        "selective_attention"
+      ],
+      "content_payload": {
+        "instruction": "파란 별만 누르세요!",
+        "targets": [
+          {
+            "shape": "star",
+            "color": "blue",
+            "emoji": "💙"
+          }
+        ],
+        "distractors": [
+          {
+            "shape": "circle",
+            "color": "yellow",
+            "emoji": "🟡"
+          },
+          {
+            "shape": "star",
+            "color": "green",
+            "emoji": "💚"
+          }
+        ]
+      }
+    },
+    {
+      "id": "SPD-L03-001",
+      "domain": "Speed",
+      "difficulty_level": 2,
+      "module_level": 3,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 2200,
+      "stimulus_format": "tap_target",
+      "skill_tags": [
+        "choice_rt",
+        "selective_attention"
+      ],
+      "content_payload": {
+        "instruction": "빨간 동그라미만 누르세요!",
+        "targets": [
+          {
+            "shape": "circle",
+            "color": "red",
+            "emoji": "🔴"
+          }
+        ],
+        "distractors": [
+          {
+            "shape": "circle",
+            "color": "blue",
+            "emoji": "🔵"
+          },
+          {
+            "shape": "circle",
+            "color": "green",
+            "emoji": "🟢"
+          },
+          {
+            "shape": "triangle",
+            "color": "red",
+            "emoji": "🔺"
+          }
+        ]
+      }
+    },
+    {
+      "id": "SPD-L03-002",
+      "domain": "Speed",
+      "difficulty_level": 2,
+      "module_level": 3,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 2200,
+      "stimulus_format": "tap_target",
+      "skill_tags": [
+        "choice_rt",
+        "selective_attention"
+      ],
+      "content_payload": {
+        "instruction": "빨간 동그라미만 누르세요!",
+        "targets": [
+          {
+            "shape": "circle",
+            "color": "red",
+            "emoji": "🔴"
+          }
+        ],
+        "distractors": [
+          {
+            "shape": "circle",
+            "color": "yellow",
+            "emoji": "🟡"
+          },
+          {
+            "shape": "square",
+            "color": "red",
+            "emoji": "🟥"
+          },
+          {
+            "shape": "star",
+            "color": "red",
+            "emoji": "❤️"
+          }
+        ]
+      }
+    },
+    {
+      "id": "SPD-L03-003",
+      "domain": "Speed",
+      "difficulty_level": 2,
+      "module_level": 3,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 2200,
+      "stimulus_format": "tap_target",
+      "skill_tags": [
+        "choice_rt",
+        "selective_attention"
+      ],
+      "content_payload": {
+        "instruction": "빨간 동그라미만 누르세요!",
+        "targets": [
+          {
+            "shape": "circle",
+            "color": "red",
+            "emoji": "🔴"
+          }
+        ],
+        "distractors": [
+          {
+            "shape": "triangle",
+            "color": "blue",
+            "emoji": "🔷"
+          },
+          {
+            "shape": "circle",
+            "color": "green",
+            "emoji": "🟢"
+          },
+          {
+            "shape": "star",
+            "color": "yellow",
+            "emoji": "⭐"
+          }
+        ]
+      }
+    },
+    {
+      "id": "SPD-L04-001",
+      "domain": "Speed",
+      "difficulty_level": 2,
+      "module_level": 4,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 2000,
+      "stimulus_format": "tap_target",
+      "skill_tags": [
+        "choice_rt",
+        "selective_attention"
+      ],
+      "content_payload": {
+        "instruction": "초록 네모만 누르세요!",
+        "targets": [
+          {
+            "shape": "square",
+            "color": "green",
+            "emoji": "🟩"
+          }
+        ],
+        "distractors": [
+          {
+            "shape": "square",
+            "color": "red",
+            "emoji": "🟥"
+          },
+          {
+            "shape": "circle",
+            "color": "green",
+            "emoji": "🟢"
+          },
+          {
+            "shape": "square",
+            "color": "blue",
+            "emoji": "🟦"
+          }
+        ]
+      }
+    },
+    {
+      "id": "SPD-L04-002",
+      "domain": "Speed",
+      "difficulty_level": 2,
+      "module_level": 4,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 2000,
+      "stimulus_format": "tap_target",
+      "skill_tags": [
+        "choice_rt",
+        "selective_attention"
+      ],
+      "content_payload": {
+        "instruction": "초록 네모만 누르세요!",
+        "targets": [
+          {
+            "shape": "square",
+            "color": "green",
+            "emoji": "🟩"
+          }
+        ],
+        "distractors": [
+          {
+            "shape": "triangle",
+            "color": "green",
+            "emoji": "🔶"
+          },
+          {
+            "shape": "square",
+            "color": "yellow",
+            "emoji": "🟨"
+          },
+          {
+            "shape": "circle",
+            "color": "red",
+            "emoji": "🔴"
+          }
+        ]
+      }
+    },
+    {
+      "id": "SPD-L04-003",
+      "domain": "Speed",
+      "difficulty_level": 2,
+      "module_level": 4,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 2000,
+      "stimulus_format": "tap_target",
+      "skill_tags": [
+        "choice_rt",
+        "selective_attention"
+      ],
+      "content_payload": {
+        "instruction": "초록 네모만 누르세요!",
+        "targets": [
+          {
+            "shape": "square",
+            "color": "green",
+            "emoji": "🟩"
+          }
+        ],
+        "distractors": [
+          {
+            "shape": "star",
+            "color": "green",
+            "emoji": "💚"
+          },
+          {
+            "shape": "square",
+            "color": "red",
+            "emoji": "🟥"
+          },
+          {
+            "shape": "circle",
+            "color": "blue",
+            "emoji": "🔵"
+          }
+        ]
+      }
+    },
+    {
+      "id": "SPD-L05-001",
+      "domain": "Speed",
+      "difficulty_level": 3,
+      "module_level": 5,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 1800,
+      "stimulus_format": "tap_target",
+      "skill_tags": [
+        "choice_rt",
+        "selective_attention"
+      ],
+      "content_payload": {
+        "instruction": "노란 동그라미만 누르세요!",
+        "targets": [
+          {
+            "shape": "circle",
+            "color": "yellow",
+            "emoji": "🟡"
+          }
+        ],
+        "distractors": [
+          {
+            "shape": "circle",
+            "color": "red",
+            "emoji": "🔴"
+          },
+          {
+            "shape": "star",
+            "color": "yellow",
+            "emoji": "⭐"
+          },
+          {
+            "shape": "circle",
+            "color": "blue",
+            "emoji": "🔵"
+          },
+          {
+            "shape": "triangle",
+            "color": "yellow",
+            "emoji": "🔺"
+          }
+        ]
+      }
+    },
+    {
+      "id": "SPD-L05-002",
+      "domain": "Speed",
+      "difficulty_level": 3,
+      "module_level": 5,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 1800,
+      "stimulus_format": "tap_target",
+      "skill_tags": [
+        "choice_rt",
+        "selective_attention"
+      ],
+      "content_payload": {
+        "instruction": "노란 동그라미만 누르세요!",
+        "targets": [
+          {
+            "shape": "circle",
+            "color": "yellow",
+            "emoji": "🟡"
+          }
+        ],
+        "distractors": [
+          {
+            "shape": "circle",
+            "color": "green",
+            "emoji": "🟢"
+          },
+          {
+            "shape": "square",
+            "color": "yellow",
+            "emoji": "🟨"
+          },
+          {
+            "shape": "star",
+            "color": "blue",
+            "emoji": "💙"
+          },
+          {
+            "shape": "triangle",
+            "color": "red",
+            "emoji": "🔺"
+          }
+        ]
+      }
+    },
+    {
+      "id": "SPD-L05-003",
+      "domain": "Speed",
+      "difficulty_level": 3,
+      "module_level": 5,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 1800,
+      "stimulus_format": "tap_target",
+      "skill_tags": [
+        "choice_rt",
+        "selective_attention"
+      ],
+      "content_payload": {
+        "instruction": "노란 동그라미만 누르세요!",
+        "targets": [
+          {
+            "shape": "circle",
+            "color": "yellow",
+            "emoji": "🟡"
+          }
+        ],
+        "distractors": [
+          {
+            "shape": "star",
+            "color": "red",
+            "emoji": "❤️"
+          },
+          {
+            "shape": "circle",
+            "color": "red",
+            "emoji": "🔴"
+          },
+          {
+            "shape": "square",
+            "color": "green",
+            "emoji": "🟩"
+          },
+          {
+            "shape": "triangle",
+            "color": "blue",
+            "emoji": "🔷"
+          }
+        ]
+      }
+    },
+    {
+      "id": "SPD-L06-001",
+      "domain": "Speed",
+      "difficulty_level": 3,
+      "module_level": 6,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 1600,
+      "stimulus_format": "tap_target",
+      "skill_tags": [
+        "choice_rt",
+        "selective_attention"
+      ],
+      "content_payload": {
+        "instruction": "파란 세모만 누르세요!",
+        "targets": [
+          {
+            "shape": "triangle",
+            "color": "blue",
+            "emoji": "🔷"
+          }
+        ],
+        "distractors": [
+          {
+            "shape": "triangle",
+            "color": "red",
+            "emoji": "🔺"
+          },
+          {
+            "shape": "triangle",
+            "color": "green",
+            "emoji": "🔶"
+          },
+          {
+            "shape": "circle",
+            "color": "blue",
+            "emoji": "🔵"
+          },
+          {
+            "shape": "star",
+            "color": "blue",
+            "emoji": "💙"
+          }
+        ]
+      }
+    },
+    {
+      "id": "SPD-L06-002",
+      "domain": "Speed",
+      "difficulty_level": 3,
+      "module_level": 6,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 1600,
+      "stimulus_format": "tap_target",
+      "skill_tags": [
+        "choice_rt",
+        "selective_attention"
+      ],
+      "content_payload": {
+        "instruction": "파란 세모만 누르세요!",
+        "targets": [
+          {
+            "shape": "triangle",
+            "color": "blue",
+            "emoji": "🔷"
+          }
+        ],
+        "distractors": [
+          {
+            "shape": "square",
+            "color": "blue",
+            "emoji": "🟦"
+          },
+          {
+            "shape": "triangle",
+            "color": "yellow",
+            "emoji": "🔺"
+          },
+          {
+            "shape": "circle",
+            "color": "red",
+            "emoji": "🔴"
+          },
+          {
+            "shape": "star",
+            "color": "green",
+            "emoji": "💚"
+          }
+        ]
+      }
+    },
+    {
+      "id": "SPD-L06-003",
+      "domain": "Speed",
+      "difficulty_level": 3,
+      "module_level": 6,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 1600,
+      "stimulus_format": "tap_target",
+      "skill_tags": [
+        "choice_rt",
+        "selective_attention"
+      ],
+      "content_payload": {
+        "instruction": "파란 세모만 누르세요!",
+        "targets": [
+          {
+            "shape": "triangle",
+            "color": "blue",
+            "emoji": "🔷"
+          }
+        ],
+        "distractors": [
+          {
+            "shape": "star",
+            "color": "yellow",
+            "emoji": "⭐"
+          },
+          {
+            "shape": "triangle",
+            "color": "red",
+            "emoji": "🔺"
+          },
+          {
+            "shape": "square",
+            "color": "green",
+            "emoji": "🟩"
+          },
+          {
+            "shape": "circle",
+            "color": "blue",
+            "emoji": "🔵"
+          }
+        ]
+      }
+    },
+    {
+      "id": "SPD-L07-001",
+      "domain": "Speed",
+      "difficulty_level": 4,
+      "module_level": 7,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 1400,
+      "stimulus_format": "tap_target",
+      "skill_tags": [
+        "choice_rt",
+        "selective_attention"
+      ],
+      "content_payload": {
+        "instruction": "빨간 별만 누르세요!",
+        "targets": [
+          {
+            "shape": "star",
+            "color": "red",
+            "emoji": "❤️"
+          }
+        ],
+        "distractors": [
+          {
+            "shape": "star",
+            "color": "yellow",
+            "emoji": "⭐"
+          },
+          {
+            "shape": "star",
+            "color": "blue",
+            "emoji": "💙"
+          },
+          {
+            "shape": "circle",
+            "color": "red",
+            "emoji": "🔴"
+          },
+          {
+            "shape": "triangle",
+            "color": "red",
+            "emoji": "🔺"
+          },
+          {
+            "shape": "square",
+            "color": "red",
+            "emoji": "🟥"
+          }
+        ]
+      }
+    },
+    {
+      "id": "SPD-L07-002",
+      "domain": "Speed",
+      "difficulty_level": 4,
+      "module_level": 7,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 1400,
+      "stimulus_format": "tap_target",
+      "skill_tags": [
+        "choice_rt",
+        "selective_attention"
+      ],
+      "content_payload": {
+        "instruction": "빨간 별만 누르세요!",
+        "targets": [
+          {
+            "shape": "star",
+            "color": "red",
+            "emoji": "❤️"
+          }
+        ],
+        "distractors": [
+          {
+            "shape": "star",
+            "color": "green",
+            "emoji": "💚"
+          },
+          {
+            "shape": "circle",
+            "color": "yellow",
+            "emoji": "🟡"
+          },
+          {
+            "shape": "square",
+            "color": "blue",
+            "emoji": "🟦"
+          },
+          {
+            "shape": "triangle",
+            "color": "green",
+            "emoji": "🔶"
+          },
+          {
+            "shape": "circle",
+            "color": "red",
+            "emoji": "🔴"
+          }
+        ]
+      }
+    },
+    {
+      "id": "SPD-L07-003",
+      "domain": "Speed",
+      "difficulty_level": 4,
+      "module_level": 7,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 1400,
+      "stimulus_format": "tap_target",
+      "skill_tags": [
+        "choice_rt",
+        "selective_attention"
+      ],
+      "content_payload": {
+        "instruction": "빨간 별만 누르세요!",
+        "targets": [
+          {
+            "shape": "star",
+            "color": "red",
+            "emoji": "❤️"
+          }
+        ],
+        "distractors": [
+          {
+            "shape": "triangle",
+            "color": "blue",
+            "emoji": "🔷"
+          },
+          {
+            "shape": "star",
+            "color": "yellow",
+            "emoji": "⭐"
+          },
+          {
+            "shape": "circle",
+            "color": "green",
+            "emoji": "🟢"
+          },
+          {
+            "shape": "square",
+            "color": "yellow",
+            "emoji": "🟨"
+          },
+          {
+            "shape": "triangle",
+            "color": "red",
+            "emoji": "🔺"
+          }
+        ]
+      }
+    },
+    {
+      "id": "SPD-L08-001",
+      "domain": "Speed",
+      "difficulty_level": 5,
+      "module_level": 8,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 1200,
+      "stimulus_format": "tap_target",
+      "skill_tags": [
+        "choice_rt",
+        "selective_attention"
+      ],
+      "content_payload": {
+        "instruction": "노란 별 또는 빨간 동그라미를 누르세요!",
+        "targets": [
+          {
+            "shape": "star",
+            "color": "yellow",
+            "emoji": "⭐"
+          },
+          {
+            "shape": "circle",
+            "color": "red",
+            "emoji": "🔴"
+          }
+        ],
+        "distractors": [
+          {
+            "shape": "star",
+            "color": "blue",
+            "emoji": "💙"
+          },
+          {
+            "shape": "circle",
+            "color": "green",
+            "emoji": "🟢"
+          },
+          {
+            "shape": "triangle",
+            "color": "red",
+            "emoji": "🔺"
+          },
+          {
+            "shape": "square",
+            "color": "yellow",
+            "emoji": "🟨"
+          },
+          {
+            "shape": "circle",
+            "color": "blue",
+            "emoji": "🔵"
+          }
+        ]
+      }
+    },
+    {
+      "id": "SPD-L08-002",
+      "domain": "Speed",
+      "difficulty_level": 5,
+      "module_level": 8,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 1200,
+      "stimulus_format": "tap_target",
+      "skill_tags": [
+        "choice_rt",
+        "selective_attention"
+      ],
+      "content_payload": {
+        "instruction": "노란 별 또는 빨간 동그라미를 누르세요!",
+        "targets": [
+          {
+            "shape": "star",
+            "color": "yellow",
+            "emoji": "⭐"
+          },
+          {
+            "shape": "circle",
+            "color": "red",
+            "emoji": "🔴"
+          }
+        ],
+        "distractors": [
+          {
+            "shape": "star",
+            "color": "red",
+            "emoji": "❤️"
+          },
+          {
+            "shape": "circle",
+            "color": "yellow",
+            "emoji": "🟡"
+          },
+          {
+            "shape": "triangle",
+            "color": "blue",
+            "emoji": "🔷"
+          },
+          {
+            "shape": "square",
+            "color": "green",
+            "emoji": "🟩"
+          },
+          {
+            "shape": "star",
+            "color": "green",
+            "emoji": "💚"
+          }
+        ]
+      }
+    },
+    {
+      "id": "SPD-L08-003",
+      "domain": "Speed",
+      "difficulty_level": 5,
+      "module_level": 8,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 1200,
+      "stimulus_format": "tap_target",
+      "skill_tags": [
+        "choice_rt",
+        "selective_attention"
+      ],
+      "content_payload": {
+        "instruction": "노란 별 또는 빨간 동그라미를 누르세요!",
+        "targets": [
+          {
+            "shape": "star",
+            "color": "yellow",
+            "emoji": "⭐"
+          },
+          {
+            "shape": "circle",
+            "color": "red",
+            "emoji": "🔴"
+          }
+        ],
+        "distractors": [
+          {
+            "shape": "triangle",
+            "color": "yellow",
+            "emoji": "🔺"
+          },
+          {
+            "shape": "square",
+            "color": "red",
+            "emoji": "🟥"
+          },
+          {
+            "shape": "circle",
+            "color": "blue",
+            "emoji": "🔵"
+          },
+          {
+            "shape": "star",
+            "color": "blue",
+            "emoji": "💙"
+          },
+          {
+            "shape": "triangle",
+            "color": "green",
+            "emoji": "🔶"
+          }
+        ]
+      }
+    }
+  ]
+}

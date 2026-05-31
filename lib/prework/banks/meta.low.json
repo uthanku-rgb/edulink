@@ -1,0 +1,542 @@
+{
+  "module_id": "mod_low_s5_meta_reflection",
+  "module_name": "오늘의 나",
+  "primary_domain": "Meta",
+  "secondary_domain": null,
+  "grade_track": "low",
+  "version": "v0.2-seed",
+  "generated_at": "2026-05-12",
+  "notes": "3단계 x 4 variant = 12자극. 자기평가→전략선택→다짐. C6 v1 시드.",
+  "level_curve": {
+    "Step1": {
+      "label": "오늘 나의 집중력은?",
+      "type": "self_rating"
+    },
+    "Step2": {
+      "label": "내일 더 잘하려면?",
+      "type": "strategy_selection"
+    },
+    "Step3": {
+      "label": "오늘의 다짐",
+      "type": "affirmation"
+    }
+  },
+  "stimuli": [
+    {
+      "id": "META-S01-001",
+      "domain": "Meta",
+      "difficulty_level": 1,
+      "module_level": 1,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 12000,
+      "stimulus_format": "select_image",
+      "skill_tags": [
+        "self_monitoring",
+        "metacognition"
+      ],
+      "content_payload": {
+        "instruction": "오늘 게임할 때 나의 집중력은 어땠어요?",
+        "options": [
+          {
+            "id": "a",
+            "emoji": "😊",
+            "label": "아주 잘했어요"
+          },
+          {
+            "id": "b",
+            "emoji": "🙂",
+            "label": "괜찮았어요"
+          },
+          {
+            "id": "c",
+            "emoji": "😐",
+            "label": "보통이에요"
+          },
+          {
+            "id": "d",
+            "emoji": "😔",
+            "label": "좀 어려웠어요"
+          }
+        ]
+      },
+      "answer_payload": {
+        "type": "self_report",
+        "scoring": "log_only"
+      }
+    },
+    {
+      "id": "META-S01-002",
+      "domain": "Meta",
+      "difficulty_level": 1,
+      "module_level": 1,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 12000,
+      "stimulus_format": "select_image",
+      "skill_tags": [
+        "self_monitoring",
+        "metacognition"
+      ],
+      "content_payload": {
+        "instruction": "오늘 문제 풀 때 내가 얼마나 노력했어요?",
+        "options": [
+          {
+            "id": "a",
+            "emoji": "💪",
+            "label": "최선을 다했어요"
+          },
+          {
+            "id": "b",
+            "emoji": "👍",
+            "label": "열심히 했어요"
+          },
+          {
+            "id": "c",
+            "emoji": "✋",
+            "label": "적당히 했어요"
+          },
+          {
+            "id": "d",
+            "emoji": "😴",
+            "label": "조금 힘들었어요"
+          }
+        ]
+      },
+      "answer_payload": {
+        "type": "self_report",
+        "scoring": "log_only"
+      }
+    },
+    {
+      "id": "META-S01-003",
+      "domain": "Meta",
+      "difficulty_level": 1,
+      "module_level": 1,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 12000,
+      "stimulus_format": "select_image",
+      "skill_tags": [
+        "self_monitoring",
+        "metacognition"
+      ],
+      "content_payload": {
+        "instruction": "오늘 학습이 재미있었어요?",
+        "options": [
+          {
+            "id": "a",
+            "emoji": "🤩",
+            "label": "너무 재밌었어요"
+          },
+          {
+            "id": "b",
+            "emoji": "😊",
+            "label": "재밌었어요"
+          },
+          {
+            "id": "c",
+            "emoji": "😐",
+            "label": "그냥 그랬어요"
+          },
+          {
+            "id": "d",
+            "emoji": "😓",
+            "label": "좀 지루했어요"
+          }
+        ]
+      },
+      "answer_payload": {
+        "type": "self_report",
+        "scoring": "log_only"
+      }
+    },
+    {
+      "id": "META-S01-004",
+      "domain": "Meta",
+      "difficulty_level": 1,
+      "module_level": 1,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 12000,
+      "stimulus_format": "select_image",
+      "skill_tags": [
+        "self_monitoring",
+        "metacognition"
+      ],
+      "content_payload": {
+        "instruction": "오늘 게임에서 실수는 얼마나 했어요?",
+        "options": [
+          {
+            "id": "a",
+            "emoji": "⭐",
+            "label": "거의 안 했어요"
+          },
+          {
+            "id": "b",
+            "emoji": "🌟",
+            "label": "조금 했어요"
+          },
+          {
+            "id": "c",
+            "emoji": "💫",
+            "label": "좀 많이 했어요"
+          },
+          {
+            "id": "d",
+            "emoji": "😅",
+            "label": "많이 했어요"
+          }
+        ]
+      },
+      "answer_payload": {
+        "type": "self_report",
+        "scoring": "log_only"
+      }
+    },
+    {
+      "id": "META-S02-001",
+      "domain": "Meta",
+      "difficulty_level": 1,
+      "module_level": 2,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 12000,
+      "stimulus_format": "select_image",
+      "skill_tags": [
+        "strategy_selection",
+        "self_regulation"
+      ],
+      "content_payload": {
+        "instruction": "내일 더 잘하려면 어떻게 할까요?",
+        "options": [
+          {
+            "id": "a",
+            "emoji": "🎯",
+            "label": "더 집중할래요"
+          },
+          {
+            "id": "b",
+            "emoji": "👀",
+            "label": "더 자세히 볼래요"
+          },
+          {
+            "id": "c",
+            "emoji": "🐢",
+            "label": "천천히 할래요"
+          },
+          {
+            "id": "d",
+            "emoji": "😊",
+            "label": "지금처럼 할래요"
+          }
+        ]
+      },
+      "answer_payload": {
+        "type": "self_report",
+        "scoring": "log_only"
+      }
+    },
+    {
+      "id": "META-S02-002",
+      "domain": "Meta",
+      "difficulty_level": 1,
+      "module_level": 2,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 12000,
+      "stimulus_format": "select_image",
+      "skill_tags": [
+        "strategy_selection",
+        "self_regulation"
+      ],
+      "content_payload": {
+        "instruction": "어떤 게임을 더 연습하고 싶어요?",
+        "options": [
+          {
+            "id": "a",
+            "emoji": "⭐",
+            "label": "별 찾기"
+          },
+          {
+            "id": "b",
+            "emoji": "🧠",
+            "label": "기억 게임"
+          },
+          {
+            "id": "c",
+            "emoji": "🚦",
+            "label": "신호등 게임"
+          },
+          {
+            "id": "d",
+            "emoji": "🔢",
+            "label": "숫자 게임"
+          }
+        ]
+      },
+      "answer_payload": {
+        "type": "self_report",
+        "scoring": "log_only"
+      }
+    },
+    {
+      "id": "META-S02-003",
+      "domain": "Meta",
+      "difficulty_level": 1,
+      "module_level": 2,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 12000,
+      "stimulus_format": "select_image",
+      "skill_tags": [
+        "strategy_selection",
+        "self_regulation"
+      ],
+      "content_payload": {
+        "instruction": "내가 가장 잘한 것은?",
+        "options": [
+          {
+            "id": "a",
+            "emoji": "⚡",
+            "label": "빨리 누르기"
+          },
+          {
+            "id": "b",
+            "emoji": "🧠",
+            "label": "잘 기억하기"
+          },
+          {
+            "id": "c",
+            "emoji": "✋",
+            "label": "참고 기다리기"
+          },
+          {
+            "id": "d",
+            "emoji": "🤔",
+            "label": "잘 생각하기"
+          }
+        ]
+      },
+      "answer_payload": {
+        "type": "self_report",
+        "scoring": "log_only"
+      }
+    },
+    {
+      "id": "META-S02-004",
+      "domain": "Meta",
+      "difficulty_level": 1,
+      "module_level": 2,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 12000,
+      "stimulus_format": "select_image",
+      "skill_tags": [
+        "strategy_selection",
+        "self_regulation"
+      ],
+      "content_payload": {
+        "instruction": "다음에 도전하고 싶은 것은?",
+        "options": [
+          {
+            "id": "a",
+            "emoji": "🏆",
+            "label": "더 어려운 문제"
+          },
+          {
+            "id": "b",
+            "emoji": "⏱️",
+            "label": "더 빠르게 풀기"
+          },
+          {
+            "id": "c",
+            "emoji": "🎯",
+            "label": "실수 줄이기"
+          },
+          {
+            "id": "d",
+            "emoji": "🌈",
+            "label": "새로운 게임"
+          }
+        ]
+      },
+      "answer_payload": {
+        "type": "self_report",
+        "scoring": "log_only"
+      }
+    },
+    {
+      "id": "META-S03-001",
+      "domain": "Meta",
+      "difficulty_level": 1,
+      "module_level": 3,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 12000,
+      "stimulus_format": "select_image",
+      "skill_tags": [
+        "growth_mindset",
+        "affirmation"
+      ],
+      "content_payload": {
+        "instruction": "오늘의 다짐을 골라주세요!",
+        "options": [
+          {
+            "id": "a",
+            "emoji": "💪",
+            "label": "내일도 최선을 다할 거예요!"
+          },
+          {
+            "id": "b",
+            "emoji": "🌟",
+            "label": "조금씩 나아지고 있어요!"
+          },
+          {
+            "id": "c",
+            "emoji": "😊",
+            "label": "오늘도 잘했어요!"
+          },
+          {
+            "id": "d",
+            "emoji": "🚀",
+            "label": "더 잘할 수 있어요!"
+          }
+        ]
+      },
+      "answer_payload": {
+        "type": "self_report",
+        "scoring": "log_only"
+      }
+    },
+    {
+      "id": "META-S03-002",
+      "domain": "Meta",
+      "difficulty_level": 1,
+      "module_level": 3,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 12000,
+      "stimulus_format": "select_image",
+      "skill_tags": [
+        "growth_mindset",
+        "affirmation"
+      ],
+      "content_payload": {
+        "instruction": "선생님에게 하고 싶은 말은?",
+        "options": [
+          {
+            "id": "a",
+            "emoji": "😊",
+            "label": "재미있었어요!"
+          },
+          {
+            "id": "b",
+            "emoji": "🙏",
+            "label": "감사해요!"
+          },
+          {
+            "id": "c",
+            "emoji": "💪",
+            "label": "더 열심히 할게요!"
+          },
+          {
+            "id": "d",
+            "emoji": "🤗",
+            "label": "내일 또 만나요!"
+          }
+        ]
+      },
+      "answer_payload": {
+        "type": "self_report",
+        "scoring": "log_only"
+      }
+    },
+    {
+      "id": "META-S03-003",
+      "domain": "Meta",
+      "difficulty_level": 1,
+      "module_level": 3,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 12000,
+      "stimulus_format": "select_image",
+      "skill_tags": [
+        "growth_mindset",
+        "affirmation"
+      ],
+      "content_payload": {
+        "instruction": "나에게 한마디!",
+        "options": [
+          {
+            "id": "a",
+            "emoji": "⭐",
+            "label": "오늘도 멋졌어!"
+          },
+          {
+            "id": "b",
+            "emoji": "💖",
+            "label": "잘하고 있어!"
+          },
+          {
+            "id": "c",
+            "emoji": "🎉",
+            "label": "대단해!"
+          },
+          {
+            "id": "d",
+            "emoji": "🌈",
+            "label": "내일이 기대돼!"
+          }
+        ]
+      },
+      "answer_payload": {
+        "type": "self_report",
+        "scoring": "log_only"
+      }
+    },
+    {
+      "id": "META-S03-004",
+      "domain": "Meta",
+      "difficulty_level": 1,
+      "module_level": 3,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 12000,
+      "stimulus_format": "select_image",
+      "skill_tags": [
+        "growth_mindset",
+        "affirmation"
+      ],
+      "content_payload": {
+        "instruction": "오늘의 기분은?",
+        "options": [
+          {
+            "id": "a",
+            "emoji": "😆",
+            "label": "신나요!"
+          },
+          {
+            "id": "b",
+            "emoji": "😊",
+            "label": "기분 좋아요"
+          },
+          {
+            "id": "c",
+            "emoji": "😌",
+            "label": "편안해요"
+          },
+          {
+            "id": "d",
+            "emoji": "😤",
+            "label": "아쉬워요"
+          }
+        ]
+      },
+      "answer_payload": {
+        "type": "self_report",
+        "scoring": "log_only"
+      }
+    }
+  ]
+}

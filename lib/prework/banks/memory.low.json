@@ -1,0 +1,1382 @@
+{
+  "module_id": "memory_disappeared",
+  "module_name": "기억 게임",
+  "primary_domain": "Memory",
+  "secondary_domain": null,
+  "grade_track": "low",
+  "version": "v0.2-seed",
+  "generated_at": "2026-05-12",
+  "notes": "P1 보강 결과. 8레벨 × 4 variant = 32자극. 카테고리: L1 반려동물, L2 과일, L3 탈것, L4 음식, L5 옷·소품, L6 학용품, L7 자연, L8 야생동물. 검수 미통과 (v0.2-seed).",
+  "level_curve": {
+    "L1": {
+      "items": 4,
+      "removed": 1,
+      "preview_ms": 3500,
+      "c3_difficulty": 1,
+      "category": "반려동물"
+    },
+    "L2": {
+      "items": 5,
+      "removed": 1,
+      "preview_ms": 3500,
+      "c3_difficulty": 1,
+      "category": "과일"
+    },
+    "L3": {
+      "items": 5,
+      "removed": 2,
+      "preview_ms": 3500,
+      "c3_difficulty": 2,
+      "category": "탈것"
+    },
+    "L4": {
+      "items": 6,
+      "removed": 2,
+      "preview_ms": 3500,
+      "c3_difficulty": 2,
+      "category": "음식"
+    },
+    "L5": {
+      "items": 6,
+      "removed": 2,
+      "preview_ms": 3000,
+      "c3_difficulty": 3,
+      "category": "옷·소품"
+    },
+    "L6": {
+      "items": 7,
+      "removed": 2,
+      "preview_ms": 3500,
+      "c3_difficulty": 3,
+      "category": "학용품"
+    },
+    "L7": {
+      "items": 7,
+      "removed": 3,
+      "preview_ms": 3500,
+      "c3_difficulty": 4,
+      "category": "자연"
+    },
+    "L8": {
+      "items": 8,
+      "removed": 3,
+      "preview_ms": 3500,
+      "c3_difficulty": 5,
+      "category": "야생동물"
+    }
+  },
+  "stimuli": [
+    {
+      "id": "MEM-L01-001",
+      "domain": "Memory",
+      "difficulty_level": 1,
+      "module_level": 1,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 5000,
+      "stimulus_format": "multi_select",
+      "skill_tags": [
+        "recall",
+        "object_memory"
+      ],
+      "content_payload": {
+        "instruction": "잘 보세요. 어떤 그림이 사라졌어요?",
+        "preview_items": [
+          "🐶 강아지",
+          "🐱 고양이",
+          "🐰 토끼",
+          "🐻 곰"
+        ],
+        "preview_duration_ms": 3500,
+        "options": [
+          "🐶 강아지",
+          "🐱 고양이",
+          "🐰 토끼",
+          "🐻 곰"
+        ]
+      },
+      "answer_payload": {
+        "type": "multi_select",
+        "correct": [
+          "🐱 고양이"
+        ]
+      }
+    },
+    {
+      "id": "MEM-L01-002",
+      "domain": "Memory",
+      "difficulty_level": 1,
+      "module_level": 1,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 5000,
+      "stimulus_format": "multi_select",
+      "skill_tags": [
+        "recall",
+        "object_memory"
+      ],
+      "content_payload": {
+        "instruction": "잘 보세요. 어떤 그림이 사라졌어요?",
+        "preview_items": [
+          "🐯 호랑이",
+          "🦁 사자",
+          "🐵 원숭이",
+          "🐼 팬더"
+        ],
+        "preview_duration_ms": 3500,
+        "options": [
+          "🐯 호랑이",
+          "🦁 사자",
+          "🐵 원숭이",
+          "🐼 팬더"
+        ]
+      },
+      "answer_payload": {
+        "type": "multi_select",
+        "correct": [
+          "🦁 사자"
+        ]
+      }
+    },
+    {
+      "id": "MEM-L01-003",
+      "domain": "Memory",
+      "difficulty_level": 1,
+      "module_level": 1,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 5000,
+      "stimulus_format": "multi_select",
+      "skill_tags": [
+        "recall",
+        "object_memory"
+      ],
+      "content_payload": {
+        "instruction": "잘 보세요. 어떤 그림이 사라졌어요?",
+        "preview_items": [
+          "🐔 닭",
+          "🐤 병아리",
+          "🦆 오리",
+          "🦢 백조"
+        ],
+        "preview_duration_ms": 3500,
+        "options": [
+          "🐔 닭",
+          "🐤 병아리",
+          "🦆 오리",
+          "🦢 백조"
+        ]
+      },
+      "answer_payload": {
+        "type": "multi_select",
+        "correct": [
+          "🦆 오리"
+        ]
+      }
+    },
+    {
+      "id": "MEM-L01-004",
+      "domain": "Memory",
+      "difficulty_level": 1,
+      "module_level": 1,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 5000,
+      "stimulus_format": "multi_select",
+      "skill_tags": [
+        "recall",
+        "object_memory"
+      ],
+      "content_payload": {
+        "instruction": "잘 보세요. 어떤 그림이 사라졌어요?",
+        "preview_items": [
+          "🐢 거북이",
+          "🐸 개구리",
+          "🐍 뱀",
+          "🦎 도마뱀"
+        ],
+        "preview_duration_ms": 3500,
+        "options": [
+          "🐢 거북이",
+          "🐸 개구리",
+          "🐍 뱀",
+          "🦎 도마뱀"
+        ]
+      },
+      "answer_payload": {
+        "type": "multi_select",
+        "correct": [
+          "🐸 개구리"
+        ]
+      }
+    },
+    {
+      "id": "MEM-L02-001",
+      "domain": "Memory",
+      "difficulty_level": 1,
+      "module_level": 2,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 5500,
+      "stimulus_format": "multi_select",
+      "skill_tags": [
+        "recall",
+        "object_memory"
+      ],
+      "content_payload": {
+        "instruction": "잘 보세요. 어떤 그림이 사라졌어요?",
+        "preview_items": [
+          "🍎 사과",
+          "🍌 바나나",
+          "🍇 포도",
+          "🍊 오렌지",
+          "🍓 딸기"
+        ],
+        "preview_duration_ms": 3500,
+        "options": [
+          "🍎 사과",
+          "🍌 바나나",
+          "🍇 포도",
+          "🍊 오렌지",
+          "🍓 딸기"
+        ]
+      },
+      "answer_payload": {
+        "type": "multi_select",
+        "correct": [
+          "🍇 포도"
+        ]
+      }
+    },
+    {
+      "id": "MEM-L02-002",
+      "domain": "Memory",
+      "difficulty_level": 1,
+      "module_level": 2,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 5500,
+      "stimulus_format": "multi_select",
+      "skill_tags": [
+        "recall",
+        "object_memory"
+      ],
+      "content_payload": {
+        "instruction": "잘 보세요. 어떤 그림이 사라졌어요?",
+        "preview_items": [
+          "🍑 복숭아",
+          "🍒 체리",
+          "🥝 키위",
+          "🍐 배",
+          "🥭 망고"
+        ],
+        "preview_duration_ms": 3500,
+        "options": [
+          "🍑 복숭아",
+          "🍒 체리",
+          "🥝 키위",
+          "🍐 배",
+          "🥭 망고"
+        ]
+      },
+      "answer_payload": {
+        "type": "multi_select",
+        "correct": [
+          "🥝 키위"
+        ]
+      }
+    },
+    {
+      "id": "MEM-L02-003",
+      "domain": "Memory",
+      "difficulty_level": 1,
+      "module_level": 2,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 5500,
+      "stimulus_format": "multi_select",
+      "skill_tags": [
+        "recall",
+        "object_memory"
+      ],
+      "content_payload": {
+        "instruction": "잘 보세요. 어떤 그림이 사라졌어요?",
+        "preview_items": [
+          "🍉 수박",
+          "🍈 멜론",
+          "🍋 레몬",
+          "🍍 파인애플",
+          "🥥 코코넛"
+        ],
+        "preview_duration_ms": 3500,
+        "options": [
+          "🍉 수박",
+          "🍈 멜론",
+          "🍋 레몬",
+          "🍍 파인애플",
+          "🥥 코코넛"
+        ]
+      },
+      "answer_payload": {
+        "type": "multi_select",
+        "correct": [
+          "🍋 레몬"
+        ]
+      }
+    },
+    {
+      "id": "MEM-L02-004",
+      "domain": "Memory",
+      "difficulty_level": 1,
+      "module_level": 2,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 5500,
+      "stimulus_format": "multi_select",
+      "skill_tags": [
+        "recall",
+        "object_memory"
+      ],
+      "content_payload": {
+        "instruction": "잘 보세요. 어떤 그림이 사라졌어요?",
+        "preview_items": [
+          "🍏 청사과",
+          "🍎 사과",
+          "🍑 복숭아",
+          "🍓 딸기",
+          "🍒 체리"
+        ],
+        "preview_duration_ms": 3500,
+        "options": [
+          "🍏 청사과",
+          "🍎 사과",
+          "🍑 복숭아",
+          "🍓 딸기",
+          "🍒 체리"
+        ]
+      },
+      "answer_payload": {
+        "type": "multi_select",
+        "correct": [
+          "🍎 사과"
+        ]
+      }
+    },
+    {
+      "id": "MEM-L03-001",
+      "domain": "Memory",
+      "difficulty_level": 2,
+      "module_level": 3,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 6000,
+      "stimulus_format": "multi_select",
+      "skill_tags": [
+        "recall",
+        "object_memory"
+      ],
+      "content_payload": {
+        "instruction": "잘 보세요. 사라진 그림을 모두 골라요.",
+        "preview_items": [
+          "🚗 자동차",
+          "🚌 버스",
+          "🚲 자전거",
+          "✈️ 비행기",
+          "🚢 배"
+        ],
+        "preview_duration_ms": 3500,
+        "options": [
+          "🚗 자동차",
+          "🚌 버스",
+          "🚲 자전거",
+          "✈️ 비행기",
+          "🚢 배"
+        ]
+      },
+      "answer_payload": {
+        "type": "multi_select",
+        "correct": [
+          "🚌 버스",
+          "✈️ 비행기"
+        ]
+      }
+    },
+    {
+      "id": "MEM-L03-002",
+      "domain": "Memory",
+      "difficulty_level": 2,
+      "module_level": 3,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 6000,
+      "stimulus_format": "multi_select",
+      "skill_tags": [
+        "recall",
+        "object_memory"
+      ],
+      "content_payload": {
+        "instruction": "잘 보세요. 사라진 그림을 모두 골라요.",
+        "preview_items": [
+          "🚂 기차",
+          "🚚 트럭",
+          "🚁 헬리콥터",
+          "🏍️ 오토바이",
+          "🚀 로켓"
+        ],
+        "preview_duration_ms": 3500,
+        "options": [
+          "🚂 기차",
+          "🚚 트럭",
+          "🚁 헬리콥터",
+          "🏍️ 오토바이",
+          "🚀 로켓"
+        ]
+      },
+      "answer_payload": {
+        "type": "multi_select",
+        "correct": [
+          "🚚 트럭",
+          "🚀 로켓"
+        ]
+      }
+    },
+    {
+      "id": "MEM-L03-003",
+      "domain": "Memory",
+      "difficulty_level": 2,
+      "module_level": 3,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 6000,
+      "stimulus_format": "multi_select",
+      "skill_tags": [
+        "recall",
+        "object_memory"
+      ],
+      "content_payload": {
+        "instruction": "잘 보세요. 사라진 그림을 모두 골라요.",
+        "preview_items": [
+          "🚕 택시",
+          "🚑 구급차",
+          "🚒 소방차",
+          "🚓 경찰차",
+          "🚜 트랙터"
+        ],
+        "preview_duration_ms": 3500,
+        "options": [
+          "🚕 택시",
+          "🚑 구급차",
+          "🚒 소방차",
+          "🚓 경찰차",
+          "🚜 트랙터"
+        ]
+      },
+      "answer_payload": {
+        "type": "multi_select",
+        "correct": [
+          "🚑 구급차",
+          "🚜 트랙터"
+        ]
+      }
+    },
+    {
+      "id": "MEM-L03-004",
+      "domain": "Memory",
+      "difficulty_level": 2,
+      "module_level": 3,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 6000,
+      "stimulus_format": "multi_select",
+      "skill_tags": [
+        "recall",
+        "object_memory"
+      ],
+      "content_payload": {
+        "instruction": "잘 보세요. 사라진 그림을 모두 골라요.",
+        "preview_items": [
+          "🛴 킥보드",
+          "🛵 스쿠터",
+          "🚐 미니버스",
+          "🛺 인력거",
+          "⛵ 요트"
+        ],
+        "preview_duration_ms": 3500,
+        "options": [
+          "🛴 킥보드",
+          "🛵 스쿠터",
+          "🚐 미니버스",
+          "🛺 인력거",
+          "⛵ 요트"
+        ]
+      },
+      "answer_payload": {
+        "type": "multi_select",
+        "correct": [
+          "🛵 스쿠터",
+          "⛵ 요트"
+        ]
+      }
+    },
+    {
+      "id": "MEM-L04-001",
+      "domain": "Memory",
+      "difficulty_level": 2,
+      "module_level": 4,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 6500,
+      "stimulus_format": "multi_select",
+      "skill_tags": [
+        "recall",
+        "object_memory"
+      ],
+      "content_payload": {
+        "instruction": "잘 보세요. 사라진 그림을 모두 골라요.",
+        "preview_items": [
+          "🍕 피자",
+          "🍔 햄버거",
+          "🍟 감자튀김",
+          "🌭 핫도그",
+          "🥪 샌드위치",
+          "🥨 프레즐"
+        ],
+        "preview_duration_ms": 3500,
+        "options": [
+          "🍕 피자",
+          "🍔 햄버거",
+          "🍟 감자튀김",
+          "🌭 핫도그",
+          "🥪 샌드위치",
+          "🥨 프레즐"
+        ]
+      },
+      "answer_payload": {
+        "type": "multi_select",
+        "correct": [
+          "🍔 햄버거",
+          "🥨 프레즐"
+        ]
+      }
+    },
+    {
+      "id": "MEM-L04-002",
+      "domain": "Memory",
+      "difficulty_level": 2,
+      "module_level": 4,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 6500,
+      "stimulus_format": "multi_select",
+      "skill_tags": [
+        "recall",
+        "object_memory"
+      ],
+      "content_payload": {
+        "instruction": "잘 보세요. 사라진 그림을 모두 골라요.",
+        "preview_items": [
+          "🍣 초밥",
+          "🍙 주먹밥",
+          "🍜 라면",
+          "🍝 파스타",
+          "🍲 찌개",
+          "🥘 볶음밥"
+        ],
+        "preview_duration_ms": 3500,
+        "options": [
+          "🍣 초밥",
+          "🍙 주먹밥",
+          "🍜 라면",
+          "🍝 파스타",
+          "🍲 찌개",
+          "🥘 볶음밥"
+        ]
+      },
+      "answer_payload": {
+        "type": "multi_select",
+        "correct": [
+          "🍜 라면",
+          "🥘 볶음밥"
+        ]
+      }
+    },
+    {
+      "id": "MEM-L04-003",
+      "domain": "Memory",
+      "difficulty_level": 2,
+      "module_level": 4,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 6500,
+      "stimulus_format": "multi_select",
+      "skill_tags": [
+        "recall",
+        "object_memory"
+      ],
+      "content_payload": {
+        "instruction": "잘 보세요. 사라진 그림을 모두 골라요.",
+        "preview_items": [
+          "🍦 아이스크림",
+          "🍰 케이크",
+          "🍪 쿠키",
+          "🍩 도넛",
+          "🧁 컵케이크",
+          "🍫 초콜릿"
+        ],
+        "preview_duration_ms": 3500,
+        "options": [
+          "🍦 아이스크림",
+          "🍰 케이크",
+          "🍪 쿠키",
+          "🍩 도넛",
+          "🧁 컵케이크",
+          "🍫 초콜릿"
+        ]
+      },
+      "answer_payload": {
+        "type": "multi_select",
+        "correct": [
+          "🍰 케이크",
+          "🧁 컵케이크"
+        ]
+      }
+    },
+    {
+      "id": "MEM-L04-004",
+      "domain": "Memory",
+      "difficulty_level": 2,
+      "module_level": 4,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 6500,
+      "stimulus_format": "multi_select",
+      "skill_tags": [
+        "recall",
+        "object_memory"
+      ],
+      "content_payload": {
+        "instruction": "잘 보세요. 사라진 그림을 모두 골라요.",
+        "preview_items": [
+          "🍞 빵",
+          "🥐 크루아상",
+          "🥖 바게트",
+          "🥯 베이글",
+          "🧀 치즈",
+          "🥚 계란"
+        ],
+        "preview_duration_ms": 3500,
+        "options": [
+          "🍞 빵",
+          "🥐 크루아상",
+          "🥖 바게트",
+          "🥯 베이글",
+          "🧀 치즈",
+          "🥚 계란"
+        ]
+      },
+      "answer_payload": {
+        "type": "multi_select",
+        "correct": [
+          "🥖 바게트",
+          "🧀 치즈"
+        ]
+      }
+    },
+    {
+      "id": "MEM-L05-001",
+      "domain": "Memory",
+      "difficulty_level": 3,
+      "module_level": 5,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 7000,
+      "stimulus_format": "multi_select",
+      "skill_tags": [
+        "recall",
+        "object_memory"
+      ],
+      "content_payload": {
+        "instruction": "잘 보세요. 사라진 그림을 모두 골라요.",
+        "preview_items": [
+          "👕 티셔츠",
+          "👖 바지",
+          "👗 원피스",
+          "👟 운동화",
+          "🧦 양말",
+          "🧢 모자"
+        ],
+        "preview_duration_ms": 3000,
+        "options": [
+          "👕 티셔츠",
+          "👖 바지",
+          "👗 원피스",
+          "👟 운동화",
+          "🧦 양말",
+          "🧢 모자"
+        ]
+      },
+      "answer_payload": {
+        "type": "multi_select",
+        "correct": [
+          "👗 원피스",
+          "🧦 양말"
+        ]
+      }
+    },
+    {
+      "id": "MEM-L05-002",
+      "domain": "Memory",
+      "difficulty_level": 3,
+      "module_level": 5,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 7000,
+      "stimulus_format": "multi_select",
+      "skill_tags": [
+        "recall",
+        "object_memory"
+      ],
+      "content_payload": {
+        "instruction": "잘 보세요. 사라진 그림을 모두 골라요.",
+        "preview_items": [
+          "🧥 코트",
+          "🧣 목도리",
+          "🧤 장갑",
+          "👜 가방",
+          "👓 안경",
+          "👒 챙모자"
+        ],
+        "preview_duration_ms": 3000,
+        "options": [
+          "🧥 코트",
+          "🧣 목도리",
+          "🧤 장갑",
+          "👜 가방",
+          "👓 안경",
+          "👒 챙모자"
+        ]
+      },
+      "answer_payload": {
+        "type": "multi_select",
+        "correct": [
+          "🧤 장갑",
+          "👜 가방"
+        ]
+      }
+    },
+    {
+      "id": "MEM-L05-003",
+      "domain": "Memory",
+      "difficulty_level": 3,
+      "module_level": 5,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 7000,
+      "stimulus_format": "multi_select",
+      "skill_tags": [
+        "recall",
+        "object_memory"
+      ],
+      "content_payload": {
+        "instruction": "잘 보세요. 사라진 그림을 모두 골라요.",
+        "preview_items": [
+          "👔 와이샤츠",
+          "👞 구두",
+          "👠 하이힐",
+          "🥾 부츠",
+          "🥿 슬리퍼",
+          "👡 샌들"
+        ],
+        "preview_duration_ms": 3000,
+        "options": [
+          "👔 와이샤츠",
+          "👞 구두",
+          "👠 하이힐",
+          "🥾 부츠",
+          "🥿 슬리퍼",
+          "👡 샌들"
+        ]
+      },
+      "answer_payload": {
+        "type": "multi_select",
+        "correct": [
+          "👠 하이힐",
+          "🥿 슬리퍼"
+        ]
+      }
+    },
+    {
+      "id": "MEM-L05-004",
+      "domain": "Memory",
+      "difficulty_level": 3,
+      "module_level": 5,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 7000,
+      "stimulus_format": "multi_select",
+      "skill_tags": [
+        "recall",
+        "object_memory"
+      ],
+      "content_payload": {
+        "instruction": "잘 보세요. 사라진 그림을 모두 골라요.",
+        "preview_items": [
+          "🎒 책가방",
+          "⌚ 시계",
+          "💍 반지",
+          "👑 왕관",
+          "🕶️ 선글라스",
+          "🥽 물안경"
+        ],
+        "preview_duration_ms": 3000,
+        "options": [
+          "🎒 책가방",
+          "⌚ 시계",
+          "💍 반지",
+          "👑 왕관",
+          "🕶️ 선글라스",
+          "🥽 물안경"
+        ]
+      },
+      "answer_payload": {
+        "type": "multi_select",
+        "correct": [
+          "💍 반지",
+          "🥽 물안경"
+        ]
+      }
+    },
+    {
+      "id": "MEM-L06-001",
+      "domain": "Memory",
+      "difficulty_level": 3,
+      "module_level": 6,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 7500,
+      "stimulus_format": "multi_select",
+      "skill_tags": [
+        "recall",
+        "object_memory"
+      ],
+      "content_payload": {
+        "instruction": "잘 보세요. 사라진 그림을 모두 골라요.",
+        "preview_items": [
+          "✏️ 연필",
+          "🖊️ 볼펜",
+          "📚 책",
+          "📓 공책",
+          "🎒 책가방",
+          "📏 자",
+          "✂️ 가위"
+        ],
+        "preview_duration_ms": 3500,
+        "options": [
+          "✏️ 연필",
+          "🖊️ 볼펜",
+          "📚 책",
+          "📓 공책",
+          "🎒 책가방",
+          "📏 자",
+          "✂️ 가위"
+        ]
+      },
+      "answer_payload": {
+        "type": "multi_select",
+        "correct": [
+          "📓 공책",
+          "📏 자"
+        ]
+      }
+    },
+    {
+      "id": "MEM-L06-002",
+      "domain": "Memory",
+      "difficulty_level": 3,
+      "module_level": 6,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 7500,
+      "stimulus_format": "multi_select",
+      "skill_tags": [
+        "recall",
+        "object_memory"
+      ],
+      "content_payload": {
+        "instruction": "잘 보세요. 사라진 그림을 모두 골라요.",
+        "preview_items": [
+          "🖍️ 크레용",
+          "🖌️ 붓",
+          "📄 종이",
+          "📒 노트",
+          "✏️ 연필",
+          "📚 책",
+          "🎒 책가방"
+        ],
+        "preview_duration_ms": 3500,
+        "options": [
+          "🖍️ 크레용",
+          "🖌️ 붓",
+          "📄 종이",
+          "📒 노트",
+          "✏️ 연필",
+          "📚 책",
+          "🎒 책가방"
+        ]
+      },
+      "answer_payload": {
+        "type": "multi_select",
+        "correct": [
+          "🖌️ 붓",
+          "📒 노트"
+        ]
+      }
+    },
+    {
+      "id": "MEM-L06-003",
+      "domain": "Memory",
+      "difficulty_level": 3,
+      "module_level": 6,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 7500,
+      "stimulus_format": "multi_select",
+      "skill_tags": [
+        "recall",
+        "object_memory"
+      ],
+      "content_payload": {
+        "instruction": "잘 보세요. 사라진 그림을 모두 골라요.",
+        "preview_items": [
+          "🖊️ 볼펜",
+          "📓 공책",
+          "✂️ 가위",
+          "🖍️ 크레용",
+          "📄 종이",
+          "📏 자",
+          "🖌️ 붓"
+        ],
+        "preview_duration_ms": 3500,
+        "options": [
+          "🖊️ 볼펜",
+          "📓 공책",
+          "✂️ 가위",
+          "🖍️ 크레용",
+          "📄 종이",
+          "📏 자",
+          "🖌️ 붓"
+        ]
+      },
+      "answer_payload": {
+        "type": "multi_select",
+        "correct": [
+          "🖊️ 볼펜",
+          "📄 종이"
+        ]
+      }
+    },
+    {
+      "id": "MEM-L06-004",
+      "domain": "Memory",
+      "difficulty_level": 3,
+      "module_level": 6,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 7500,
+      "stimulus_format": "multi_select",
+      "skill_tags": [
+        "recall",
+        "object_memory"
+      ],
+      "content_payload": {
+        "instruction": "잘 보세요. 사라진 그림을 모두 골라요.",
+        "preview_items": [
+          "✏️ 연필",
+          "📚 책",
+          "🎒 책가방",
+          "✂️ 가위",
+          "📒 노트",
+          "🖍️ 크레용",
+          "📏 자"
+        ],
+        "preview_duration_ms": 3500,
+        "options": [
+          "✏️ 연필",
+          "📚 책",
+          "🎒 책가방",
+          "✂️ 가위",
+          "📒 노트",
+          "🖍️ 크레용",
+          "📏 자"
+        ]
+      },
+      "answer_payload": {
+        "type": "multi_select",
+        "correct": [
+          "✏️ 연필",
+          "✂️ 가위"
+        ]
+      }
+    },
+    {
+      "id": "MEM-L07-001",
+      "domain": "Memory",
+      "difficulty_level": 4,
+      "module_level": 7,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 8000,
+      "stimulus_format": "multi_select",
+      "skill_tags": [
+        "recall",
+        "object_memory"
+      ],
+      "content_payload": {
+        "instruction": "잘 보세요. 사라진 그림을 모두 골라요.",
+        "preview_items": [
+          "🌳 나무",
+          "🌲 소나무",
+          "🌴 야자수",
+          "🌵 선인장",
+          "🌷 튤립",
+          "🌻 해바라기",
+          "🌸 벚꽃"
+        ],
+        "preview_duration_ms": 3500,
+        "options": [
+          "🌳 나무",
+          "🌲 소나무",
+          "🌴 야자수",
+          "🌵 선인장",
+          "🌷 튤립",
+          "🌻 해바라기",
+          "🌸 벚꽃"
+        ]
+      },
+      "answer_payload": {
+        "type": "multi_select",
+        "correct": [
+          "🌲 소나무",
+          "🌵 선인장",
+          "🌻 해바라기"
+        ]
+      }
+    },
+    {
+      "id": "MEM-L07-002",
+      "domain": "Memory",
+      "difficulty_level": 4,
+      "module_level": 7,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 8000,
+      "stimulus_format": "multi_select",
+      "skill_tags": [
+        "recall",
+        "object_memory"
+      ],
+      "content_payload": {
+        "instruction": "잘 보세요. 사라진 그림을 모두 골라요.",
+        "preview_items": [
+          "☀️ 해",
+          "🌙 달",
+          "⭐ 별",
+          "☁️ 구름",
+          "🌈 무지개",
+          "⛅ 흐림",
+          "🌧️ 비"
+        ],
+        "preview_duration_ms": 3500,
+        "options": [
+          "☀️ 해",
+          "🌙 달",
+          "⭐ 별",
+          "☁️ 구름",
+          "🌈 무지개",
+          "⛅ 흐림",
+          "🌧️ 비"
+        ]
+      },
+      "answer_payload": {
+        "type": "multi_select",
+        "correct": [
+          "🌙 달",
+          "🌈 무지개",
+          "🌧️ 비"
+        ]
+      }
+    },
+    {
+      "id": "MEM-L07-003",
+      "domain": "Memory",
+      "difficulty_level": 4,
+      "module_level": 7,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 8000,
+      "stimulus_format": "multi_select",
+      "skill_tags": [
+        "recall",
+        "object_memory"
+      ],
+      "content_payload": {
+        "instruction": "잘 보세요. 사라진 그림을 모두 골라요.",
+        "preview_items": [
+          "🍀 클로버",
+          "🌹 장미",
+          "🌺 히비스커스",
+          "🌼 데이지",
+          "🥀 시든꽃",
+          "🌾 벼",
+          "🌿 풀"
+        ],
+        "preview_duration_ms": 3500,
+        "options": [
+          "🍀 클로버",
+          "🌹 장미",
+          "🌺 히비스커스",
+          "🌼 데이지",
+          "🥀 시든꽃",
+          "🌾 벼",
+          "🌿 풀"
+        ]
+      },
+      "answer_payload": {
+        "type": "multi_select",
+        "correct": [
+          "🌺 히비스커스",
+          "🥀 시든꽃",
+          "🌾 벼"
+        ]
+      }
+    },
+    {
+      "id": "MEM-L07-004",
+      "domain": "Memory",
+      "difficulty_level": 4,
+      "module_level": 7,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 8000,
+      "stimulus_format": "multi_select",
+      "skill_tags": [
+        "recall",
+        "object_memory"
+      ],
+      "content_payload": {
+        "instruction": "잘 보세요. 사라진 그림을 모두 골라요.",
+        "preview_items": [
+          "🦋 나비",
+          "🐝 벌",
+          "🐞 무당벌레",
+          "🐌 달팽이",
+          "🕷️ 거미",
+          "🦗 메뚜기",
+          "🐛 애벌레"
+        ],
+        "preview_duration_ms": 3500,
+        "options": [
+          "🦋 나비",
+          "🐝 벌",
+          "🐞 무당벌레",
+          "🐌 달팽이",
+          "🕷️ 거미",
+          "🦗 메뚜기",
+          "🐛 애벌레"
+        ]
+      },
+      "answer_payload": {
+        "type": "multi_select",
+        "correct": [
+          "🐝 벌",
+          "🐌 달팽이",
+          "🦗 메뚜기"
+        ]
+      }
+    },
+    {
+      "id": "MEM-L08-001",
+      "domain": "Memory",
+      "difficulty_level": 5,
+      "module_level": 8,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 8500,
+      "stimulus_format": "multi_select",
+      "skill_tags": [
+        "recall",
+        "object_memory"
+      ],
+      "content_payload": {
+        "instruction": "잘 보세요. 사라진 그림을 모두 골라요.",
+        "preview_items": [
+          "🦒 기린",
+          "🦓 얼룩말",
+          "🐘 코끼리",
+          "🦏 코뿔소",
+          "🦛 하마",
+          "🐊 악어",
+          "🦘 캥거루",
+          "🐆 표범"
+        ],
+        "preview_duration_ms": 3500,
+        "options": [
+          "🦒 기린",
+          "🦓 얼룩말",
+          "🐘 코끼리",
+          "🦏 코뿔소",
+          "🦛 하마",
+          "🐊 악어",
+          "🦘 캥거루",
+          "🐆 표범"
+        ]
+      },
+      "answer_payload": {
+        "type": "multi_select",
+        "correct": [
+          "🐘 코끼리",
+          "🦏 코뿔소",
+          "🐆 표범"
+        ]
+      }
+    },
+    {
+      "id": "MEM-L08-002",
+      "domain": "Memory",
+      "difficulty_level": 5,
+      "module_level": 8,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 8500,
+      "stimulus_format": "multi_select",
+      "skill_tags": [
+        "recall",
+        "object_memory"
+      ],
+      "content_payload": {
+        "instruction": "잘 보세요. 사라진 그림을 모두 골라요.",
+        "preview_items": [
+          "🦌 사슴",
+          "🐻 곰",
+          "🦊 여우",
+          "🐺 늑대",
+          "🐗 멧돼지",
+          "🦝 너구리",
+          "🦨 스컹크",
+          "🦡 오소리"
+        ],
+        "preview_duration_ms": 3500,
+        "options": [
+          "🦌 사슴",
+          "🐻 곰",
+          "🦊 여우",
+          "🐺 늑대",
+          "🐗 멧돼지",
+          "🦝 너구리",
+          "🦨 스컹크",
+          "🦡 오소리"
+        ]
+      },
+      "answer_payload": {
+        "type": "multi_select",
+        "correct": [
+          "🦊 여우",
+          "🐗 멧돼지",
+          "🦡 오소리"
+        ]
+      }
+    },
+    {
+      "id": "MEM-L08-003",
+      "domain": "Memory",
+      "difficulty_level": 5,
+      "module_level": 8,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 8500,
+      "stimulus_format": "multi_select",
+      "skill_tags": [
+        "recall",
+        "object_memory"
+      ],
+      "content_payload": {
+        "instruction": "잘 보세요. 사라진 그림을 모두 골라요.",
+        "preview_items": [
+          "🦅 독수리",
+          "🦉 부엉이",
+          "🦆 오리",
+          "🦢 백조",
+          "🦩 플라밍고",
+          "🐧 펭귄",
+          "🦃 칠면조",
+          "🦚 공작"
+        ],
+        "preview_duration_ms": 3500,
+        "options": [
+          "🦅 독수리",
+          "🦉 부엉이",
+          "🦆 오리",
+          "🦢 백조",
+          "🦩 플라밍고",
+          "🐧 펭귄",
+          "🦃 칠면조",
+          "🦚 공작"
+        ]
+      },
+      "answer_payload": {
+        "type": "multi_select",
+        "correct": [
+          "🦢 백조",
+          "🦩 플라밍고",
+          "🦃 칠면조"
+        ]
+      }
+    },
+    {
+      "id": "MEM-L08-004",
+      "domain": "Memory",
+      "difficulty_level": 5,
+      "module_level": 8,
+      "grade_track": "low",
+      "is_trap": false,
+      "rt_expected_ms": 8500,
+      "stimulus_format": "multi_select",
+      "skill_tags": [
+        "recall",
+        "object_memory"
+      ],
+      "content_payload": {
+        "instruction": "잘 보세요. 사라진 그림을 모두 골라요.",
+        "preview_items": [
+          "🐬 돌고래",
+          "🐳 고래",
+          "🦈 상어",
+          "🐙 문어",
+          "🦑 오징어",
+          "🦞 가재",
+          "🦀 게",
+          "🐢 거북이"
+        ],
+        "preview_duration_ms": 3500,
+        "options": [
+          "🐬 돌고래",
+          "🐳 고래",
+          "🦈 상어",
+          "🐙 문어",
+          "🦑 오징어",
+          "🦞 가재",
+          "🦀 게",
+          "🐢 거북이"
+        ]
+      },
+      "answer_payload": {
+        "type": "multi_select",
+        "correct": [
+          "🐳 고래",
+          "🦑 오징어",
+          "🦞 가재"
+        ]
+      }
+    }
+  ]
+}
