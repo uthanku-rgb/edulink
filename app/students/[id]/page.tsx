@@ -431,7 +431,7 @@ export default function StudentDetailPage() {
   };
 
   // Build 주간 격자 셀 수정 핸들러
-  const handleUpdateBuildCell = async (weekNo: number, subject: string, field: 'reviewGoal' | 'material' | 'done', value: any) => {
+  const handleUpdateBuildCell = async (weekNo: number, subject: string, field: 'reviewGoal' | 'material' | 'done', value: string | number | boolean) => {
     if (!buildPlan) return;
 
     const updatedWeeks = buildPlan.weeks.map((week): BuildWeek => {

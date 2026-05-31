@@ -25,9 +25,7 @@ import {
   MasteryTopic,
   MasteryCheck,
   Gap,
-  BuildPlan,
-  BuildWeek,
-  BuildCell
+  BuildPlan
 } from '../types';
 import * as mockData from '../data/mockData';
 import { supabase } from './supabaseClient';
