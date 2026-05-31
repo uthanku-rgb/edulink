@@ -311,4 +311,24 @@ export interface Gap {                     // 구멍 (결손)
   sourceTopicId: string;
 }
 
+// === Build 주간 역산 계획 관련 타입 정의 ===
+export interface BuildPlan {
+  id: string;
+  studentId: string;
+  examId: string;
+  weeks: BuildWeek[];        // 먼 주부터 (D-56 → D-22 방향)
+}
 
+export interface BuildWeek {
+  weekNo: number;            // 8,7,6...4 (D-day 주차)
+  dDayStart: number;         // 그 주 시작 D-day (예: 56)
+  dDayEnd: number;           // 그 주 끝 D-day (예: 50)
+  cells: BuildCell[];        // 과목별 칸
+}
+
+export interface BuildCell {
+  subject: string;
+  reviewGoal: 1 | 2 | 3;     // 이 주 목표 회독 단계
+  material: string;          // 어떤 교재로
+  done: boolean;
+}

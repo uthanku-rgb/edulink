@@ -24,7 +24,10 @@ import {
   EnglishOutput,
   MasteryTopic,
   MasteryCheck,
-  Gap
+  Gap,
+  BuildPlan,
+  BuildWeek,
+  BuildCell
 } from '../types';
 import * as mockData from '../data/mockData';
 import { supabase } from './supabaseClient';
@@ -45,6 +48,7 @@ const KEYS = {
   MASTERY_TOPICS: 'edulink_mastery_topic',
   MASTERY_CHECKS: 'edulink_mastery_check',
   GAPS: 'edulink_gap',
+  BUILD_PLANS: 'edulink_build_plans',
 };
 
 const getStorageItem = <T>(key: string, defaultValue: T): T => {
@@ -1021,5 +1025,40 @@ export const seedMasteryMockDataIfEmpty = (): void => {
   }
 };
 
+// === Build 주간 역산 계획 CRUD ===
+export const getBuildPlans = async (): Promise<BuildPlan[]> => {
+  const local = getStorageItem<BuildPlan[]>(KEYS.BUILD_PLANS, []);
+  try {
+    const { data, error } = await supabase.from('build_plans').select('*');
+    if (error) throw error;
+    if (data && data.length > 0) {
+      const mapped: BuildPlan[] = data.map(p => ({
+        id: p.id,
+        studentId: p.student_id,
+        examId: p.exam_id,
+        weeks: typeof p.weeks === 'string' ? JSON.parse(p.weeks) : p.weeks
+      }));
+      setStorageItem(KEYS.BUILD_PLANS, mapped);
+      return mapped;
+    }
+  } catch (err) {
+    console.error('Supabase getBuildPlans failed, fallback to local:', err);
+  }
+  return local;
+};
 
-
+export const saveBuildPlans = async (plans: BuildPlan[]): Promise<void> => {
+  setStorageItem(KEYS.BUILD_PLANS, plans);
+  try {
+    const payload = plans.map(p => ({
+      id: p.id,
+      student_id: p.studentId,
+      exam_id: p.examId,
+      weeks: p.weeks
+    }));
+    const { error } = await supabase.from('build_plans').upsert(payload);
+    if (error) throw error;
+  } catch (err) {
+    console.error('Supabase saveBuildPlans failed:', err);
+  }
+};

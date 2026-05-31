@@ -23,7 +23,9 @@ import {
   getReviewTrackers,
   saveDailyRecords,
   saveD21Plans,
-  saveReviewTrackers
+  saveReviewTrackers,
+  getBuildPlans,
+  saveBuildPlans
 } from '../../../lib/storage';
 import { 
   Student, 
@@ -34,7 +36,10 @@ import {
   D21Cell,
   ReviewTracker, 
   ReviewItem,
-  Attendance
+  Attendance,
+  BuildPlan,
+  BuildWeek,
+  BuildCell
 } from '../../../types';
 
 export default function StudentDetailPage() {
@@ -48,10 +53,12 @@ export default function StudentDetailPage() {
   const [cycle, setCycle] = useState<Cycle | null>(null);
   const [dailyRecords, setDailyRecords] = useState<DailyRecord[]>([]);
   const [d21Plan, setD21Plan] = useState<D21Plan | null>(null);
+  const [buildPlan, setBuildPlan] = useState<BuildPlan | null>(null);
   const [tracker, setTracker] = useState<ReviewTracker | null>(null);
   
   // UI 상태
   const [activeTab, setActiveTab] = useState<'daily' | 'planner' | 'tracker'>('daily');
+  const [subTab, setSubTab] = useState<'build' | 'race'>('race');
   const [loading, setLoading] = useState(true);
 
   // 일일 기록 폼 상태
@@ -101,6 +108,67 @@ export default function StudentDetailPage() {
         
         const trackers = await getReviewTrackers();
         setTracker(trackers.find(t => t.studentId === studentId) || null);
+
+        // Build Plan 로드 및 자동 생성
+        const buildPlans = await getBuildPlans();
+        let foundBuildPlan = buildPlans.find(p => p.studentId === studentId) || null;
+        const foundExam = exams.find(e => e.studentId === studentId) || null;
+
+        if (foundExam && !foundBuildPlan) {
+          const runwayWeeks = foundExam.type === '모의' ? 8 : 4;
+          const weeks: BuildWeek[] = [];
+          const startWeek = runwayWeeks;
+          const endWeek = 4;
+
+          for (let w = startWeek; w >= endWeek; w--) {
+            const dDayStart = w * 7;
+            const dDayEnd = dDayStart - 6;
+
+            const cells: BuildCell[] = foundExam.subjects.map(subject => {
+              let reviewGoal: 1 | 2 | 3 = 1;
+              if (runwayWeeks === 8) {
+                if (w === 4) reviewGoal = 3;
+                else if (w === 6 || w === 5) reviewGoal = 2;
+                else reviewGoal = 1;
+              } else {
+                reviewGoal = 2; // 4주차(D-28~22)는 2회독 기본 배분
+              }
+
+              return {
+                subject,
+                reviewGoal,
+                material: '',
+                done: false
+              };
+            });
+
+            weeks.push({
+              weekNo: w,
+              dDayStart,
+              dDayEnd,
+              cells
+            });
+          }
+
+          const newBuildPlan: BuildPlan = {
+            id: `bp_${studentId.split('_')[1]}`,
+            studentId,
+            examId: foundExam.id,
+            weeks
+          };
+
+          await saveBuildPlans([...buildPlans.filter(p => p.studentId !== studentId), newBuildPlan]);
+          foundBuildPlan = newBuildPlan;
+        }
+        setBuildPlan(foundBuildPlan);
+
+        // Phase에 따른 기본 서브 탭 결정
+        const foundCycle = cycles.find(c => c.studentId === studentId) || null;
+        if (foundCycle && foundCycle.phase === 'Build') {
+          setSubTab('build');
+        } else {
+          setSubTab('race');
+        }
 
         // 일일 기록 날짜 기본값 (오늘 날짜)
         setRecordDate(new Date('2026-05-27').toISOString().split('T')[0]);
@@ -359,6 +427,44 @@ export default function StudentDetailPage() {
       setTracker(updatedTracker);
     } catch (err) {
       console.error('Failed to delete tracker item:', err);
+    }
+  };
+
+  // Build 주간 격자 셀 수정 핸들러
+  const handleUpdateBuildCell = async (weekNo: number, subject: string, field: 'reviewGoal' | 'material' | 'done', value: any) => {
+    if (!buildPlan) return;
+
+    const updatedWeeks = buildPlan.weeks.map((week): BuildWeek => {
+      if (week.weekNo === weekNo) {
+        const updatedCells = week.cells.map((cell): BuildCell => {
+          if (cell.subject === subject) {
+            return {
+              ...cell,
+              [field]: value
+            };
+          }
+          return cell;
+        });
+        return {
+          ...week,
+          cells: updatedCells
+        };
+      }
+      return week;
+    });
+
+    const updatedPlan: BuildPlan = {
+      ...buildPlan,
+      weeks: updatedWeeks
+    };
+
+    try {
+      const allBuildPlans = await getBuildPlans();
+      const filtered = allBuildPlans.filter(p => p.studentId !== studentId);
+      await saveBuildPlans([...filtered, updatedPlan]);
+      setBuildPlan(updatedPlan);
+    } catch (err) {
+      console.error('Failed to update build plan cell:', err);
     }
   };
 
@@ -643,141 +749,285 @@ export default function StudentDetailPage() {
         )}
 
         {activeTab === 'planner' && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            {/* 좌측/중간: D-21 달력형 플래너 그리드 */}
-            <div className="lg:col-span-2 bg-white border border-[#E5E1DA] rounded-xl p-4">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
-                <span className="font-medium text-slate-800 text-xs">D-21 역산 플래너 그리드 (LETS 리버스 캘린더)</span>
-                <span className="text-[10px] text-slate-400">격자 칸을 클릭하여 세부 계획을 편집하세요.</span>
+          <div className="flex flex-col gap-4">
+            {/* 서브 탭 셀렉터 */}
+            <div className="flex border-b border-[#E5E1DA] gap-1 bg-white p-2 rounded-xl border no-print">
+              <button
+                type="button"
+                onClick={() => setSubTab('build')}
+                className={`px-3 py-1.5 text-xs font-normal rounded-lg transition-all ${
+                  subTab === 'build'
+                    ? 'bg-slate-800 text-white font-medium shadow'
+                    : 'text-slate-500 hover:bg-slate-100'
+                }`}
+              >
+                Build 주간 계획 (D-22 이상)
+              </button>
+              <button
+                type="button"
+                onClick={() => setSubTab('race')}
+                className={`px-3 py-1.5 text-xs font-normal rounded-lg transition-all ${
+                  subTab === 'race'
+                    ? 'bg-slate-800 text-white font-medium shadow'
+                    : 'text-slate-500 hover:bg-slate-100'
+                }`}
+              >
+                Race D-21 계획 (D-21 ~ D-Day)
+              </button>
+            </div>
+
+            {/* Build 주간 계획 격자 */}
+            {subTab === 'build' && (
+              <div className="w-full">
+                {!buildPlan || buildPlan.weeks.length === 0 ? (
+                  <div className="bg-white border border-[#E5E1DA] rounded-xl p-8 text-center text-slate-400 font-normal">
+                    주간 역산 계획 데이터가 없습니다. 시험 과목을 등록해 주세요.
+                  </div>
+                ) : (
+                  <div className="bg-white border border-[#E5E1DA] rounded-xl p-4 overflow-x-auto">
+                    <table className="w-full text-left border-collapse text-xs">
+                      <thead>
+                        <tr className="border-b border-slate-100 text-slate-400 font-normal">
+                          <th className="py-2.5 px-2 w-48">주차 (Runway)</th>
+                          {exam?.subjects.map(subject => (
+                            <th key={subject} className="py-2.5 px-2 min-w-[200px]">{subject}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {buildPlan.weeks.map(week => (
+                          <tr key={week.weekNo} className="border-b border-slate-100 hover:bg-slate-50/40">
+                            <td className="py-4 px-2 font-medium text-slate-700">
+                              <div className="font-semibold text-slate-800">{week.weekNo}주차</div>
+                              <div className="text-[10px] text-slate-400 mt-0.5">D-{week.dDayStart} ~ D-{week.dDayEnd}</div>
+                            </td>
+                            {exam?.subjects.map(subject => {
+                              const cell = week.cells.find(c => c.subject === subject);
+                              
+                              // 트래커 실적 확인
+                              let trackerMatch = null;
+                              let currentReview = '미완료';
+                              if (tracker && cell && cell.material) {
+                                trackerMatch = tracker.items.find(
+                                  item => item.subject === subject && item.material.trim() === cell.material.trim()
+                                );
+                                if (trackerMatch) {
+                                  if (trackerMatch.stage3Done) currentReview = '3회독 완료';
+                                  else if (trackerMatch.stage2Done) currentReview = '2회독 완료';
+                                  else if (trackerMatch.stage1Done) currentReview = '1회독 완료';
+                                }
+                              }
+
+                              return (
+                                <td key={subject} className="py-4 px-2">
+                                  {cell ? (
+                                    <div className="flex flex-col gap-2 p-2.5 bg-slate-50 border border-slate-200 rounded-lg">
+                                      {/* 상단: 목표 회독 드롭다운 & done 체크 */}
+                                      <div className="flex items-center justify-between gap-2">
+                                        <div className="flex items-center gap-1.5">
+                                          <span className="text-[10px] text-slate-400 font-medium">목표:</span>
+                                          <select
+                                            value={cell.reviewGoal}
+                                            onChange={(e) => handleUpdateBuildCell(week.weekNo, subject, 'reviewGoal', Number(e.target.value) as 1 | 2 | 3)}
+                                            className="px-1.5 py-0.5 border border-slate-250 rounded text-[10px] focus:outline-none focus:border-slate-400 bg-white font-normal"
+                                          >
+                                            <option value={1}>1회독 (개념)</option>
+                                            <option value={2}>2회독 (문제)</option>
+                                            <option value={3}>3회독 (암기)</option>
+                                          </select>
+                                        </div>
+                                        <div className="flex items-center gap-1">
+                                          <input
+                                            type="checkbox"
+                                            checked={cell.done}
+                                            onChange={(e) => handleUpdateBuildCell(week.weekNo, subject, 'done', e.target.checked)}
+                                            className="w-3.5 h-3.5 rounded text-slate-800 focus:ring-0 focus:outline-none accent-slate-800 cursor-pointer"
+                                          />
+                                          <span className="text-[10px] text-slate-500 font-medium">완료</span>
+                                        </div>
+                                      </div>
+
+                                      {/* 중단: 교재 입력 */}
+                                      <input
+                                        type="text"
+                                        value={cell.material}
+                                        onChange={(e) => handleUpdateBuildCell(week.weekNo, subject, 'material', e.target.value)}
+                                        placeholder="교재/프린트명"
+                                        className="px-2 py-1 border border-slate-200 rounded text-[10px] focus:outline-none focus:border-slate-400 bg-white w-full font-normal"
+                                      />
+
+                                      {/* 하단: 실적 매핑 표시 */}
+                                      <div className="mt-1 pt-1.5 border-t border-slate-100 flex items-center justify-between text-[9px] font-normal">
+                                        <span className="text-slate-400">N회독 실적:</span>
+                                        {cell.material ? (
+                                          trackerMatch ? (
+                                            <span className={`font-semibold ${currentReview !== '미완료' ? 'text-indigo-600' : 'text-slate-400'}`}>
+                                              {currentReview}
+                                            </span>
+                                          ) : (
+                                            <span className="text-slate-400 italic">트래커 미연동</span>
+                                          )
+                                        ) : (
+                                          <span className="text-slate-400 italic">교재 미지정</span>
+                                        )}
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <span className="text-slate-450 italic text-[10px]">계획 없음</span>
+                                  )}
+                                </td>
+                              );
+                            })}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </div>
+            )}
 
-              {!d21Plan ? (
-                <div className="py-12 text-center text-slate-400 font-normal">
-                  아직 구성된 D-21 플래너가 없습니다. 학생 등록 시 설정된 시험일을 기반으로 생성됩니다.
+            {/* Race D-21 계획 (기존 일일 그리드 & 개별 격자 상세 편집) */}
+            {subTab === 'race' && (
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                {/* 좌측/중간: D-21 달력형 플래너 그리드 */}
+                <div className="lg:col-span-2 bg-white border border-[#E5E1DA] rounded-xl p-4">
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
+                    <span className="font-medium text-slate-800 text-xs">D-21 역산 플래너 그리드 (LETS 리버스 캘린더)</span>
+                    <span className="text-[10px] text-slate-400">격자 칸을 클릭하여 세부 계획을 편집하세요.</span>
+                  </div>
+
+                  {!d21Plan ? (
+                    <div className="py-12 text-center text-slate-400 font-normal">
+                      아직 구성된 D-21 플래너가 없습니다. 학생 등록 시 설정된 시험일을 기반으로 생성됩니다.
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
+                      {d21Plan.cells.map((cell) => (
+                        <div
+                          key={cell.dDay}
+                          onClick={() => startEditCell(cell)}
+                          className={`flex flex-col justify-between border p-2 rounded-lg cursor-pointer transition-all text-[11px] min-h-[75px] ${
+                            cell.done
+                              ? 'bg-green-50 border-green-200 text-[#065F46]'
+                              : cell.dDay === 0
+                              ? 'bg-red-50 border-red-200 text-[#9B1C1C]'
+                              : 'bg-[#FAF9F6] border-slate-200 hover:border-slate-400 text-slate-700'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between border-b border-slate-100 pb-1 mb-1 opacity-80">
+                            <span className="font-medium">
+                              {cell.dDay === 0 ? 'D-Day' : `D-${cell.dDay}`}
+                            </span>
+                            <span className="text-[9px] scale-90 origin-right">
+                              {cell.date.split('-')[2]}일
+                            </span>
+                          </div>
+
+                          <div className="flex-1 line-clamp-2 leading-snug font-normal opacity-90">
+                            {cell.subjects.length > 0 && (
+                              <span className="font-medium inline-block mr-1">
+                                [{cell.subjects.join('/')}]
+                              </span>
+                            )}
+                            {cell.task || '계획 없음'}
+                          </div>
+
+                          <div className="flex items-center justify-between mt-1 pt-1 border-t border-slate-100/50 text-[9px] opacity-75">
+                            <span>{cell.reviewStage ? `${cell.reviewStage}회독` : '-'}</span>
+                            <span className="font-medium">
+                              {cell.done ? '✓ 완수' : '대기'}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
-                  {d21Plan.cells.map((cell) => (
-                    <div
-                      key={cell.dDay}
-                      onClick={() => startEditCell(cell)}
-                      className={`flex flex-col justify-between border p-2 rounded-lg cursor-pointer transition-all text-[11px] min-h-[75px] ${
-                        cell.done
-                          ? 'bg-green-50 border-green-200 text-[#065F46]'
-                          : cell.dDay === 0
-                          ? 'bg-red-50 border-red-200 text-[#9B1C1C]'
-                          : 'bg-[#FAF9F6] border-slate-200 hover:border-slate-400 text-slate-700'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between border-b border-slate-100 pb-1 mb-1 opacity-80">
-                        <span className="font-medium">
-                          {cell.dDay === 0 ? 'D-Day' : `D-${cell.dDay}`}
+
+                {/* 우측: 셀 편집 폼 */}
+                <div className="lg:col-span-1 bg-white border border-[#E5E1DA] rounded-xl p-4">
+                  <span className="font-medium text-slate-800 text-xs block border-b border-slate-100 pb-2 mb-3">개별 격자 상세 편집</span>
+
+                  {editingCell ? (
+                    <div className="flex flex-col gap-3 text-xs font-normal">
+                      <div className="bg-slate-50 border border-slate-200 rounded-lg p-2.5 mb-1">
+                        <span className="font-medium text-slate-800 block text-xs">
+                          {editingCell.dDay === 0 ? 'D-Day (시험일)' : `시험 대비 D-${editingCell.dDay}`}
                         </span>
-                        <span className="text-[9px] scale-90 origin-right">
-                          {cell.date.split('-')[2]}일
-                        </span>
+                        <span className="text-[10px] text-slate-500 mt-0.5 block">날짜: {editingCell.date}</span>
                       </div>
 
-                      <div className="flex-1 line-clamp-2 leading-snug font-normal opacity-90">
-                        {cell.subjects.length > 0 && (
-                          <span className="font-medium inline-block mr-1">
-                            [{cell.subjects.join('/')}]
-                          </span>
-                        )}
-                        {cell.task || '계획 없음'}
+                      <div className="flex flex-col gap-1">
+                        <label className="text-slate-500">배치 과목 (쉼표 구분)</label>
+                        <input
+                          type="text"
+                          value={cellSubjectStr}
+                          onChange={(e) => setCellSubjectStr(e.target.value)}
+                          className="px-3 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:border-slate-400 bg-[#FAF9F6]"
+                          placeholder="수학, 영어"
+                        />
                       </div>
 
-                      <div className="flex items-center justify-between mt-1 pt-1 border-t border-slate-100/50 text-[9px] opacity-75">
-                        <span>{cell.reviewStage ? `${cell.reviewStage}회독` : '-'}</span>
-                        <span className="font-medium">
-                          {cell.done ? '✓ 완수' : '대기'}
-                        </span>
+                      <div className="flex flex-col gap-1">
+                        <label className="text-slate-500">수행 과제 / 할 일</label>
+                        <textarea
+                          value={cellTask}
+                          onChange={(e) => setCellTask(e.target.value)}
+                          className="px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:border-slate-400 bg-[#FAF9F6] h-16 resize-none"
+                          placeholder="기출 단원 풀이 및 오답"
+                        />
+                      </div>
+
+                      <div className="flex flex-col gap-1">
+                        <label className="text-slate-500">지정 회독 단계</label>
+                        <select
+                          value={cellStage === null ? '' : cellStage}
+                          onChange={(e) => setCellStage(e.target.value ? Number(e.target.value) : null)}
+                          className="px-3 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:border-slate-400 bg-[#FAF9F6]"
+                        >
+                          <option value="">없음 / 미지정</option>
+                          <option value={1}>1회독 (개념)</option>
+                          <option value={2}>2회독 (문제풀이)</option>
+                          <option value={3}>3회독 (암기단권화)</option>
+                        </select>
+                      </div>
+
+                      <div className="flex items-center justify-between border border-slate-100 p-2 rounded-lg bg-slate-50">
+                        <label className="text-slate-500">일정 수행 완료 체크</label>
+                        <input
+                          type="checkbox"
+                          checked={cellDone}
+                          onChange={(e) => setCellDone(e.target.checked)}
+                          className="w-4 h-4 rounded text-slate-800 focus:ring-0 focus:outline-none accent-slate-800"
+                        />
+                      </div>
+
+                      <div className="flex gap-2 mt-2">
+                        <button
+                          type="button"
+                          onClick={() => setEditingCell(null)}
+                          className="flex-1 py-2 text-center text-xs font-normal text-slate-500 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
+                        >
+                          취소
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleSaveCell}
+                          className="flex-1 py-2 text-center text-xs font-medium text-white bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors"
+                        >
+                          계획 변경 저장
+                        </button>
                       </div>
                     </div>
-                  ))}
+                  ) : (
+                    <div className="py-12 text-center text-slate-400 font-normal border border-dashed border-slate-200 rounded-xl">
+                      격자에서 수정하고 싶은 D-Day 카드를 클릭하면 상세 편집 창이 로드됩니다.
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-
-            {/* 우측: 셀 편집 폼 */}
-            <div className="lg:col-span-1 bg-white border border-[#E5E1DA] rounded-xl p-4">
-              <span className="font-medium text-slate-800 text-xs block border-b border-slate-100 pb-2 mb-3">개별 격자 상세 편집</span>
-
-              {editingCell ? (
-                <div className="flex flex-col gap-3 text-xs font-normal">
-                  <div className="bg-slate-50 border border-slate-200 rounded-lg p-2.5 mb-1">
-                    <span className="font-medium text-slate-800 block text-xs">
-                      {editingCell.dDay === 0 ? 'D-Day (시험일)' : `시험 대비 D-${editingCell.dDay}`}
-                    </span>
-                    <span className="text-[10px] text-slate-500 mt-0.5 block">날짜: {editingCell.date}</span>
-                  </div>
-
-                  <div className="flex flex-col gap-1">
-                    <label className="text-slate-500">배치 과목 (쉼표 구분)</label>
-                    <input
-                      type="text"
-                      value={cellSubjectStr}
-                      onChange={(e) => setCellSubjectStr(e.target.value)}
-                      className="px-3 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:border-slate-400 bg-[#FAF9F6]"
-                      placeholder="수학, 영어"
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-1">
-                    <label className="text-slate-500">수행 과제 / 할 일</label>
-                    <textarea
-                      value={cellTask}
-                      onChange={(e) => setCellTask(e.target.value)}
-                      className="px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:border-slate-400 bg-[#FAF9F6] h-16 resize-none"
-                      placeholder="기출 단원 풀이 및 오답"
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-1">
-                    <label className="text-slate-500">지정 회독 단계</label>
-                    <select
-                      value={cellStage === null ? '' : cellStage}
-                      onChange={(e) => setCellStage(e.target.value ? Number(e.target.value) : null)}
-                      className="px-3 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:border-slate-400 bg-[#FAF9F6]"
-                    >
-                      <option value="">없음 / 미지정</option>
-                      <option value={1}>1회독 (개념)</option>
-                      <option value={2}>2회독 (문제풀이)</option>
-                      <option value={3}>3회독 (암기단권화)</option>
-                    </select>
-                  </div>
-
-                  <div className="flex items-center justify-between border border-slate-100 p-2 rounded-lg bg-slate-50">
-                    <label className="text-slate-500">일정 수행 완료 체크</label>
-                    <input
-                      type="checkbox"
-                      checked={cellDone}
-                      onChange={(e) => setCellDone(e.target.checked)}
-                      className="w-4 h-4 rounded text-slate-800 focus:ring-0 focus:outline-none accent-slate-800"
-                    />
-                  </div>
-
-                  <div className="flex gap-2 mt-2">
-                    <button
-                      onClick={() => setEditingCell(null)}
-                      className="flex-1 py-2 text-center text-xs font-normal text-slate-500 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
-                    >
-                      취소
-                    </button>
-                    <button
-                      onClick={handleSaveCell}
-                      className="flex-1 py-2 text-center text-xs font-medium text-white bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors"
-                    >
-                      계획 변경 저장
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div className="py-12 text-center text-slate-400 font-normal border border-dashed border-slate-200 rounded-xl">
-                  격자에서 수정하고 싶은 D-Day 카드를 클릭하면 상세 편집 창이 로드됩니다.
-                </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         )}
 
