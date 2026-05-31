@@ -13,8 +13,37 @@ import {
   ArrowLeft,
   PenTool
 } from 'lucide-react';
-import { getStudents, getDailyRecords, saveDailyRecords } from '../../../lib/storage';
-import { Student, DailyRecord, Attendance } from '../../../types';
+import { 
+  getStudents, 
+  getDailyRecords, 
+  saveDailyRecords, 
+  getStudentStatuses, 
+  getExams, 
+  getD21Plans, 
+  getBuildPlans, 
+  getReviewTrackers 
+} from '../../../lib/storage';
+import { 
+  Student, 
+  DailyRecord, 
+  Attendance, 
+  StudentStatus, 
+  ReviewTracker 
+} from '../../../types';
+
+interface PerformanceTask {
+  id: string;
+  studentId: string;
+  studentName: string;
+  grade: string;
+  school: string;
+  subject: string;
+  title: string;
+  dueDate: string;
+  status: '대기' | '진행중' | '완료';
+  step: '주제선정' | '자료수집' | '초안작성' | '피드백' | '최종제출';
+  managerComment: string;
+}
 
 export default function StudentDraftInputPage() {
   const router = useRouter();
@@ -38,6 +67,12 @@ export default function StudentDraftInputPage() {
   // 기존 기록 상태
   const [existingRecord, setExistingRecord] = useState<DailyRecord | null>(null);
 
+  // 추가 조회 전용 데이터 상태
+  const [studentStatus, setStudentStatus] = useState<StudentStatus | null>(null);
+  const [todayPlannerCell, setTodayPlannerCell] = useState<{ subjects: string[]; task: string; reviewGoal?: number } | null>(null);
+  const [performanceTasks, setPerformanceTasks] = useState<PerformanceTask[]>([]);
+  const [tracker, setTracker] = useState<ReviewTracker | null>(null);
+
   useEffect(() => {
     const loadStudentData = async () => {
       try {
@@ -60,6 +95,72 @@ export default function StudentDraftInputPage() {
           setCondition(todayRec.condition);
           setStudentMemo(todayRec.managerNote || ''); // 학생 메모는 managerNote에 보관
         }
+
+        // [1] 학생 Status 및 D-day/Phase 로드
+        const statuses = await getStudentStatuses();
+        const myStatus = statuses.find(s => s.studentId === studentId) || null;
+        setStudentStatus(myStatus);
+
+        // [2] Exam 정보 로드 (미사용)
+        await getExams();
+
+        // [3] 오늘 계획 셀 추출
+        if (myStatus) {
+          if (myStatus.phase === 'Race') {
+            const d21Plans = await getD21Plans();
+            const myPlan = d21Plans.find(p => p.studentId === studentId) || null;
+            if (myPlan) {
+              const cell = myPlan.cells.find(c => c.date === TODAY_DATE);
+              if (cell) {
+                setTodayPlannerCell({
+                  subjects: cell.subjects,
+                  task: cell.task,
+                  reviewGoal: cell.reviewStage || undefined
+                });
+              }
+            }
+          } else if (myStatus.phase === 'Build') {
+            const buildPlans = await getBuildPlans();
+            const myBuildPlan = buildPlans.find(p => p.studentId === studentId) || null;
+            if (myBuildPlan) {
+              const dDayVal = myStatus.dDay;
+              const todayWeek = myBuildPlan.weeks.find(w => dDayVal <= w.dDayStart && dDayVal >= w.dDayEnd);
+              if (todayWeek) {
+                const subjects = todayWeek.cells.map(c => c.subject);
+                const taskDesc = todayWeek.cells.map(c => `${c.subject}: ${c.material || '미정'} (${c.reviewGoal}회독)`).join(', ');
+                setTodayPlannerCell({
+                  subjects,
+                  task: `${todayWeek.weekNo}주차 계획 - ${taskDesc}`
+                });
+              }
+            }
+          }
+        }
+
+        // [4] 수행평가 로드 (마감 임박순 2~3개)
+        const savedPerf = localStorage.getItem('edulink_performance_tasks');
+        let allPerfTasks: PerformanceTask[] = [];
+        if (savedPerf) {
+          allPerfTasks = JSON.parse(savedPerf);
+        } else {
+          allPerfTasks = [
+            { id: 'perf_01', studentId: 'stu_01', studentName: '김민준', grade: '중3', school: '신라중학교', subject: '영어', title: '나의 진로 관련 영작 에세이 제출', dueDate: '2026-06-03', status: '진행중', step: '초안작성', managerComment: '' },
+            { id: 'perf_02', studentId: 'stu_02', studentName: '이서연', grade: '고1', school: '영동고등학교', subject: '통합과학', title: '신재생 에너지 탐구 포스터 제작', dueDate: '2026-06-05', status: '대기', step: '자료수집', managerComment: '' },
+            { id: 'perf_03', studentId: 'stu_04', studentName: '최유나', grade: '고1', school: '영동고등학교', subject: '국어', title: '현대 소설 등장인물 심리 분석 보고서', dueDate: '2026-05-30', status: '완료', step: '최종제출', managerComment: '' },
+            { id: 'perf_04', studentId: 'stu_05', studentName: '정하린', grade: '고2', school: '대진고등학교', subject: '수학I', title: '삼각함수를 활용한 생체 바이오리듬 모델링', dueDate: '2026-06-08', status: '진행중', step: '피드백', managerComment: '' }
+          ];
+        }
+        const myPerfTasks = allPerfTasks
+          .filter(t => t.studentId === studentId && t.status !== '완료')
+          .sort((a, b) => a.dueDate.localeCompare(b.dueDate))
+          .slice(0, 3);
+        setPerformanceTasks(myPerfTasks);
+
+        // [5] N회독 트래커 로드
+        const trackers = await getReviewTrackers();
+        const myTracker = trackers.find(t => t.studentId === studentId) || null;
+        setTracker(myTracker);
+
       } catch (err) {
         console.error('Failed to load student data:', err);
       } finally {
@@ -184,9 +285,16 @@ export default function StudentDraftInputPage() {
 
           <div className="mt-4 pt-4 border-t border-slate-700/50 flex items-center justify-between">
             <span className="text-xs text-slate-300">작성 기준 날짜</span>
-            <span className="text-xs font-bold text-slate-100 bg-slate-850 px-2.5 py-1 rounded-lg">
-              2026.05.27 (월)
-            </span>
+            <div className="flex items-center gap-2">
+              {studentStatus && (
+                <span className="text-[10px] font-bold text-white bg-indigo-600 px-2 py-0.5 rounded">
+                  {studentStatus.phase} · D-{studentStatus.dDay}
+                </span>
+              )}
+              <span className="text-xs font-bold text-slate-100 bg-slate-850 px-2.5 py-1 rounded-lg">
+                2026.05.27 (월)
+              </span>
+            </div>
           </div>
         </div>
 
@@ -212,6 +320,103 @@ export default function StudentDraftInputPage() {
             </div>
           </div>
         ) : null}
+
+        {/* [보기 전용 대시보드 카드 영역] */}
+        <div className="space-y-4 mb-6">
+          {/* 1. 오늘 할 일 */}
+          <div className="bg-white border border-[#E5E1DA] rounded-2xl p-4 shadow-sm">
+            <h3 className="text-xs font-bold text-slate-800 flex items-center gap-1.5 mb-2.5">
+              <span>📅</span>
+              <span>오늘 나의 역산 계획 (읽기 전용)</span>
+            </h3>
+            {todayPlannerCell ? (
+              <div className="bg-slate-50 border border-slate-150 rounded-xl p-3 text-xs leading-relaxed text-slate-700">
+                <div className="flex flex-wrap gap-1 mb-2">
+                  {todayPlannerCell.subjects.map(s => (
+                    <span key={s} className="px-2 py-0.5 rounded bg-slate-200 text-slate-700 font-bold text-[10px]">{s}</span>
+                  ))}
+                  {todayPlannerCell.reviewGoal && (
+                    <span className="px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 font-bold text-[10px]">{todayPlannerCell.reviewGoal}회독 목표</span>
+                  )}
+                </div>
+                <p className="font-semibold text-slate-800">{todayPlannerCell.task}</p>
+              </div>
+            ) : (
+              <p className="text-xs text-slate-400 italic bg-slate-50 p-3 rounded-xl border border-[#E5E1DA] text-center select-none">
+                오늘 배정된 플래너 계획이 없습니다.
+              </p>
+            )}
+          </div>
+
+          {/* 2. 수행 마감 임박 */}
+          {performanceTasks.length > 0 && (
+            <div className="bg-white border border-[#E5E1DA] rounded-2xl p-4 shadow-sm">
+              <h3 className="text-xs font-bold text-slate-800 flex items-center gap-1.5 mb-2.5">
+                <span>⚠️</span>
+                <span>수행평가 마감 임박 목록 (읽기 전용)</span>
+              </h3>
+              <div className="flex flex-col gap-2">
+                {performanceTasks.map(task => {
+                  const today = new Date('2026-05-27');
+                  const due = new Date(task.dueDate);
+                  const diffDays = Math.ceil((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+                  return (
+                    <div key={task.id} className="bg-rose-50/40 border border-rose-100 rounded-xl p-3 flex justify-between items-center text-xs">
+                      <div>
+                        <div className="flex items-center gap-1">
+                          <span className="px-1.5 py-0.5 rounded bg-rose-100 text-rose-800 font-bold text-[9px]">{task.subject}</span>
+                          <span className="font-semibold text-slate-800">{task.title}</span>
+                        </div>
+                        <div className="text-[10px] text-slate-400 mt-1">마감: {task.dueDate} · {task.step} 단계</div>
+                      </div>
+                      <span className="font-bold text-rose-600 bg-white border border-rose-200 px-2 py-0.5 rounded text-[10px] shrink-0">
+                        D-{diffDays}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* 3. 누적 회독 현황 */}
+          {tracker && tracker.items.length > 0 && (
+            <div className="bg-white border border-[#E5E1DA] rounded-2xl p-4 shadow-sm">
+              <h3 className="text-xs font-bold text-slate-800 flex items-center gap-1.5 mb-2.5">
+                <span>📚</span>
+                <span>과목별 교재 N회독 현황 (읽기 전용)</span>
+              </h3>
+              <div className="divide-y divide-slate-100 border border-slate-100 bg-slate-50/30 overflow-hidden text-[11px] rounded-xl">
+                {tracker.items.map((item, idx) => {
+                  let currentReview = '미완료';
+                  if (item.stage3Done) currentReview = '3회독 (암기 완료)';
+                  else if (item.stage2Done) currentReview = '2회독 (문제 완료)';
+                  else if (item.stage1Done) currentReview = '1회독 (개념 완료)';
+                  return (
+                    <div key={idx} className="flex justify-between items-center p-3">
+                      <div>
+                        <span className="font-bold text-slate-700">[{item.subject}]</span>
+                        <span className="text-slate-655 ml-1 font-normal">{item.material}</span>
+                      </div>
+                      <span className={`font-semibold text-[10px] px-2 py-0.5 rounded ${
+                        currentReview !== '미완료' ? 'bg-indigo-50 text-indigo-700' : 'bg-slate-100 text-slate-400'
+                      }`}>
+                        {currentReview}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* ───── 구분선 ───── */}
+        <div className="relative flex py-2 items-center mb-4 no-print">
+          <div className="flex-grow border-t border-dashed border-[#E5E1DA]"></div>
+          <span className="flex-shrink mx-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">오늘 기록하기</span>
+          <div className="flex-grow border-t border-dashed border-[#E5E1DA]"></div>
+        </div>
 
         {/* 입력 양식 */}
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
@@ -326,9 +531,19 @@ export default function StudentDraftInputPage() {
           <div className="bg-white border border-[#E5E1DA] rounded-2xl p-4 shadow-sm flex items-center justify-between">
             <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-700">
               <CheckCircle2 className="w-4 h-4 text-slate-500" />
-              <div className="flex flex-col">
-                <span>오늘 계획 완수 완료</span>
-                <span className="text-[10px] text-slate-400 font-normal mt-0.5">매니저님이 지정한 일일 플랜 전부 수행 여부</span>
+              <div className="flex flex-col pr-2">
+                <span>
+                  {todayPlannerCell 
+                    ? `오늘 계획(${todayPlannerCell.subjects.join('/')}) 완수 완료`
+                    : '오늘 계획 완수 완료'
+                  }
+                </span>
+                <span className="text-[10px] text-slate-400 font-normal mt-0.5 leading-tight">
+                  {todayPlannerCell 
+                    ? todayPlannerCell.task
+                    : '매니저님이 지정한 일일 플랜 전부 수행 여부'
+                  }
+                </span>
               </div>
             </div>
 
