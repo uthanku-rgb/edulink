@@ -1,58 +1,43 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
-import Header from '../components/Header';
-import { 
-  getStudentStatuses, 
-  getDailyCards, 
-  seedMockDataIfEmpty, 
-  seedElementaryMockDataIfEmpty 
-} from '../lib/storage';
+import { useRouter } from 'next/navigation';
 import { 
   GraduationCap, 
   Smile, 
-  ChevronRight, 
   Settings, 
-  UserCheck, 
-  ShieldAlert, 
-  ClipboardList, 
   Sparkles,
-  BookOpen,
-  MessageSquare
+  ChevronRight,
+  MessageSquare,
+  User,
+  Smartphone,
+  Info,
+  X,
+  ExternalLink,
+  MessageCircle
 } from 'lucide-react';
+import { getStudents, seedMockDataIfEmpty } from '../lib/storage';
+import { Student } from '../types';
 
-export default function PortalPage() {
+export default function PortalLandingPage() {
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
-  const [middleHighCount, setMiddleHighCount] = useState(28);
-  const [elemCount, setElemCount] = useState(6);
-  const [middleHighCrisis, setMiddleHighCrisis] = useState(0);
-  const [elemCareCount, setElemCareCount] = useState(0);
+  const [students, setStudents] = useState<Student[]>([]);
+  const [selectedSecondaryId, setSelectedSecondaryId] = useState<string>('');
+  const [isParentModalOpen, setIsParentModalOpen] = useState(false);
 
   useEffect(() => {
     const init = async () => {
       try {
         setLoading(true);
         await seedMockDataIfEmpty();
-        await seedElementaryMockDataIfEmpty();
-
-        // 중고등 통계
-        const secondaryStatuses = await getStudentStatuses();
-        setMiddleHighCount(secondaryStatuses.length);
-        setMiddleHighCrisis(secondaryStatuses.filter(s => s.state === 'crisis').length);
-
-        // 초등 통계
-        const elemCards = getDailyCards();
-        const today = new Date();
-        const todayStr = today.toISOString().split('T')[0];
-        const todayCards = elemCards.filter(c => c.date === todayStr);
-        
-        // 초등 케어 시그널 연산
-        const watchOrCareCount = todayCards.filter(c => c.attendance === '결석' || c.condition <= 2 || (c.helpPoints && c.helpPoints.length >= 2)).length;
-        setElemCount(6); // 초등학생 총 6명 고정
-        setElemCareCount(watchOrCareCount);
+        const loadedStudents = await getStudents();
+        setStudents(loadedStudents);
+        if (loadedStudents.length > 0) {
+          setSelectedSecondaryId(loadedStudents[0].id);
+        }
       } catch (err) {
-        console.error('Failed to load portal stats:', err);
+        console.error('Failed to load portal data:', err);
       } finally {
         setLoading(false);
       }
@@ -60,187 +45,295 @@ export default function PortalPage() {
     init();
   }, []);
 
+  const handleRoleSelection = (role: string, targetPath: string) => {
+    localStorage.setItem('user-role', role);
+    router.push(targetPath);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#FAF9F6] flex items-center justify-center font-normal text-xs text-slate-400">
-        포탈 로딩 중...
+        에듀링크 포털 초기화 중...
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#FAF9F6] flex flex-col pb-12 font-sans text-slate-800">
-      {/* 포탈 헤더 */}
-      <Header 
-        title="에듀링크 통합포탈" 
-        studentCount={middleHighCount + elemCount} 
-        managerName="정수진 코치" 
-        dateString="2026.05.27 (월)" 
-      />
+    <div className="min-h-screen bg-[#0F172A] text-slate-100 flex flex-col relative overflow-hidden font-sans">
+      {/* Decorative background gradients */}
+      <div className="absolute top-[-10%] left-[-20%] w-[60%] h-[60%] bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-emerald-500/5 rounded-full blur-[100px] pointer-events-none" />
 
-      {/* 포탈 메인 영역 */}
-      <main className="flex-1 max-w-4xl w-full mx-auto px-4 md:px-8 mt-8 flex flex-col justify-center">
-        <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center justify-center gap-2">
-            <Sparkles className="w-5 h-5 text-indigo-500 animate-pulse" />
-            에듀링크 학습 관리 시스템
-          </h2>
-          <p className="text-xs text-slate-500 mt-1.5">담당 학생들의 학교 급별 성격에 맞게 설계된 전용 코칭 대시보드로 진입하세요.</p>
+      {/* Main container */}
+      <main className="flex-1 flex flex-col items-center justify-center max-w-5xl w-full mx-auto px-6 py-12 z-10">
+        
+        {/* Logo and Greeting */}
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[11px] font-semibold mb-3">
+            <Sparkles className="w-3.5 h-3.5 animate-pulse" />
+            EduLink Unified Portal
+          </div>
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-white">
+            에듀링크 통합 포털 게이트웨이
+          </h1>
+          <p className="text-xs text-slate-400 mt-2.5 max-w-lg mx-auto leading-relaxed">
+            화면을 보시는 사용자의 역할에 따라 전용 시스템 포털로 진입하십시오.<br />
+            각 역할별로 최적화된 전용 화면 구성과 메뉴 제어가 제공됩니다.
+          </p>
         </div>
 
-        {/* 대시보드 카드 구도 (중고등 vs 초등) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto w-full">
+        {/* Roles Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl">
           
-          {/* Card 1: 중고등 코칭 센터 */}
-          <Link 
-            href="/middle-high"
-            className="group bg-white border border-[#E5E1DA] hover:border-indigo-400 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all active:scale-[0.99] flex flex-col justify-between h-64 text-left"
-          >
+          {/* Card 1: 초등학생 포털 */}
+          <div className="bg-[#1E293B] border border-slate-800 hover:border-emerald-500/40 rounded-2xl p-6 transition-all duration-300 hover:translate-y-[-2px] flex flex-col justify-between h-[250px] shadow-lg">
             <div>
-              <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100 mb-4 transition-transform group-hover:scale-105">
-                <GraduationCap className="w-6 h-6" />
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-emerald-500/20">
+                  <Smile className="w-5.5 h-5.5" />
+                </div>
+                <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20 tracking-wider">STUDENT (ELEM)</span>
               </div>
-              <h3 className="text-lg font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">
-                중고등 코칭 센터
-              </h3>
-              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-                D-21 역산 공부 계획 수립, 핵심 과목 N회독 완수율 체크, 모의/내신 성적 및 수행평가 통합 관리.
+              <h3 className="text-base font-bold text-white">초등학생 포털</h3>
+              <p className="text-xs text-slate-400 mt-2 leading-relaxed">
+                오늘 나의 루틴 퀘스트 점검 및 과목 전용 피드백 도구(영어 리틀팍스, 디베이트 도우미, 뇌 예열 게임)에 안전하게 접속합니다.
               </p>
             </div>
-            
-            <div className="border-t border-slate-100 pt-4 mt-4 flex items-center justify-between text-xs">
-              <div className="flex gap-3 text-slate-500">
-                <span>학생 <strong className="text-slate-800">{middleHighCount}명</strong></span>
-                {middleHighCrisis > 0 && (
-                  <span className="flex items-center gap-1 text-red-600 font-medium">
-                    <ShieldAlert className="w-3.5 h-3.5" /> 위기 {middleHighCrisis}명
-                  </span>
-                )}
-              </div>
-              <span className="text-indigo-600 font-medium flex items-center gap-0.5 group-hover:translate-x-0.5 transition-transform">
-                진입하기 <ChevronRight className="w-3.5 h-3.5" />
-              </span>
-            </div>
-          </Link>
+            <button
+              onClick={() => handleRoleSelection('student-elem', '/my/elementary')}
+              className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1 transition-all"
+            >
+              초등 포털 진입하기
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
 
-          {/* Card 2: 초등 루틴 센터 */}
-          <Link 
-            href="/elementary"
-            className="group bg-white border border-[#E5E1DA] hover:border-emerald-400 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all active:scale-[0.99] flex flex-col justify-between h-64 text-left"
-          >
+          {/* Card 2: 중고등학생 포털 */}
+          <div className="bg-[#1E293B] border border-slate-800 hover:border-blue-500/40 rounded-2xl p-6 transition-all duration-300 hover:translate-y-[-2px] flex flex-col justify-between h-[250px] shadow-lg">
             <div>
-              <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100 mb-4 transition-transform group-hover:scale-105">
-                <Smile className="w-6 h-6" />
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center border border-blue-500/20">
+                  <GraduationCap className="w-5.5 h-5.5" />
+                </div>
+                <span className="text-[10px] font-bold text-blue-400 bg-blue-500/10 px-2.5 py-0.5 rounded-full border border-blue-500/20 tracking-wider">STUDENT (SEC)</span>
               </div>
-              <h3 className="text-lg font-bold text-slate-900 group-hover:text-emerald-600 transition-colors">
-                초등 루틴 센터
-              </h3>
-              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-                일일 공부 습관 P1~P4 완수 현황 추적, 도움 포인트 알림, 실시간 컨디션 체크 및 밀착 케어 시그널 점검.
+              <h3 className="text-base font-bold text-white">중고등학생 포털</h3>
+              <p className="text-xs text-slate-400 mt-2 leading-relaxed">
+                오늘의 순공 학습 시간 및 회독 단계, 집중도 셀프 체크 입력과 나의 D-21 플래너, 수행평가 마감일을 확인합니다.
               </p>
             </div>
             
-            <div className="border-t border-slate-100 pt-4 mt-4 flex items-center justify-between text-xs">
-              <div className="flex gap-3 text-slate-500">
-                <span>학생 <strong className="text-slate-800">{elemCount}명</strong></span>
-                {elemCareCount > 0 ? (
-                  <span className="flex items-center gap-1 text-[#D98B6F] font-medium">
-                    <UserCheck className="w-3.5 h-3.5" /> 케어 대상 {elemCareCount}명
-                  </span>
-                ) : (
-                  <span className="text-green-600 font-medium">순항 중</span>
-                )}
-              </div>
-              <span className="text-emerald-600 font-medium flex items-center gap-0.5 group-hover:translate-x-0.5 transition-transform">
-                진입하기 <ChevronRight className="w-3.5 h-3.5" />
-              </span>
+            <div className="flex items-center gap-2 mt-4">
+              <select
+                value={selectedSecondaryId}
+                onChange={(e) => setSelectedSecondaryId(e.target.value)}
+                className="flex-1 bg-slate-800 border border-slate-700 rounded-xl text-xs p-2.5 text-white font-medium focus:outline-none focus:ring-1 focus:ring-blue-500"
+              >
+                {students.map(s => (
+                  <option key={s.id} value={s.id}>
+                    {s.name} ({s.school} · {s.grade})
+                  </option>
+                ))}
+              </select>
+              <button
+                onClick={() => handleRoleSelection('student-midhigh', `/my/${selectedSecondaryId}`)}
+                className="px-4 py-2.5 bg-blue-600 hover:bg-blue-50 text-white font-bold rounded-xl text-xs shrink-0 transition-all font-sans"
+              >
+                진입
+              </button>
             </div>
-          </Link>
+          </div>
+
+          {/* Card 3: 코치 포털 */}
+          <div className="bg-[#1E293B] border border-slate-800 hover:border-indigo-500/40 rounded-2xl p-6 transition-all duration-300 hover:translate-y-[-2px] flex flex-col justify-between h-[250px] shadow-lg">
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center border border-indigo-500/20">
+                  <User className="w-5.5 h-5.5" />
+                </div>
+                <span className="text-[10px] font-bold text-indigo-400 bg-indigo-500/10 px-2.5 py-0.5 rounded-full border border-indigo-500/20 tracking-wider">COACH</span>
+              </div>
+              <h3 className="text-base font-bold text-white">코치 포털</h3>
+              <p className="text-xs text-slate-400 mt-2 leading-relaxed">
+                중고등 역산 계획 검토, 오답 취약점 분석, 문제 처방 및 주간/시즌 리포트 검수·발송을 관리하는 코칭 전문 콘솔로 진입합니다.
+              </p>
+            </div>
+            <button
+              onClick={() => handleRoleSelection('coach', '/middle-high')}
+              className="w-full py-2.5 bg-indigo-650 hover:bg-indigo-650/80 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1 transition-all"
+            >
+              코칭 대시보드 진입
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Card 4: 서포터 포털 */}
+          <div className="bg-[#1E293B] border border-slate-800 hover:border-teal-500/40 rounded-2xl p-6 transition-all duration-300 hover:translate-y-[-2px] flex flex-col justify-between h-[250px] shadow-lg">
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-xl bg-teal-500/10 text-teal-400 flex items-center justify-center border border-teal-500/20">
+                  <Settings className="w-5.5 h-5.5" />
+                </div>
+                <span className="text-[10px] font-bold text-teal-400 bg-teal-500/10 px-2.5 py-0.5 rounded-full border border-teal-500/20 tracking-wider">SUPPORTER</span>
+              </div>
+              <h3 className="text-base font-bold text-white">서포터 포털</h3>
+              <p className="text-xs text-slate-400 mt-2 leading-relaxed">
+                초등학생 등원 출결 체크, 일일 공부 습관 루틴 입력, 과목별 피드백 기입 및 완전학습 점검을 전담하는 운영 콘솔로 진입합니다.
+              </p>
+            </div>
+            <button
+              onClick={() => handleRoleSelection('supporter', '/elementary')}
+              className="w-full py-2.5 bg-teal-600 hover:bg-teal-500 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1 transition-all"
+            >
+              서포터 대시보드 진입
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
 
         </div>
 
-        {/* 퀵 숏컷 영역 */}
-        <section className="mt-12 bg-white border border-[#E5E1DA] rounded-2xl p-5 max-w-3xl mx-auto w-full">
-          <h4 className="text-xs font-bold text-slate-500 mb-3 flex items-center gap-1.5 uppercase tracking-wider">
-            ⚡ 과목 특화 & 학습 처방 단축 링크
-          </h4>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-            <Link 
-              href="/english/review"
-              className="p-3 bg-slate-50 hover:bg-slate-100 border border-slate-200/50 rounded-xl font-medium flex flex-col gap-1 text-slate-700"
-            >
-              <span className="text-slate-400 text-[10px] block">초등 영어</span>
-              <span className="flex items-center justify-between">
-                영어 점검판 <BookOpen className="w-3.5 h-3.5 text-slate-400" />
-              </span>
-            </Link>
-
-            <Link 
-              href="/debate/review"
-              className="p-3 bg-slate-50 hover:bg-slate-100 border border-slate-200/50 rounded-xl font-medium flex flex-col gap-1 text-slate-700"
-            >
-              <span className="text-slate-400 text-[10px] block">초등 토론</span>
-              <span className="flex items-center justify-between">
-                토론 점검판 <MessageSquare className="w-3.5 h-3.5 text-slate-400" />
-              </span>
-            </Link>
-
-            <Link 
-              href="/question-bank"
-              className="p-3 bg-slate-50 hover:bg-slate-100 border border-slate-200/50 rounded-xl font-medium flex flex-col gap-1 text-slate-700"
-            >
-              <span className="text-slate-400 text-[10px] block">중고등 내신</span>
-              <span className="flex items-center justify-between">
-                문제 은행 <ClipboardList className="w-3.5 h-3.5 text-slate-400" />
-              </span>
-            </Link>
-
-            <Link 
-              href="/workshop"
-              className="p-3 bg-slate-50 hover:bg-slate-100 border border-slate-200/50 rounded-xl font-medium flex flex-col gap-1 text-slate-700"
-            >
-              <span className="text-slate-400 text-[10px] block">코치용 세션</span>
-              <span className="flex items-center justify-between">
-                워크샵 진행 <Settings className="w-3.5 h-3.5 text-slate-400" />
-              </span>
-            </Link>
-          </div>
-        </section>
-
-        {/* 리포트 및 관리 시스템 바로가기 */}
-        <section className="mt-6 bg-white border border-[#E5E1DA] rounded-2xl p-5 max-w-3xl mx-auto w-full">
-          <h4 className="text-xs font-bold text-slate-500 mb-3 flex items-center gap-1.5 uppercase tracking-wider">
-            📊 에듀링크 리포트 및 등록 관리
-          </h4>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-            <Link 
-              href="/reports/review"
-              className="p-4 bg-indigo-50/20 hover:bg-indigo-50/50 border border-indigo-150 rounded-2xl font-semibold flex flex-col gap-1 text-slate-800 transition-colors"
-            >
-              <span className="text-indigo-600 text-[10px] font-bold block uppercase tracking-wider">코치 권한</span>
-              <span className="flex items-center justify-between text-sm">
-                리포트 검수 큐 바로가기 <ChevronRight className="w-4 h-4 text-indigo-500" />
-              </span>
-              <p className="text-[11px] text-slate-400 font-normal mt-1 leading-normal">
-                학습 주간 리포트 검수, 코치 의견 작성 및 승인, 리포트 카카오톡 알림톡 전송
+        {/* Bottom Parent Quick link */}
+        <div className="mt-8 text-center bg-[#1E293B]/60 border border-slate-800 rounded-2xl p-4 max-w-4xl w-full flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="flex items-center gap-3 text-left">
+            <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/20">
+              <MessageSquare className="w-5 h-5" />
+            </div>
+            <div>
+              <h4 className="text-xs font-bold text-white flex items-center gap-1">
+                학부모용 알림톡 채널 (No Screen)
+              </h4>
+              <p className="text-[10px] text-slate-400 mt-0.5">
+                학부모님 포털 화면은 없으며, 매주 코치가 승인한 리포트가 카카오톡 알림톡으로 자동 발송됩니다.
               </p>
-            </Link>
-
-            <Link 
-              href="/desk"
-              className="p-4 bg-emerald-50/20 hover:bg-emerald-50/50 border border-emerald-150 rounded-2xl font-semibold flex flex-col gap-1 text-slate-800 transition-colors"
-            >
-              <span className="text-emerald-600 text-[10px] font-bold block uppercase tracking-wider">데스크 권한</span>
-              <span className="flex items-center justify-between text-sm">
-                데스크 등록 관리 콘솔 바로가기 <ChevronRight className="w-4 h-4 text-emerald-500" />
-              </span>
-              <p className="text-[11px] text-slate-400 font-normal mt-1 leading-normal">
-                학생별 프리워크(추가과금) 수강 ON/OFF 토글 제어 및 데이터베이스 동기화
-              </p>
-            </Link>
+            </div>
           </div>
-        </section>
+          <button
+            onClick={() => setIsParentModalOpen(true)}
+            className="px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs transition-all shrink-0 flex items-center justify-center gap-1.5"
+          >
+            <MessageCircle className="w-4 h-4 text-slate-950" />
+            알림톡 양식 확인하기
+          </button>
+        </div>
+
       </main>
+
+      {/* KakaoTalk Notification Mockup Modal */}
+      {isParentModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[#1E293B] rounded-2xl border border-slate-700 max-w-sm w-full relative overflow-hidden animate-in fade-in-50 zoom-in-95 duration-200">
+            {/* Modal Header */}
+            <div className="p-4 border-b border-slate-850 flex justify-between items-center bg-[#0F172A]">
+              <div className="flex items-center gap-1.5">
+                <Smartphone className="w-4 h-4 text-indigo-400" />
+                <span className="text-xs font-bold text-white">학부모 카카오 알림톡 예시</span>
+              </div>
+              <button
+                onClick={() => setIsParentModalOpen(false)}
+                className="p-1 rounded bg-slate-800 text-slate-400 hover:text-white transition-all"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* KakaoTalk Background Simulator */}
+            <div className="bg-[#BACBDB] px-4 py-6 h-[480px] overflow-y-auto font-sans flex flex-col justify-start">
+              {/* Date Stamp */}
+              <div className="mx-auto bg-black/10 rounded-full px-3 py-1 text-[9px] text-white/95 select-none font-medium mb-4">
+                2026년 5월 27일 월요일
+              </div>
+
+              {/* Kakao Message Bubble */}
+              <div className="max-w-[280px] bg-white rounded-2xl shadow-sm text-slate-800 overflow-hidden relative self-start">
+                
+                {/* Yellow Kakao Alert Banner */}
+                <div className="bg-[#FFE600] px-3.5 py-1.5 text-[9px] font-bold text-slate-950 flex items-center gap-1">
+                  <span>알림톡 도착</span>
+                </div>
+
+                <div className="p-3.5 space-y-3">
+                  {/* Sender Profile */}
+                  <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
+                    <div className="w-7 h-7 rounded-full bg-slate-800 flex items-center justify-center text-white text-[10px] font-extrabold font-serif">
+                      JY
+                    </div>
+                    <div>
+                      <h4 className="text-[10px] font-bold text-slate-900">정연학원 코칭 센터</h4>
+                      <p className="text-[8px] text-slate-400 font-medium">에듀링크 공식 알림톡</p>
+                    </div>
+                  </div>
+
+                  {/* Notification Content */}
+                  <div>
+                    <h5 className="text-[11px] font-bold text-indigo-650 mb-1">
+                      [정연학원 에듀링크] 주간 리포트 발송
+                    </h5>
+                    <p className="text-[10px] text-slate-600 leading-normal">
+                      안녕하세요, 김민준 학생 학부모님.<br />
+                      금주 민준이의 에듀링크 개별 밀착 코칭 및 공부 루틴 보고서를 전달드립니다.
+                    </p>
+                  </div>
+
+                  {/* Report Details Card */}
+                  <div className="bg-slate-50 border border-slate-100 rounded-xl p-2.5 text-[9px] space-y-1.5 font-normal text-slate-500">
+                    <div>
+                      <span className="font-semibold text-slate-400 block mb-0.5">■ 출석 및 학습 시간</span>
+                      <p className="font-semibold text-slate-800 text-[10px]">
+                        출석률 <span className="text-emerald-600">95%</span> · 총 순공 <span className="text-indigo-600">1,240분</span> (일 평균 약 4.1h)
+                      </p>
+                    </div>
+                    <div>
+                      <span className="font-semibold text-slate-400 block mb-0.5">■ 일일 계획 완수율</span>
+                      <p className="font-semibold text-slate-800 text-[10px]">
+                        수행 완료도 <span className="text-indigo-600">88%</span> (총 22개 계획 중 19개 완수)
+                      </p>
+                    </div>
+                    <div>
+                      <span className="font-semibold text-slate-400 block mb-0.5">■ 회독 완료 패턴</span>
+                      <p className="font-semibold text-slate-800 text-[10px]">
+                        수학I: 2회독 완료 (쎈수학 오답 분석)<br />
+                        영어: 1회독 개념 정리 진행 중 (수능특강 Light)
+                      </p>
+                    </div>
+                    <div>
+                      <span className="font-semibold text-slate-400 block mb-0.5">■ 코치 격려 한마디</span>
+                      <p className="text-[9px] leading-relaxed text-slate-700 italic">
+                        &quot;이번 주 민준이는 수학 백지 테스트에서 평균 인출율 85%를 달성하며 훌륭히 역산 계획을 이행했습니다. 다소 오답률이 높은 이차함수 파트 위주로 유형 변형문제를 2차 처방하여 결손을 보완 중입니다.&quot;
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Notification Footer Notice */}
+                  <p className="text-[8px] text-slate-400 leading-normal font-medium">
+                    ※ 상세 내용은 아래 버튼을 클릭하여 학부모 전용 리포트 간이 열람 페이지에서 실시간 확인 및 파일 다운로드가 가능합니다.
+                  </p>
+                </div>
+
+                {/* Call To Action Buttons */}
+                <div className="border-t border-slate-100 divide-y divide-slate-100 flex flex-col text-[10px] font-bold text-indigo-650">
+                  <button className="py-2.5 hover:bg-slate-50 active:bg-slate-100 w-full transition-colors flex items-center justify-center gap-1 text-indigo-700">
+                    <span>리포트 상세 페이지 열기</span>
+                    <ExternalLink className="w-3 h-3 text-indigo-600" />
+                  </button>
+                  <button className="py-2.5 hover:bg-slate-50 active:bg-slate-100 w-full transition-colors text-slate-500">
+                    카카오톡 채널 가기
+                  </button>
+                </div>
+
+              </div>
+            </div>
+
+            {/* Modal Bottom note */}
+            <div className="p-4 border-t border-slate-800 bg-[#0F172A] text-[10px] text-slate-400 flex items-start gap-1.5">
+              <Info className="w-3.5 h-3.5 text-slate-500 shrink-0 mt-0.5" />
+              <p className="leading-normal">
+                학부모 리포트는 코치가 검수한 후 알림톡 발송 모듈을 통해 학부모의 카카오톡으로 전송되며 별도의 학부모 로그인 프로세스는 요구되지 않습니다.
+              </p>
+            </div>
+
+          </div>
+        </div>
+      )}
     </div>
   );
 }

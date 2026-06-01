@@ -13,6 +13,8 @@ import {
   Calendar,
   ClipboardCheck,
   Home,
+  Target,
+  Timer,
   LucideIcon
 } from 'lucide-react';
 
@@ -25,59 +27,48 @@ interface NavItem {
 
 export default function SectionNav() {
   const pathname = usePathname();
-  const [coachingMode, setCoachingMode] = useState<'middle-high' | 'elementary'>('middle-high');
+  const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      if (
-        pathname.startsWith('/middle-high') ||
-        pathname.startsWith('/students') ||
-        pathname.startsWith('/reports') ||
-        pathname.startsWith('/question-bank') ||
-        pathname.startsWith('/performance') ||
-        pathname.startsWith('/analysis')
-      ) {
-        setCoachingMode('middle-high');
-        localStorage.setItem('coaching-mode', 'middle-high');
-      } else if (
-        pathname.startsWith('/elementary') ||
-        pathname.startsWith('/english') ||
-        pathname.startsWith('/debate')
-      ) {
-        setCoachingMode('elementary');
-        localStorage.setItem('coaching-mode', 'elementary');
-      } else if (pathname.startsWith('/workshop')) {
-        const stored = localStorage.getItem('coaching-mode');
-        if (stored === 'elementary') {
-          setCoachingMode('elementary');
-        } else {
-          setCoachingMode('middle-high');
-        }
-      }
+      const storedRole = localStorage.getItem('user-role');
+      setRole(storedRole);
     }
   }, [pathname]);
 
+  // 학생일 경우 네비게이션을 렌더링하지 않음
+  if (role === 'student-elem' || role === 'student-midhigh') {
+    return null;
+  }
+
   const allItems: NavItem[] = [
+    // 공용
     { label: '포털 홈', href: '/', icon: Home },
+    
+    // 코치(중고등) 관련
     { label: '대시보드(중고등)', href: '/middle-high', icon: Gauge },
-    { label: '학생 28', href: '/students', icon: Users, count: 28 },
+    { label: '학생 관리', href: '/students', icon: Users, count: 28 },
     { label: '학부모 리포트', href: '/reports', icon: MessageSquare },
     { label: '리포트 검수 큐', href: '/reports/review', icon: ClipboardCheck },
     { label: '데스크 토글', href: '/desk', icon: Users },
     { label: '문제 은행', href: '/question-bank', icon: BookOpen },
     { label: '수행평가', href: '/performance', icon: GraduationCap },
     { label: '시험 분석', href: '/analysis', icon: BarChart3 },
+
+    // 서포터(초등) 관련
     { label: '대시보드(초등)', href: '/elementary', icon: Calendar },
-    { label: '입력(초등)', href: '/elementary/input', icon: ClipboardCheck },
+    { label: '루틴 일일 입력', href: '/elementary/input', icon: ClipboardCheck },
+    { label: '영어 피드백', href: '/english/review', icon: BookOpen },
+    { label: '토론 피드백', href: '/debate/review', icon: MessageSquare },
+    { label: '완전학습 점검', href: '/mastery', icon: Target },
+    { label: '라이브 워크숍', href: '/workshop', icon: Timer },
   ];
 
-  // 필터링된 메뉴 아이템 구성
+  // 역할별 필터링
   const navItems = allItems.filter(item => {
-    // 포털 홈은 양쪽 모두 노출
     if (item.href === '/') return true;
 
-    if (coachingMode === 'middle-high') {
-      // 중고등 전용 메뉴 리스트
+    if (role === 'coach') {
       return [
         '/middle-high',
         '/students',
@@ -88,22 +79,26 @@ export default function SectionNav() {
         '/performance',
         '/analysis'
       ].includes(item.href);
-    } else {
-      // 초등 전용 메뉴 리스트
+    } else if (role === 'supporter') {
       return [
         '/elementary',
-        '/elementary/input'
+        '/elementary/input',
+        '/english/review',
+        '/debate/review',
+        '/mastery',
+        '/workshop'
       ].includes(item.href);
     }
+    
+    // 그 외(역할 미지정 시) 통합 포탈에 해당하는 라우트 노출
+    return true;
   });
 
   return (
     <nav className="w-full bg-[#FAF9F6] py-3 no-print">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
-        {/* 가로 스크롤 가능한 알약 스타일 탭 컨테이너 */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
           {navItems.map((item) => {
-            // 활성화 상태 결정 (홈, 중고등 대시보드, 초등 대시보드는 exact 매칭, 그 외에는 prefix 매칭)
             const isActive = (item.href === '/' || item.href === '/middle-high' || item.href === '/elementary')
               ? pathname === item.href
               : pathname.startsWith(item.href);
