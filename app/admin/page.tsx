@@ -23,7 +23,8 @@ import {
   Gauge,
   Calculator,
   Target,
-  ClipboardCheck
+  ClipboardCheck,
+  Smile
 } from 'lucide-react';
 import { mockStudents } from '@/data/mockData';
 
@@ -108,7 +109,7 @@ export default function AdminPage() {
                 { path: '/desk', label: '데스크 등록 콘솔 (Desk Console)', desc: '학생별 프리워크 수강 ON/OFF 등록 및 데이터베이스 동기화', icon: Users, color: 'text-emerald-600 bg-emerald-50 border-emerald-100' },
                 { path: '/analysis', label: '시험 오답 분석 (Analysis)', desc: '내신/모의고사 정오답 분류 및 취약 분석 리포트', icon: PieChart, color: 'text-purple-600 bg-purple-50 border-purple-100' },
                 { path: '/performance', label: '수행평가 대비 (Performance)', desc: '학교별 수행평가 마감일 및 단계별 진행/피드백', icon: FileBarChart, color: 'text-violet-600 bg-violet-50 border-violet-100' },
-                { path: '/question-bank', label: '내신 대비 문제 은행', desc: '학원 기출 자료 필터링 검색 및 맞춤 학습 처방', icon: Database, color: 'text-pink-600 bg-pink-50 border-pink-100' },
+                { path: '/question-bank', label: '내신 대비 문제 은행', desc: '학원 기출 자료 필터링 검색 및 맞춤 학습 처방', icon: Database, color: 'text-pink-650 bg-pink-50 border-pink-100' },
               ].map(route => {
                 const Icon = route.icon;
                 return (
@@ -134,7 +135,7 @@ export default function AdminPage() {
               {/* Coach Student Management Detail Jumper */}
               <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm space-y-4">
                 <span className="text-xs font-bold text-slate-500 block flex items-center gap-1">
-                  <User className="w-3.5 h-3.5 text-purple-500" />
+                  <User className="w-3.5 h-3.5 text-purple-505" />
                   코치용 학생 상세 정보 숏컷 (`/students/[id]`)
                 </span>
                 <div className="space-y-2">
@@ -216,6 +217,7 @@ export default function AdminPage() {
             <div className="space-y-3">
               {[
                 { path: '/', label: '통합 포탈 (Unified Portal)', desc: '초등 루틴 센터 및 중고등 코칭 센터의 통합 진입로', icon: Shield, color: 'text-indigo-600 bg-indigo-50 border-indigo-100' },
+                { path: '/my/elementary', label: '초등학생 홈 포털 (Elementary Student Home)', desc: '초등학생 루틴 퀘스트 보드 및 학습 링크 연결 판넬', icon: Smile, color: 'text-emerald-600 bg-emerald-50 border-emerald-100' },
                 { path: '/english', label: '초등 리틀팍스 영어 학습', desc: '듣기 -> 섀도잉 -> 표현 줍기 -> 아웃풋 제출 4단계', icon: Sparkles, color: 'text-teal-600 bg-teal-50 border-teal-100' },
                 { path: '/debate', label: '디베이트 준비 도우미', desc: '찬반 입장 정하기, 자료 수집, 글쓰기 및 반박 6단계', icon: MessageSquare, color: 'text-orange-600 bg-orange-50 border-orange-100' },
               ].map(route => {
