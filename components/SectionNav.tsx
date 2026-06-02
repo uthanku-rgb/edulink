@@ -36,8 +36,8 @@ export default function SectionNav() {
     }
   }, [pathname]);
 
-  // 학생일 경우 네비게이션을 렌더링하지 않음
-  if (role === 'student-elem' || role === 'student-midhigh') {
+  // 학생 또는 데스크일 경우 네비게이션을 렌더링하지 않음
+  if (role === 'student-elem' || role === 'student-midhigh' || role === 'desk') {
     return null;
   }
 
@@ -50,7 +50,6 @@ export default function SectionNav() {
     { label: '학생 관리', href: '/students', icon: Users, count: 28 },
     { label: '학부모 리포트', href: '/reports', icon: MessageSquare },
     { label: '리포트 검수 큐', href: '/reports/review', icon: ClipboardCheck },
-    { label: '데스크 토글', href: '/desk', icon: Users },
     { label: '문제 은행', href: '/question-bank', icon: BookOpen },
     { label: '수행평가', href: '/performance', icon: GraduationCap },
     { label: '시험 분석', href: '/analysis', icon: BarChart3 },
@@ -74,7 +73,6 @@ export default function SectionNav() {
         '/students',
         '/reports',
         '/reports/review',
-        '/desk',
         '/question-bank',
         '/performance',
         '/analysis'

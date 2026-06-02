@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { 
   Smile, 
   ArrowLeft, 
@@ -16,8 +16,11 @@ import { mockElementaryStudents } from '../../../data/mockData';
 import { getDailyCards, saveDailyCards, getPillarSchedule } from '../../../lib/storage';
 import { DailyCard, ElementaryStudent, Pillar, ElementaryPhase } from '../../../types';
 
-export default function ElementaryStudentPortalPage() {
+function ElementaryStudentPortalContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const queryStudentId = searchParams.get('studentId');
+
   const [selectedStudentId, setSelectedStudentId] = useState<string>('');
   const [student, setStudent] = useState<ElementaryStudent | null>(null);
   const [dailyCard, setDailyCard] = useState<DailyCard | null>(null);
@@ -51,12 +54,18 @@ export default function ElementaryStudentPortalPage() {
   const todayWeekday = getWeekdayString();
 
   useEffect(() => {
-    // 세션에서 이전 선택 학생 로드
-    const savedId = localStorage.getItem('elem-student-id');
-    if (savedId) {
-      setSelectedStudentId(savedId);
-      const found = mockElementaryStudents.find(s => s.id === savedId);
-      if (found) setStudent(found);
+    // URL 파라미터 또는 세션에서 이전 선택 학생 로드
+    const activeStudentId = queryStudentId || localStorage.getItem('elem-student-id');
+    
+    if (activeStudentId) {
+      setSelectedStudentId(activeStudentId);
+      const found = mockElementaryStudents.find(s => s.id === activeStudentId);
+      if (found) {
+        setStudent(found);
+        if (!queryStudentId) {
+          localStorage.setItem('elem-student-id', activeStudentId);
+        }
+      }
     } else if (mockElementaryStudents.length > 0) {
       setSelectedStudentId(mockElementaryStudents[0].id);
       setStudent(mockElementaryStudents[0]);
@@ -67,7 +76,7 @@ export default function ElementaryStudentPortalPage() {
     const schedule = getPillarSchedule();
     setTodayPillar(schedule.byWeekday[todayWeekday] || '영어');
     setLoading(false);
-  }, [todayWeekday]);
+  }, [todayWeekday, queryStudentId]);
 
   useEffect(() => {
     if (selectedStudentId) {
@@ -145,20 +154,26 @@ export default function ElementaryStudentPortalPage() {
           <span>나가기</span>
         </button>
         
-        {/* Student Selector */}
+        {/* Student Selector / Read-only label */}
         <div className="flex items-center gap-2">
           <Smile className="w-4.5 h-4.5 text-emerald-500 animate-bounce" />
-          <select
-            value={selectedStudentId}
-            onChange={(e) => handleStudentChange(e.target.value)}
-            className="bg-emerald-50 border border-emerald-200 rounded-xl text-xs px-3 py-1.5 font-bold text-emerald-800 focus:outline-none focus:ring-1 focus:ring-emerald-400 cursor-pointer"
-          >
-            {mockElementaryStudents.map(s => (
-              <option key={s.id} value={s.id}>
-                {s.name} 어린이
-              </option>
-            ))}
-          </select>
+          {queryStudentId ? (
+            <span className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-xs px-3.5 py-1.5 font-bold">
+              {student ? `${student.name} 어린이` : '어린이'} 포털
+            </span>
+          ) : (
+            <select
+              value={selectedStudentId}
+              onChange={(e) => handleStudentChange(e.target.value)}
+              className="bg-emerald-50 border border-emerald-200 rounded-xl text-xs px-3 py-1.5 font-bold text-emerald-800 focus:outline-none focus:ring-1 focus:ring-emerald-400 cursor-pointer"
+            >
+              {mockElementaryStudents.map(s => (
+                <option key={s.id} value={s.id}>
+                  {s.name} 어린이
+                </option>
+              ))}
+            </select>
+          )}
         </div>
 
         <div className="w-7 h-7 bg-emerald-100 rounded-full flex items-center justify-center text-[11px] font-bold text-emerald-700 border border-emerald-200 select-none">
@@ -326,5 +341,17 @@ export default function ElementaryStudentPortalPage() {
 
       </main>
     </div>
+  );
+}
+
+export default function ElementaryStudentPortalPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#FAF9F6] flex items-center justify-center font-normal text-xs text-slate-400">
+        로딩 중...
+      </div>
+    }>
+      <ElementaryStudentPortalContent />
+    </Suspense>
   );
 }

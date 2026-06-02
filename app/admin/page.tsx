@@ -26,11 +26,12 @@ import {
   ClipboardCheck,
   Smile
 } from 'lucide-react';
-import { mockStudents } from '@/data/mockData';
+import { mockStudents, mockElementaryStudents } from '@/data/mockData';
 
 export default function AdminPage() {
   const [mounted, setMounted] = useState(false);
   const [selectedStuId, setSelectedStuId] = useState('stu_01');
+  const [selectedElemStuId, setSelectedElemStuId] = useState('estu_01');
 
   useEffect(() => {
     setMounted(true);
@@ -241,6 +242,34 @@ export default function AdminPage() {
                   </Link>
                 );
               })}
+
+              {/* Dynamic Elementary Student Portal Jumper */}
+              <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm space-y-4">
+                <span className="text-xs font-bold text-slate-500 block flex items-center gap-1">
+                  <Smile className="w-3.5 h-3.5 text-emerald-500" />
+                  초등학생 전용 포털 바로가기 (`/my/elementary?studentId=[id]`)
+                </span>
+                <div className="space-y-2">
+                  <select 
+                    value={selectedElemStuId}
+                    onChange={(e) => setSelectedElemStuId(e.target.value)}
+                    className="w-full rounded-xl border-slate-200 text-xs p-2.5 border focus:outline-none focus:ring-1 focus:ring-emerald-500 font-medium bg-slate-50"
+                  >
+                    {mockElementaryStudents.map(student => (
+                      <option key={student.id} value={student.id}>
+                        {student.name} ({student.grade} · {student.school})
+                      </option>
+                    ))}
+                  </select>
+                  <Link 
+                    href={`/my/elementary?studentId=${selectedElemStuId}`}
+                    className="w-full py-2.5 bg-emerald-650 hover:bg-emerald-750 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1 transition-all shadow-sm shadow-emerald-100"
+                  >
+                    포털 진입하기
+                    <ExternalLink className="w-3 h-3" />
+                  </Link>
+                </div>
+              </div>
 
               {/* Dynamic Student Portal Jumper */}
               <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm space-y-4">

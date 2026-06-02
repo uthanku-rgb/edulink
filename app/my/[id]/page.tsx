@@ -63,6 +63,7 @@ export default function StudentDraftInputPage() {
   const [completedPlan, setCompletedPlan] = useState<boolean>(true);
   const [condition, setCondition] = useState<number>(3);
   const [studentMemo, setStudentMemo] = useState<string>('');
+  const [isDemoUnlocked, setIsDemoUnlocked] = useState(false);
   
   // 기존 기록 상태
   const [existingRecord, setExistingRecord] = useState<DailyRecord | null>(null);
@@ -171,18 +172,18 @@ export default function StudentDraftInputPage() {
   }, [studentId]);
 
   const handleStudyMinutesChange = (value: number) => {
-    if (existingRecord?.status === 'confirmed') return;
+    if (isConfirmed) return;
     setStudyMinutes(Math.max(0, Math.min(1440, value)));
   };
 
   const handleQuickAdd = (mins: number) => {
-    if (existingRecord?.status === 'confirmed') return;
+    if (isConfirmed) return;
     setStudyMinutes(prev => Math.max(0, Math.min(1440, prev + mins)));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (existingRecord?.status === 'confirmed') return;
+    if (isConfirmed) return;
     setIsSubmitting(true);
 
     const recordId = `dr_${studentId.split('_')[1]}_${TODAY_DATE.replace(/-/g, '')}`;
@@ -239,7 +240,8 @@ export default function StudentDraftInputPage() {
     );
   }
 
-  const isConfirmed = existingRecord?.status === 'confirmed';
+  const isActuallyConfirmed = existingRecord?.status === 'confirmed';
+  const isConfirmed = isActuallyConfirmed && !isDemoUnlocked;
 
   // 컨디션 이모지 매핑
   const emojis = [
@@ -299,14 +301,29 @@ export default function StudentDraftInputPage() {
         </div>
 
         {/* 상태 안내 배지 */}
-        {isConfirmed ? (
-          <div className="bg-[#ECFDF5] border border-green-200 text-[#065F46] rounded-xl p-4 mb-6 flex items-start gap-2.5">
-            <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
-            <div>
-              <h4 className="text-xs font-semibold">매니저 확인 완료</h4>
-              <p className="text-[10px] text-[#047857] mt-0.5 leading-relaxed">
-                오늘 일지가 매니저 선생님에 의해 승인(확정)되었습니다. 추가 수정은 선생님께 요청해 주세요.
-              </p>
+        {isActuallyConfirmed ? (
+          <div className="bg-[#ECFDF5] border border-green-200 text-[#065F46] rounded-xl p-4 mb-6 flex flex-col gap-3">
+            <div className="flex items-start gap-2.5">
+              <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
+              <div>
+                <h4 className="text-xs font-semibold">매니저 확인 완료</h4>
+                <p className="text-[10px] text-[#047857] mt-0.5 leading-relaxed">
+                  오늘 일지가 매니저 선생님에 의해 승인(확정)되었습니다. 추가 수정은 선생님께 요청해 주세요.
+                </p>
+              </div>
+            </div>
+            <div className="flex justify-end border-t border-green-100 pt-2.5">
+              <button
+                type="button"
+                onClick={() => setIsDemoUnlocked(!isDemoUnlocked)}
+                className={`text-[10px] px-2.5 py-1 rounded font-bold transition-all flex items-center gap-1 ${
+                  isDemoUnlocked 
+                    ? 'bg-rose-500 text-white' 
+                    : 'bg-white border border-green-300 text-green-700 hover:bg-green-50'
+                }`}
+              >
+                {isDemoUnlocked ? '🔒 데모 잠금 상태로 되돌리기' : '⚠️ 데모용 입력 잠금 해제'}
+              </button>
             </div>
           </div>
         ) : existingRecord ? (

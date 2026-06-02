@@ -14,9 +14,11 @@ import {
   Info,
   X,
   ExternalLink,
-  MessageCircle
+  MessageCircle,
+  Users
 } from 'lucide-react';
 import { getStudents, seedMockDataIfEmpty } from '../lib/storage';
+import { mockElementaryStudents } from '../data/mockData';
 import { Student } from '../types';
 
 export default function PortalLandingPage() {
@@ -24,6 +26,7 @@ export default function PortalLandingPage() {
   const [loading, setLoading] = useState(true);
   const [students, setStudents] = useState<Student[]>([]);
   const [selectedSecondaryId, setSelectedSecondaryId] = useState<string>('');
+  const [selectedElementaryId, setSelectedElementaryId] = useState<string>('');
   const [isParentModalOpen, setIsParentModalOpen] = useState(false);
 
   useEffect(() => {
@@ -35,6 +38,9 @@ export default function PortalLandingPage() {
         setStudents(loadedStudents);
         if (loadedStudents.length > 0) {
           setSelectedSecondaryId(loadedStudents[0].id);
+        }
+        if (mockElementaryStudents.length > 0) {
+          setSelectedElementaryId(mockElementaryStudents[0].id);
         }
       } catch (err) {
         console.error('Failed to load portal data:', err);
@@ -59,66 +65,79 @@ export default function PortalLandingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0F172A] text-slate-100 flex flex-col relative overflow-hidden font-sans">
-      {/* Decorative background gradients */}
-      <div className="absolute top-[-10%] left-[-20%] w-[60%] h-[60%] bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-emerald-500/5 rounded-full blur-[100px] pointer-events-none" />
+    <div className="min-h-screen bg-[#FAF9F6] text-slate-800 flex flex-col relative overflow-hidden font-sans">
+      {/* Decorative background gradients (soft light mode) */}
+      <div className="absolute top-[-10%] left-[-20%] w-[60%] h-[60%] bg-indigo-500/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-emerald-500/5 rounded-full blur-[90px] pointer-events-none" />
 
       {/* Main container */}
       <main className="flex-1 flex flex-col items-center justify-center max-w-5xl w-full mx-auto px-6 py-12 z-10">
         
         {/* Logo and Greeting */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[11px] font-semibold mb-3">
-            <Sparkles className="w-3.5 h-3.5 animate-pulse" />
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-650 text-[11px] font-bold mb-3 shadow-sm select-none">
+            <Sparkles className="w-3.5 h-3.5 text-indigo-500 animate-pulse" />
             EduLink Unified Portal
           </div>
-          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-white">
+          <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900">
             에듀링크 통합 포털 게이트웨이
           </h1>
-          <p className="text-xs text-slate-400 mt-2.5 max-w-lg mx-auto leading-relaxed">
+          <p className="text-xs text-slate-500 mt-2.5 max-w-lg mx-auto leading-relaxed">
             화면을 보시는 사용자의 역할에 따라 전용 시스템 포털로 진입하십시오.<br />
             각 역할별로 최적화된 전용 화면 구성과 메뉴 제어가 제공됩니다.
           </p>
         </div>
 
-        {/* Roles Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl">
+        {/* Roles Grid - 5 Cards Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl">
           
           {/* Card 1: 초등학생 포털 */}
-          <div className="bg-[#1E293B] border border-slate-800 hover:border-emerald-500/40 rounded-2xl p-6 transition-all duration-300 hover:translate-y-[-2px] flex flex-col justify-between h-[250px] shadow-lg">
+          <div className="bg-white border border-[#E5E1DA] hover:border-emerald-400 rounded-2xl p-5 transition-all duration-300 hover:translate-y-[-2px] flex flex-col justify-between h-[250px] shadow-sm hover:shadow-md">
             <div>
               <div className="flex items-center justify-between mb-3">
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-emerald-500/20">
-                  <Smile className="w-5.5 h-5.5" />
+                <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
+                  <Smile className="w-5 h-5" />
                 </div>
-                <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20 tracking-wider">STUDENT (ELEM)</span>
+                <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-100 tracking-wider">STUDENT (ELEM)</span>
               </div>
-              <h3 className="text-base font-bold text-white">초등학생 포털</h3>
-              <p className="text-xs text-slate-400 mt-2 leading-relaxed">
+              <h3 className="text-base font-bold text-slate-900">초등학생 포털</h3>
+              <p className="text-xs text-slate-500 mt-2 leading-relaxed">
                 오늘 나의 루틴 퀘스트 점검 및 과목 전용 피드백 도구(영어 리틀팍스, 디베이트 도우미, 뇌 예열 게임)에 안전하게 접속합니다.
               </p>
             </div>
-            <button
-              onClick={() => handleRoleSelection('student-elem', '/my/elementary')}
-              className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1 transition-all"
-            >
-              초등 포털 진입하기
-              <ChevronRight className="w-4 h-4" />
-            </button>
+            
+            <div className="flex items-center gap-2 mt-4">
+              <select
+                value={selectedElementaryId}
+                onChange={(e) => setSelectedElementaryId(e.target.value)}
+                className="flex-1 bg-slate-50 border border-slate-200 rounded-xl text-xs p-2 text-slate-700 font-bold focus:outline-none focus:ring-1 focus:ring-emerald-400 cursor-pointer"
+              >
+                {mockElementaryStudents.map(s => (
+                  <option key={s.id} value={s.id}>
+                    {s.name} ({s.school} · {s.grade})
+                  </option>
+                ))}
+              </select>
+              <button
+                onClick={() => handleRoleSelection('student-elem', `/my/elementary?studentId=${selectedElementaryId}`)}
+                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs shrink-0 transition-all font-sans"
+              >
+                진입
+              </button>
+            </div>
           </div>
 
           {/* Card 2: 중고등학생 포털 */}
-          <div className="bg-[#1E293B] border border-slate-800 hover:border-blue-500/40 rounded-2xl p-6 transition-all duration-300 hover:translate-y-[-2px] flex flex-col justify-between h-[250px] shadow-lg">
+          <div className="bg-white border border-[#E5E1DA] hover:border-blue-400 rounded-2xl p-5 transition-all duration-300 hover:translate-y-[-2px] flex flex-col justify-between h-[250px] shadow-sm hover:shadow-md">
             <div>
               <div className="flex items-center justify-between mb-3">
-                <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center border border-blue-500/20">
-                  <GraduationCap className="w-5.5 h-5.5" />
+                <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100">
+                  <GraduationCap className="w-5 h-5" />
                 </div>
-                <span className="text-[10px] font-bold text-blue-400 bg-blue-500/10 px-2.5 py-0.5 rounded-full border border-blue-500/20 tracking-wider">STUDENT (SEC)</span>
+                <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-100 tracking-wider">STUDENT (SEC)</span>
               </div>
-              <h3 className="text-base font-bold text-white">중고등학생 포털</h3>
-              <p className="text-xs text-slate-400 mt-2 leading-relaxed">
+              <h3 className="text-base font-bold text-slate-900">중고등학생 포털</h3>
+              <p className="text-xs text-slate-500 mt-2 leading-relaxed">
                 오늘의 순공 학습 시간 및 회독 단계, 집중도 셀프 체크 입력과 나의 D-21 플래너, 수행평가 마감일을 확인합니다.
               </p>
             </div>
@@ -127,7 +146,7 @@ export default function PortalLandingPage() {
               <select
                 value={selectedSecondaryId}
                 onChange={(e) => setSelectedSecondaryId(e.target.value)}
-                className="flex-1 bg-slate-800 border border-slate-700 rounded-xl text-xs p-2.5 text-white font-medium focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="flex-1 bg-slate-50 border border-slate-200 rounded-xl text-xs p-2 text-slate-700 font-bold focus:outline-none focus:ring-1 focus:ring-blue-400 cursor-pointer"
               >
                 {students.map(s => (
                   <option key={s.id} value={s.id}>
@@ -137,7 +156,7 @@ export default function PortalLandingPage() {
               </select>
               <button
                 onClick={() => handleRoleSelection('student-midhigh', `/my/${selectedSecondaryId}`)}
-                className="px-4 py-2.5 bg-blue-600 hover:bg-blue-50 text-white font-bold rounded-xl text-xs shrink-0 transition-all font-sans"
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-550 text-white font-bold rounded-xl text-xs shrink-0 transition-all font-sans"
               >
                 진입
               </button>
@@ -145,22 +164,22 @@ export default function PortalLandingPage() {
           </div>
 
           {/* Card 3: 코치 포털 */}
-          <div className="bg-[#1E293B] border border-slate-800 hover:border-indigo-500/40 rounded-2xl p-6 transition-all duration-300 hover:translate-y-[-2px] flex flex-col justify-between h-[250px] shadow-lg">
+          <div className="bg-white border border-[#E5E1DA] hover:border-indigo-400 rounded-2xl p-5 transition-all duration-300 hover:translate-y-[-2px] flex flex-col justify-between h-[250px] shadow-sm hover:shadow-md">
             <div>
               <div className="flex items-center justify-between mb-3">
-                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center border border-indigo-500/20">
-                  <User className="w-5.5 h-5.5" />
+                <div className="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100">
+                  <User className="w-5 h-5" />
                 </div>
-                <span className="text-[10px] font-bold text-indigo-400 bg-indigo-500/10 px-2.5 py-0.5 rounded-full border border-indigo-500/20 tracking-wider">COACH</span>
+                <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-100 tracking-wider">COACH</span>
               </div>
-              <h3 className="text-base font-bold text-white">코치 포털</h3>
-              <p className="text-xs text-slate-400 mt-2 leading-relaxed">
+              <h3 className="text-base font-bold text-slate-900">코치 포털</h3>
+              <p className="text-xs text-slate-500 mt-2 leading-relaxed">
                 중고등 역산 계획 검토, 오답 취약점 분석, 문제 처방 및 주간/시즌 리포트 검수·발송을 관리하는 코칭 전문 콘솔로 진입합니다.
               </p>
             </div>
             <button
               onClick={() => handleRoleSelection('coach', '/middle-high')}
-              className="w-full py-2.5 bg-indigo-650 hover:bg-indigo-650/80 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1 transition-all"
+              className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-750 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1 transition-all"
             >
               코칭 대시보드 진입
               <ChevronRight className="w-4 h-4" />
@@ -168,24 +187,47 @@ export default function PortalLandingPage() {
           </div>
 
           {/* Card 4: 서포터 포털 */}
-          <div className="bg-[#1E293B] border border-slate-800 hover:border-teal-500/40 rounded-2xl p-6 transition-all duration-300 hover:translate-y-[-2px] flex flex-col justify-between h-[250px] shadow-lg">
+          <div className="bg-white border border-[#E5E1DA] hover:border-teal-400 rounded-2xl p-5 transition-all duration-300 hover:translate-y-[-2px] flex flex-col justify-between h-[250px] shadow-sm hover:shadow-md">
             <div>
               <div className="flex items-center justify-between mb-3">
-                <div className="w-10 h-10 rounded-xl bg-teal-500/10 text-teal-400 flex items-center justify-center border border-teal-500/20">
-                  <Settings className="w-5.5 h-5.5" />
+                <div className="w-9 h-9 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center border border-teal-100">
+                  <Settings className="w-5 h-5" />
                 </div>
-                <span className="text-[10px] font-bold text-teal-400 bg-teal-500/10 px-2.5 py-0.5 rounded-full border border-teal-500/20 tracking-wider">SUPPORTER</span>
+                <span className="text-[10px] font-bold text-teal-600 bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-100 tracking-wider">SUPPORTER</span>
               </div>
-              <h3 className="text-base font-bold text-white">서포터 포털</h3>
-              <p className="text-xs text-slate-400 mt-2 leading-relaxed">
+              <h3 className="text-base font-bold text-slate-900">서포터 포털</h3>
+              <p className="text-xs text-slate-500 mt-2 leading-relaxed">
                 초등학생 등원 출결 체크, 일일 공부 습관 루틴 입력, 과목별 피드백 기입 및 완전학습 점검을 전담하는 운영 콘솔로 진입합니다.
               </p>
             </div>
             <button
               onClick={() => handleRoleSelection('supporter', '/elementary')}
-              className="w-full py-2.5 bg-teal-600 hover:bg-teal-500 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1 transition-all"
+              className="w-full py-2.5 bg-teal-600 hover:bg-teal-550 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1 transition-all"
             >
               서포터 대시보드 진입
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Card 5: 데스크 포털 (격리됨) */}
+          <div className="bg-white border border-[#E5E1DA] hover:border-[#2C9C8F] rounded-2xl p-5 transition-all duration-300 hover:translate-y-[-2px] flex flex-col justify-between h-[250px] shadow-sm hover:shadow-md">
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-9 h-9 rounded-xl bg-[#E8F6F4] text-[#2C9C8F] flex items-center justify-center border border-[#BDE0D9]/50">
+                  <Users className="w-5 h-5" />
+                </div>
+                <span className="text-[10px] font-bold text-[#2C9C8F] bg-[#E8F6F4] px-2.5 py-0.5 rounded-full border border-[#BDE0D9]/50 tracking-wider">DESK</span>
+              </div>
+              <h3 className="text-base font-bold text-slate-900">데스크 관리 포털</h3>
+              <p className="text-xs text-slate-500 mt-2 leading-relaxed">
+                추가과금 서비스인 프리워크(Prework)의 학생별 수강 상태 ON/OFF 제어 및 데이터베이스 동기화를 제어합니다.
+              </p>
+            </div>
+            <button
+              onClick={() => handleRoleSelection('desk', '/desk')}
+              className="w-full py-2.5 bg-[#2C9C8F] hover:bg-[#238176] text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1 transition-all"
+            >
+              데스크 콘솔 진입
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
@@ -193,23 +235,23 @@ export default function PortalLandingPage() {
         </div>
 
         {/* Bottom Parent Quick link */}
-        <div className="mt-8 text-center bg-[#1E293B]/60 border border-slate-800 rounded-2xl p-4 max-w-4xl w-full flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="mt-8 text-center bg-white border border-[#E5E1DA] rounded-2xl p-4 max-w-5xl w-full flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shadow-sm">
           <div className="flex items-center gap-3 text-left">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/20">
+            <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 border border-amber-100">
               <MessageSquare className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="text-xs font-bold text-white flex items-center gap-1">
+              <h4 className="text-xs font-bold text-slate-900 flex items-center gap-1">
                 학부모용 알림톡 채널 (No Screen)
               </h4>
-              <p className="text-[10px] text-slate-400 mt-0.5">
+              <p className="text-[10px] text-slate-500 mt-0.5">
                 학부모님 포털 화면은 없으며, 매주 코치가 승인한 리포트가 카카오톡 알림톡으로 자동 발송됩니다.
               </p>
             </div>
           </div>
           <button
             onClick={() => setIsParentModalOpen(true)}
-            className="px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs transition-all shrink-0 flex items-center justify-center gap-1.5"
+            className="px-4 py-2 bg-amber-500 hover:bg-amber-450 text-slate-950 font-bold rounded-xl text-xs transition-all shrink-0 flex items-center justify-center gap-1.5 shadow-sm"
           >
             <MessageCircle className="w-4 h-4 text-slate-950" />
             알림톡 양식 확인하기
@@ -220,17 +262,17 @@ export default function PortalLandingPage() {
 
       {/* KakaoTalk Notification Mockup Modal */}
       {isParentModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#1E293B] rounded-2xl border border-slate-700 max-w-sm w-full relative overflow-hidden animate-in fade-in-50 zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl border border-slate-200 max-w-sm w-full relative overflow-hidden shadow-2xl animate-in fade-in-50 zoom-in-95 duration-200">
             {/* Modal Header */}
-            <div className="p-4 border-b border-slate-850 flex justify-between items-center bg-[#0F172A]">
+            <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-[#FAF9F6]">
               <div className="flex items-center gap-1.5">
-                <Smartphone className="w-4 h-4 text-indigo-400" />
-                <span className="text-xs font-bold text-white">학부모 카카오 알림톡 예시</span>
+                <Smartphone className="w-4 h-4 text-indigo-650" />
+                <span className="text-xs font-bold text-slate-800">학부모 카카오 알림톡 예시</span>
               </div>
               <button
                 onClick={() => setIsParentModalOpen(false)}
-                className="p-1 rounded bg-slate-800 text-slate-400 hover:text-white transition-all"
+                className="p-1 rounded bg-slate-100 text-slate-500 hover:text-slate-700 transition-all hover:bg-slate-200"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -311,7 +353,7 @@ export default function PortalLandingPage() {
 
                 {/* Call To Action Buttons */}
                 <div className="border-t border-slate-100 divide-y divide-slate-100 flex flex-col text-[10px] font-bold text-indigo-650">
-                  <button className="py-2.5 hover:bg-slate-50 active:bg-slate-100 w-full transition-colors flex items-center justify-center gap-1 text-indigo-700">
+                  <button className="py-2.5 hover:bg-slate-50 active:bg-slate-100 w-full transition-colors flex items-center justify-center gap-1 text-indigo-750">
                     <span>리포트 상세 페이지 열기</span>
                     <ExternalLink className="w-3 h-3 text-indigo-600" />
                   </button>
@@ -324,7 +366,7 @@ export default function PortalLandingPage() {
             </div>
 
             {/* Modal Bottom note */}
-            <div className="p-4 border-t border-slate-800 bg-[#0F172A] text-[10px] text-slate-400 flex items-start gap-1.5">
+            <div className="p-4 border-t border-slate-100 bg-[#FAF9F6] text-[10px] text-slate-450 flex items-start gap-1.5">
               <Info className="w-3.5 h-3.5 text-slate-500 shrink-0 mt-0.5" />
               <p className="leading-normal">
                 학부모 리포트는 코치가 검수한 후 알림톡 발송 모듈을 통해 학부모의 카카오톡으로 전송되며 별도의 학부모 로그인 프로세스는 요구되지 않습니다.
