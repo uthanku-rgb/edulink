@@ -63,7 +63,15 @@ export default function StudentsPage() {
         </div>
 
         {/* 학생 목록 테이블 (정렬/검색 포함) */}
-        <StudentStatusList initialStatuses={statuses} />
+        {statuses.length === 0 ? (
+          <div className="bg-white border border-[#E5E1DA] rounded-xl p-8 text-center shadow-sm">
+            <p className="text-sm text-slate-500 leading-relaxed">
+              등록된 학생이 없습니다. 학생 등록 페이지에서 신규 등록하거나, 관리자 페이지에서 데모 데이터를 시딩하세요.
+            </p>
+          </div>
+        ) : (
+          <StudentStatusList initialStatuses={statuses} />
+        )}
       </main>
     </div>
   );

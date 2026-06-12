@@ -17,9 +17,11 @@ import Header from '../../components/Header';
 import SectionNav from '../../components/SectionNav';
 import { getStudents, getQuestions, getPrescriptions, saveQuestions, savePrescriptions } from '../../lib/storage';
 import { Student, QuestionBankItem, Prescription, Grade } from '../../types';
+import { useToast } from '../../components/ToastProvider';
 
 export default function QuestionBankPage() {
   const router = useRouter();
+  const toast = useToast();
   const [students, setStudents] = useState<Student[]>([]);
   const [questions, setQuestions] = useState<QuestionBankItem[]>([]);
   const [prescriptions, setPrescriptions] = useState<Prescription[]>([]);
@@ -75,7 +77,7 @@ export default function QuestionBankPage() {
     e.preventDefault();
 
     if (!regFilename) {
-      alert('PDF 파일명을 입력해 주세요.');
+      toast.info('PDF 파일명을 입력해 주세요.');
       return;
     }
 
@@ -103,7 +105,7 @@ export default function QuestionBankPage() {
       setRegFilename('');
       setRegSchool('');
       setRegUnit('');
-      alert('문제 은행에 PDF 파일이 등록되었습니다.');
+      toast.success('문제 은행에 PDF 파일이 등록되었습니다.');
       setActiveTab('search');
     } catch (err) {
       console.error('Failed to register question:', err);
@@ -131,7 +133,7 @@ export default function QuestionBankPage() {
   // 3. 처방 장바구니 관리
   const addToCart = (question: QuestionBankItem) => {
     if (prescriptionCart.some(q => q.id === question.id)) {
-      alert('이미 처방 목록에 추가되어 있습니다.');
+      toast.info('이미 처방 목록에 추가되어 있습니다.');
       return;
     }
     setPrescriptionCart([...prescriptionCart, question]);
@@ -144,11 +146,11 @@ export default function QuestionBankPage() {
   // 4. 처방 제출 핸들러
   const handlePrescribe = async () => {
     if (!selectedStudentId) {
-      alert('처방받을 학생을 선택해 주세요.');
+      toast.info('처방받을 학생을 선택해 주세요.');
       return;
     }
     if (prescriptionCart.length === 0) {
-      alert('처방할 문제를 문제 은행 검색 결과에서 선택해 주세요.');
+      toast.info('처방할 문제를 문제 은행 검색 결과에서 선택해 주세요.');
       return;
     }
 
@@ -172,7 +174,7 @@ export default function QuestionBankPage() {
       
       // 장바구니 비우기 및 알림
       setPrescriptionCart([]);
-      alert(`${student.name} 학생에게 ${newPrescription.questionIds.length}개의 맞춤 문제 처방이 완료되었습니다.`);
+      toast.success(`${student.name} 학생에게 ${newPrescription.questionIds.length}개의 맞춤 문제 처방이 완료되었습니다.`);
       setActiveTab('history');
     } catch (err) {
       console.error('Failed to save prescription:', err);

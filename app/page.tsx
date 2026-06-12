@@ -17,7 +17,7 @@ import {
   MessageCircle,
   Users
 } from 'lucide-react';
-import { getStudents, seedMockDataIfEmpty } from '../lib/storage';
+import { getStudents } from '../lib/storage';
 import { mockElementaryStudents } from '../data/mockData';
 import { Student } from '../types';
 
@@ -33,7 +33,6 @@ export default function PortalLandingPage() {
     const init = async () => {
       try {
         setLoading(true);
-        await seedMockDataIfEmpty();
         const loadedStudents = await getStudents();
         setStudents(loadedStudents);
         if (loadedStudents.length > 0) {
@@ -147,12 +146,17 @@ export default function PortalLandingPage() {
                 value={selectedSecondaryId}
                 onChange={(e) => setSelectedSecondaryId(e.target.value)}
                 className="flex-1 bg-slate-50 border border-slate-200 rounded-xl text-xs p-2 text-slate-700 font-bold focus:outline-none focus:ring-1 focus:ring-blue-400 cursor-pointer"
+                disabled={students.length === 0}
               >
-                {students.map(s => (
-                  <option key={s.id} value={s.id}>
-                    {s.name} ({s.school} · {s.grade})
-                  </option>
-                ))}
+                {students.length === 0 ? (
+                  <option value="" disabled>등록된 학생이 없습니다</option>
+                ) : (
+                  students.map(s => (
+                    <option key={s.id} value={s.id}>
+                      {s.name} ({s.school} · {s.grade})
+                    </option>
+                  ))
+                )}
               </select>
               <button
                 onClick={() => handleRoleSelection('student-midhigh', `/my/${selectedSecondaryId}`)}

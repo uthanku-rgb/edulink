@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { getTodayStr, getDisplayDateStr } from '../../lib/dateService';
+import { useToast } from '../../components/ToastProvider';
 import Header from '../../components/Header';
 import SectionNav from '../../components/SectionNav';
 import CrisisAlerts from '../../components/CrisisAlerts';
@@ -12,7 +14,6 @@ import PendingDraftQueue from '../../components/PendingDraftQueue';
 import { 
   getAlerts, 
   getStudentStatuses, 
-  seedMockDataIfEmpty,
   getStudents,
   getDailyRecords,
   saveDailyRecords,
@@ -23,6 +24,7 @@ import { mockTodayTasks } from '../../data/mockData';
 import { Alert, StudentStatus, DailyRecord, Student, MasteryCheck, Gap } from '../../types';
 
 export default function MiddleHighDashboardPage() {
+  const toast = useToast();
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [statuses, setStatuses] = useState<StudentStatus[]>([]);
   const [students, setStudents] = useState<Student[]>([]);
@@ -33,7 +35,6 @@ export default function MiddleHighDashboardPage() {
 
   const loadDashboardData = async () => {
     try {
-      await seedMockDataIfEmpty();
       const loadedAlerts = await getAlerts();
       const loadedStatuses = await getStudentStatuses();
       const loadedStudents = await getStudents();
@@ -74,12 +75,16 @@ export default function MiddleHighDashboardPage() {
         }
         return r;
       });
-      await saveDailyRecords(updated);
-      await loadDashboardData();
-      alert('승인되었습니다.');
+      const result = await saveDailyRecords(updated);
+      if (result.ok) {
+        await loadDashboardData();
+        toast.success('승인되었습니다.');
+      } else {
+        toast.error('승인 처리에 실패했습니다.');
+      }
     } catch (err) {
       console.error('Failed to confirm draft record:', err);
-      alert('승인 처리에 실패했습니다.');
+      toast.error('승인 처리에 실패했습니다.');
     }
   };
 
@@ -88,12 +93,16 @@ export default function MiddleHighDashboardPage() {
       const allRecords = await getDailyRecords();
       const filtered = allRecords.filter(r => r.id !== updatedRecord.id);
       const updated = [updatedRecord, ...filtered];
-      await saveDailyRecords(updated);
-      await loadDashboardData();
-      alert('수정 및 승인이 완료되었습니다.');
+      const result = await saveDailyRecords(updated);
+      if (result.ok) {
+        await loadDashboardData();
+        toast.success('수정 및 승인이 완료되었습니다.');
+      } else {
+        toast.error('저장 처리에 실패했습니다.');
+      }
     } catch (err) {
       console.error('Failed to edit and confirm record:', err);
-      alert('저장 처리에 실패했습니다.');
+      toast.error('저장 처리에 실패했습니다.');
     }
   };
 
@@ -128,7 +137,7 @@ export default function MiddleHighDashboardPage() {
 
   // === 완전학습 메트릭 연산 (중고등) ===
   const middleHighStudentIds = students.map(s => s.id);
-  const todayStr = '2026-05-27';
+  const todayStr = getTodayStr();
   
   // 1. 반 평균 인출률: 중고등 학생들의 모든 MasteryCheck의 retrievalScore 평균
   const mhChecks = masteryChecks.filter(c => middleHighStudentIds.includes(c.studentId));
@@ -174,7 +183,7 @@ export default function MiddleHighDashboardPage() {
         title="중고등 대시보드" 
         studentCount={statuses.length} 
         managerName="정수진" 
-        dateString="2026.05.27 (월)" 
+        dateString={getDisplayDateStr()} 
       />
       
       {/* 탭 네비게이션 */}
@@ -182,6 +191,14 @@ export default function MiddleHighDashboardPage() {
       
       {/* 대시보드 주요 콘텐츠 영역 */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 md:px-8 mt-4">
+        {statuses.length === 0 ? (
+          <div className="bg-white border border-[#E5E1DA] rounded-xl p-8 text-center shadow-sm">
+            <p className="text-sm text-slate-500 leading-relaxed">
+              등록된 학생이 없습니다. 학생 등록 페이지에서 신규 등록하거나, 관리자 페이지에서 데모 데이터를 시딩하세요.
+            </p>
+          </div>
+        ) : (
+          <>
         {/* 1. 위기 시그널 알림 카드 */}
         <CrisisAlerts alerts={alerts} />
 
@@ -253,6 +270,8 @@ export default function MiddleHighDashboardPage() {
 
         {/* 4. 이번 주 통계 */}
         <WeekStats stats={dynamicWeekStats} />
+          </>
+        )}
       </main>
     </div>
   );

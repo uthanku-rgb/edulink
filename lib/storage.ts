@@ -19,6 +19,7 @@ import {
   AlertSeverity,
   DailyCard,
   PillarSchedule,
+  Pillar,
   DebatePrep,
   ExpressionItem,
   EnglishOutput,
@@ -30,6 +31,7 @@ import {
 import * as mockData from '../data/mockData';
 import { supabase } from './supabaseClient';
 import { seedEnrollmentsIfEmpty } from './reportDb';
+import { getToday } from './dateService';
 
 const KEYS = {
   STUDENTS: 'edulink_students',
@@ -95,7 +97,7 @@ export const getStudents = async (): Promise<Student[]> => {
   return local.length > 0 ? local : mockData.mockStudents;
 };
 
-export const saveStudents = async (students: Student[]): Promise<void> => {
+export const saveStudents = async (students: Student[]): Promise<{ ok: boolean; error?: string }> => {
   setStorageItem(KEYS.STUDENTS, students);
   try {
     const payload = students.map(s => ({
@@ -109,8 +111,10 @@ export const saveStudents = async (students: Student[]): Promise<void> => {
     }));
     const { error } = await supabase.from('students').upsert(payload);
     if (error) throw error;
+    return { ok: true };
   } catch (err) {
     console.error('Supabase saveStudents failed:', err);
+    return { ok: false, error: (err as Error).message };
   }
 };
 
@@ -138,7 +142,7 @@ export const getExams = async (): Promise<Exam[]> => {
   return local.length > 0 ? local : mockData.mockExams;
 };
 
-export const saveExams = async (exams: Exam[]): Promise<void> => {
+export const saveExams = async (exams: Exam[]): Promise<{ ok: boolean; error?: string }> => {
   setStorageItem(KEYS.EXAMS, exams);
   try {
     const payload = exams.map(e => ({
@@ -151,8 +155,10 @@ export const saveExams = async (exams: Exam[]): Promise<void> => {
     }));
     const { error } = await supabase.from('exams').upsert(payload);
     if (error) throw error;
+    return { ok: true };
   } catch (err) {
     console.error('Supabase saveExams failed:', err);
+    return { ok: false, error: (err as Error).message };
   }
 };
 
@@ -180,7 +186,7 @@ export const getCycles = async (): Promise<Cycle[]> => {
   return local.length > 0 ? local : mockData.mockCycles;
 };
 
-export const saveCycles = async (cycles: Cycle[]): Promise<void> => {
+export const saveCycles = async (cycles: Cycle[]): Promise<{ ok: boolean; error?: string }> => {
   setStorageItem(KEYS.CYCLES, cycles);
   try {
     const payload = cycles.map(c => ({
@@ -193,8 +199,10 @@ export const saveCycles = async (cycles: Cycle[]): Promise<void> => {
     }));
     const { error } = await supabase.from('cycles').upsert(payload);
     if (error) throw error;
+    return { ok: true };
   } catch (err) {
     console.error('Supabase saveCycles failed:', err);
+    return { ok: false, error: (err as Error).message };
   }
 };
 
@@ -239,7 +247,7 @@ export const getDailyRecords = async (): Promise<DailyRecord[]> => {
   }));
 };
 
-export const saveDailyRecords = async (records: DailyRecord[]): Promise<void> => {
+export const saveDailyRecords = async (records: DailyRecord[]): Promise<{ ok: boolean; error?: string }> => {
   setStorageItem(KEYS.DAILY_RECORDS, records);
   try {
     const payload = records.map(r => ({
@@ -258,8 +266,10 @@ export const saveDailyRecords = async (records: DailyRecord[]): Promise<void> =>
     }));
     const { error } = await supabase.from('daily_records').upsert(payload);
     if (error) throw error;
+    return { ok: true };
   } catch (err) {
     console.error('Supabase saveDailyRecords failed:', err);
+    return { ok: false, error: (err as Error).message };
   }
 };
 
@@ -303,7 +313,7 @@ export const getD21Plans = async (): Promise<D21Plan[]> => {
   return local.length > 0 ? local : mockData.mockD21Plans;
 };
 
-export const saveD21Plans = async (plans: D21Plan[]): Promise<void> => {
+export const saveD21Plans = async (plans: D21Plan[]): Promise<{ ok: boolean; error?: string }> => {
   setStorageItem(KEYS.D21_PLANS, plans);
   try {
     const plansPayload = plans.map(p => ({
@@ -329,8 +339,10 @@ export const saveD21Plans = async (plans: D21Plan[]): Promise<void> => {
       const { error: cellsErr } = await supabase.from('d21_cells').upsert(cellsPayload);
       if (cellsErr) throw cellsErr;
     }
+    return { ok: true };
   } catch (err) {
     console.error('Supabase saveD21Plans failed:', err);
+    return { ok: false, error: (err as Error).message };
   }
 };
 
@@ -372,7 +384,7 @@ export const getReviewTrackers = async (): Promise<ReviewTracker[]> => {
   return local.length > 0 ? local : mockData.mockReviewTrackers;
 };
 
-export const saveReviewTrackers = async (trackers: ReviewTracker[]): Promise<void> => {
+export const saveReviewTrackers = async (trackers: ReviewTracker[]): Promise<{ ok: boolean; error?: string }> => {
   setStorageItem(KEYS.REVIEW_TRACKERS, trackers);
   try {
     const trackersPayload = trackers.map(t => ({
@@ -397,8 +409,10 @@ export const saveReviewTrackers = async (trackers: ReviewTracker[]): Promise<voi
       const { error: itemsErr } = await supabase.from('review_items').upsert(itemsPayload);
       if (itemsErr) throw itemsErr;
     }
+    return { ok: true };
   } catch (err) {
     console.error('Supabase saveReviewTrackers failed:', err);
+    return { ok: false, error: (err as Error).message };
   }
 };
 
@@ -428,7 +442,7 @@ export const getAlerts = async (): Promise<Alert[]> => {
   return local.length > 0 ? local : mockData.mockAlerts;
 };
 
-export const saveAlerts = async (alerts: Alert[]): Promise<void> => {
+export const saveAlerts = async (alerts: Alert[]): Promise<{ ok: boolean; error?: string }> => {
   setStorageItem(KEYS.ALERTS, alerts);
   try {
     const payload = alerts.map(a => ({
@@ -443,8 +457,10 @@ export const saveAlerts = async (alerts: Alert[]): Promise<void> => {
     }));
     const { error } = await supabase.from('alerts').upsert(payload);
     if (error) throw error;
+    return { ok: true };
   } catch (err) {
     console.error('Supabase saveAlerts failed:', err);
+    return { ok: false, error: (err as Error).message };
   }
 };
 
@@ -478,7 +494,7 @@ export const getQuestions = async (): Promise<QuestionBankItem[]> => {
   return local.length > 0 ? local : mockData.mockQuestions;
 };
 
-export const saveQuestions = async (questions: QuestionBankItem[]): Promise<void> => {
+export const saveQuestions = async (questions: QuestionBankItem[]): Promise<{ ok: boolean; error?: string }> => {
   setStorageItem(KEYS.QUESTIONS, questions);
   try {
     const payload = questions.map(q => ({
@@ -497,8 +513,10 @@ export const saveQuestions = async (questions: QuestionBankItem[]): Promise<void
     }));
     const { error } = await supabase.from('questions').upsert(payload);
     if (error) throw error;
+    return { ok: true };
   } catch (err) {
     console.error('Supabase saveQuestions failed:', err);
+    return { ok: false, error: (err as Error).message };
   }
 };
 
@@ -527,7 +545,7 @@ export const getPrescriptions = async (): Promise<Prescription[]> => {
   return local.length > 0 ? local : mockData.mockPrescriptions;
 };
 
-export const savePrescriptions = async (prescriptions: Prescription[]): Promise<void> => {
+export const savePrescriptions = async (prescriptions: Prescription[]): Promise<{ ok: boolean; error?: string }> => {
   setStorageItem(KEYS.PRESCRIPTIONS, prescriptions);
   try {
     const payload = prescriptions.map(p => ({
@@ -541,8 +559,10 @@ export const savePrescriptions = async (prescriptions: Prescription[]): Promise<
     }));
     const { error } = await supabase.from('prescriptions').upsert(payload);
     if (error) throw error;
+    return { ok: true };
   } catch (err) {
     console.error('Supabase savePrescriptions failed:', err);
+    return { ok: false, error: (err as Error).message };
   }
 };
 
@@ -554,7 +574,7 @@ export const getStudentStatuses = async (): Promise<StudentStatus[]> => {
   const dailyRecords = await getDailyRecords();
   const d21Plans = await getD21Plans();
   const alerts = await getAlerts();
-  const today = new Date('2026-05-27'); // 기준 오늘 날짜
+  const today = getToday();
 
   return students.map((student): StudentStatus => {
     const exam = exams.find(e => e.studentId === student.id);
@@ -657,12 +677,51 @@ const ELEM_KEYS = {
   PILLAR_SCHEDULE: 'edulink_pillarschedule'
 };
 
-export const getDailyCards = (): DailyCard[] => {
-  return getStorageItem<DailyCard[]>(ELEM_KEYS.DAILY_CARDS, []);
+export const getDailyCards = async (): Promise<DailyCard[]> => {
+  const local = getStorageItem<DailyCard[]>(ELEM_KEYS.DAILY_CARDS, []);
+  try {
+    const { data, error } = await supabase.from('daily_cards').select('*');
+    if (error) throw error;
+    if (data && data.length > 0) {
+      const mapped: DailyCard[] = data.map(c => ({
+        id: c.id,
+        studentId: c.student_id,
+        date: c.date,
+        attendance: c.attendance as '정상' | '지각' | '결석',
+        phasesDone: typeof c.phases_done === 'string' ? JSON.parse(c.phases_done) : c.phases_done,
+        pillarToday: c.pillar_today as Pillar,
+        helpPoints: typeof c.help_points === 'string' ? JSON.parse(c.help_points) : c.help_points,
+        condition: c.condition as 1 | 2 | 3 | 4 | 5,
+        coachNote: c.coach_note || undefined,
+      }));
+      setStorageItem(ELEM_KEYS.DAILY_CARDS, mapped);
+      return mapped;
+    }
+  } catch (err) {
+    console.error('Supabase getDailyCards failed, fallback to local:', err);
+  }
+  return local.length > 0 ? local : [];
 };
 
-export const saveDailyCards = (cards: DailyCard[]): void => {
+export const saveDailyCards = async (cards: DailyCard[]): Promise<void> => {
   setStorageItem(ELEM_KEYS.DAILY_CARDS, cards);
+  try {
+    const payload = cards.map(c => ({
+      id: c.id,
+      student_id: c.studentId,
+      date: c.date,
+      attendance: c.attendance,
+      phases_done: c.phasesDone,
+      pillar_today: c.pillarToday,
+      help_points: c.helpPoints,
+      condition: c.condition,
+      coach_note: c.coachNote || null,
+    }));
+    const { error } = await supabase.from('daily_cards').upsert(payload);
+    if (error) throw error;
+  } catch (err) {
+    console.error('Supabase saveDailyCards failed:', err);
+  }
 };
 
 export const getPillarSchedule = (): PillarSchedule => {
@@ -679,9 +738,9 @@ export const savePillarSchedule = (schedule: PillarSchedule): void => {
 export const seedElementaryMockDataIfEmpty = async (): Promise<void> => {
   if (typeof window === 'undefined') return;
   try {
-    const cards = getDailyCards();
+    const cards = await getDailyCards();
     if (cards.length === 0) {
-      console.log('Seeding elementary mock data to localStorage...');
+      console.log('Seeding elementary mock data to localStorage and Supabase...');
       
       const today = new Date();
       const getOffsetDateStr = (offset: number) => {
@@ -707,7 +766,7 @@ export const seedElementaryMockDataIfEmpty = async (): Promise<void> => {
         };
       });
 
-      saveDailyCards(seededCards);
+      await saveDailyCards(seededCards);
       
       const defaultSchedule: PillarSchedule = {
         byWeekday: { '월': '수학', '화': '영어', '수': '수학', '목': '영어', '금': '토론' }
@@ -848,18 +907,23 @@ export const saveMasteryChecks = (checks: MasteryCheck[]): void => {
   if (checks.length > 0) {
     const latestCheck = checks[checks.length - 1];
     const checkDate = latestCheck.date;
-    const cards = getDailyCards();
-    const cardIndex = cards.findIndex(c => c.studentId === latestCheck.studentId && c.date === checkDate);
-    if (cardIndex >= 0) {
-      cards[cardIndex] = {
-        ...cards[cardIndex],
-        phasesDone: {
-          ...cards[cardIndex].phasesDone,
-          P1: true
-        }
-      };
-      saveDailyCards(cards);
-    }
+    getDailyCards().then(cards => {
+      const cardIndex = cards.findIndex(c => c.studentId === latestCheck.studentId && c.date === checkDate);
+      if (cardIndex >= 0) {
+        cards[cardIndex] = {
+          ...cards[cardIndex],
+          phasesDone: {
+            ...cards[cardIndex].phasesDone,
+            P1: true
+          }
+        };
+        saveDailyCards(cards).catch(err => {
+          console.error('Failed to auto-update daily card P1 from mastery check:', err);
+        });
+      }
+    }).catch(err => {
+      console.error('Failed to get daily cards for mastery check auto-update:', err);
+    });
   }
 };
 
@@ -1047,7 +1111,7 @@ export const getBuildPlans = async (): Promise<BuildPlan[]> => {
   return local;
 };
 
-export const saveBuildPlans = async (plans: BuildPlan[]): Promise<void> => {
+export const saveBuildPlans = async (plans: BuildPlan[]): Promise<{ ok: boolean; error?: string }> => {
   setStorageItem(KEYS.BUILD_PLANS, plans);
   try {
     const payload = plans.map(p => ({
@@ -1058,7 +1122,9 @@ export const saveBuildPlans = async (plans: BuildPlan[]): Promise<void> => {
     }));
     const { error } = await supabase.from('build_plans').upsert(payload);
     if (error) throw error;
+    return { ok: true };
   } catch (err) {
     console.error('Supabase saveBuildPlans failed:', err);
+    return { ok: false, error: (err as Error).message };
   }
 };

@@ -6,9 +6,9 @@ import SectionNav from '../../../components/SectionNav';
 import { 
   getDailyCards, 
   saveDailyCards, 
-  getPillarSchedule, 
-  seedElementaryMockDataIfEmpty 
+  getPillarSchedule 
 } from '../../../lib/storage';
+import { getTodayStr, getWeekdayKo } from '../../../lib/dateService';
 import { mockElementaryStudents } from '../../../data/mockData';
 import { DailyCard, ElementaryStudent, Pillar, ElementaryPhase, PillarSchedule } from '../../../types';
 import { Check, ClipboardList, AlertCircle, X, HelpCircle } from 'lucide-react';
@@ -33,39 +33,14 @@ export default function InputPage() {
   const [condition, setCondition] = useState<1 | 2 | 3 | 4 | 5>(4);
   const [coachNote, setCoachNote] = useState('');
 
-  // 오늘 날짜 계산 (시스템의 로컬 타임존 반영 포맷)
-  const getTodayString = () => {
-    const d = new Date();
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const date = String(d.getDate()).padStart(2, '0');
-    return `${year}-${month}-${date}`;
-  };
-
-  const todayStr = getTodayString();
-
-  // 요일 구하기
-  const getWeekdayString = (): '월'|'화'|'수'|'목'|'금' => {
-    const d = new Date();
-    const day = d.getDay(); // 0: 일, 1: 월 ... 6: 토
-    const map: Record<number, '월'|'화'|'수'|'목'|'금'> = {
-      1: '월',
-      2: '화',
-      3: '수',
-      4: '목',
-      5: '금'
-    };
-    // 토/일요일이면 금요일 또는 월요일로 대체
-    return map[day] || '금';
-  };
-
-  const todayWeekday = getWeekdayString();
+  // 오늘 날짜 및 요일 정보
+  const todayStr = getTodayStr();
+  const todayWeekday = getWeekdayKo();
 
   useEffect(() => {
     const initData = async () => {
       try {
-        await seedElementaryMockDataIfEmpty();
-        setDailyCards(getDailyCards());
+        setDailyCards(await getDailyCards());
         setPillarSchedule(getPillarSchedule());
       } catch (error) {
         console.error('초등 입력 화면 초기 데이터 로딩 실패:', error);
@@ -125,7 +100,7 @@ export default function InputPage() {
   };
 
   // 저장 처리
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!selectedStudent) return;
 
     const pillarToday = getPillarToday();
@@ -150,7 +125,7 @@ export default function InputPage() {
     updatedCards.push(newCard);
 
     setDailyCards(updatedCards);
-    saveDailyCards(updatedCards);
+    await saveDailyCards(updatedCards);
     setSelectedStudent(null); // 모달 닫기
   };
 

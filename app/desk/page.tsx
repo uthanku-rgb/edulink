@@ -18,8 +18,10 @@ import { getStudents } from '../../lib/storage';
 import { getEnrollments, toggleProgramEnrollment } from '../../lib/reportDb';
 import { Student } from '../../types';
 import { Enrollment } from '../../lib/report-engine-spec';
+import { useToast } from '../../components/ToastProvider';
 
 export default function DeskConsolePage() {
+  const toast = useToast();
   const router = useRouter();
   const [students, setStudents] = useState<Student[]>([]);
   const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
@@ -69,7 +71,7 @@ export default function DeskConsolePage() {
           ];
         });
       } else {
-        alert('등록 상태 변경에 실패했습니다.');
+        toast.error('등록 상태 변경에 실패했습니다.');
       }
     } catch (err) {
       console.error('Toggle failed:', err);

@@ -5,6 +5,7 @@ import Header from '../../components/Header';
 import SectionNav from '../../components/SectionNav';
 import { getStudents } from '../../lib/storage';
 import { Student } from '../../types';
+import { useToast } from '../../components/ToastProvider';
 import { 
   BarChart3, 
   Search, 
@@ -76,6 +77,7 @@ const initialAnalyses: ExamAnalysisRecord[] = [
 ];
 
 export default function AnalysisPage() {
+  const toast = useToast();
   const [students, setStudents] = useState<Student[]>([]);
   const [analyses, setAnalyses] = useState<ExamAnalysisRecord[]>(initialAnalyses);
   const [searchQuery, setSearchQuery] = useState('');
@@ -123,7 +125,7 @@ export default function AnalysisPage() {
 
   const handleAddIncorrect = () => {
     if (!topic) {
-      alert('오답 문항의 단원/토픽을 입력해 주세요.');
+      toast.info('오답 문항의 단원/토픽을 입력해 주세요.');
       return;
     }
     const newIncorrect: QuestionAnalysis = {
@@ -146,7 +148,7 @@ export default function AnalysisPage() {
   const handleAddRecord = (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedStudentId || !managerConsultation || !prescriptionDirection) {
-      alert('필수 분석 항목을 작성해 주세요.');
+      toast.info('필수 분석 항목을 작성해 주세요.');
       return;
     }
 
@@ -179,7 +181,7 @@ export default function AnalysisPage() {
     setQuestionNo(1);
     setManagerConsultation('');
     setPrescriptionDirection('');
-    alert('시험 오답 분석 리포트가 생성되었습니다.');
+    toast.success('시험 오답 분석 리포트가 생성되었습니다.');
   };
 
   const handleDeleteRecord = (id: string) => {

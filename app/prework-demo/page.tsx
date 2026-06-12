@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import PreworkRunner from '../../components/prework/PreworkRunner';
 import Header from '../../components/Header';
 import { ArrowLeft } from 'lucide-react';
+import { getTodayStr, getDisplayDateStr } from '../../lib/dateService';
 
 function DemoRunnerContent() {
   const searchParams = useSearchParams();
@@ -14,12 +15,7 @@ function DemoRunnerContent() {
   const studentId = searchParams.get('studentId') || 'stu_elem_01';
   const studentName = searchParams.get('studentName') || '김민준';
   
-  // Format today's date
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, '0');
-  const date = String(today.getDate()).padStart(2, '0');
-  const todayStr = `${year}-${month}-${date}`;
+  const todayStr = getTodayStr();
 
   return (
     <div className="flex-1 max-w-4xl w-full mx-auto px-4 md:px-8 mt-8 flex flex-col items-center">
@@ -53,7 +49,7 @@ export default function PreworkDemoPage() {
         title="프리워크 인지 워밍업 (데모)" 
         studentCount={6} 
         managerName="정수진 코치" 
-        dateString="2026.05.31 (일)" 
+        dateString={getDisplayDateStr()} 
       />
 
       <Suspense fallback={

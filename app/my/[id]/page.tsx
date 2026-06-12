@@ -13,6 +13,8 @@ import {
   ArrowLeft,
   PenTool
 } from 'lucide-react';
+import { getToday, getTodayStr, getDisplayDateStr } from '../../../lib/dateService';
+import { useToast } from '../../../components/ToastProvider';
 import { 
   getStudents, 
   getDailyRecords, 
@@ -46,6 +48,7 @@ interface PerformanceTask {
 }
 
 export default function StudentDraftInputPage() {
+  const toast = useToast();
   const router = useRouter();
   const params = useParams();
   const studentId = params.id as string;
@@ -54,8 +57,8 @@ export default function StudentDraftInputPage() {
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // 2026-05-27은 중고등 시스템의 기준 "오늘" 날짜
-  const TODAY_DATE = '2026-05-27';
+  // 오늘 날짜 (동적)
+  const TODAY_DATE = getTodayStr();
 
   // 입력 필드 상태
   const [studyMinutes, setStudyMinutes] = useState<number>(240);
@@ -206,12 +209,16 @@ export default function StudentDraftInputPage() {
       const filtered = allRecords.filter(r => !(r.studentId === studentId && r.date === TODAY_DATE));
       const updated = [newRecord, ...filtered];
       
-      await saveDailyRecords(updated);
-      setExistingRecord(newRecord);
-      alert('오늘의 학습 초안 기록이 저장되었습니다! 매니저 확인 후 확정됩니다.');
+      const result = await saveDailyRecords(updated);
+      if (result.ok) {
+        setExistingRecord(newRecord);
+        toast.success('오늘의 학습 초안 기록이 저장되었습니다! 매니저 확인 후 확정됩니다.');
+      } else {
+        toast.error(result.error || '기록 저장에 실패했습니다.');
+      }
     } catch (err) {
       console.error('Failed to save student draft:', err);
-      alert('기록 저장에 실패했습니다. 다시 시도해 주세요.');
+      toast.error('기록 저장에 실패했습니다. 다시 시도해 주세요.');
     } finally {
       setIsSubmitting(false);
     }
@@ -294,7 +301,7 @@ export default function StudentDraftInputPage() {
                 </span>
               )}
               <span className="text-xs font-bold text-slate-100 bg-slate-850 px-2.5 py-1 rounded-lg">
-                2026.05.27 (월)
+                {getDisplayDateStr()}
               </span>
             </div>
           </div>
@@ -374,7 +381,7 @@ export default function StudentDraftInputPage() {
               </h3>
               <div className="flex flex-col gap-2">
                 {performanceTasks.map(task => {
-                  const today = new Date('2026-05-27');
+                  const today = getToday();
                   const due = new Date(task.dueDate);
                   const diffDays = Math.ceil((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
                   return (

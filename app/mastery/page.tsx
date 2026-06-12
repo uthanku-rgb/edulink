@@ -29,8 +29,11 @@ import {
   Gap, 
   RecallMethod 
 } from '@/types';
+import { getTodayStr } from '@/lib/dateService';
+import { useToast } from '@/components/ToastProvider';
 
 export default function MasteryPage() {
+  const toast = useToast();
   const [mounted, setMounted] = useState(false);
 
   // 데이터 상태
@@ -80,17 +83,7 @@ export default function MasteryPage() {
     }
   }, []);
 
-  // 오늘 날짜 구하기 YYYY-MM-DD
-  const getTodayString = () => {
-    // 시스템 시안 기준 날짜인 2026-05-30 사용하거나 실제 오늘 날짜 사용
-    const d = new Date();
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const date = String(d.getDate()).padStart(2, '0');
-    return `${year}-${month}-${date}`;
-  };
-
-  const todayStr = getTodayString();
+  const todayStr = getTodayStr();
 
   // Tab A: 핵심 포인트 임시 추가
   const handleAddPoint = () => {
@@ -108,11 +101,11 @@ export default function MasteryPage() {
   // Tab A: 토픽 전체 저장
   const handleSaveTopic = () => {
     if (!newTopicTitle.trim()) {
-      alert('주제/단원명을 입력해주세요.');
+      toast.info('주제/단원명을 입력해주세요.');
       return;
     }
     if (newPoints.length === 0) {
-      alert('최소 한 개 이상의 핵심 포인트를 등록해주세요.');
+      toast.info('최소 한 개 이상의 핵심 포인트를 등록해주세요.');
       return;
     }
 
@@ -162,15 +155,15 @@ export default function MasteryPage() {
   // Tab B: 채점 결과 저장
   const handleSaveGrade = () => {
     if (!selectedTopicId) {
-      alert('토픽을 먼저 선택해주세요.');
+      toast.info('토픽을 먼저 선택해주세요.');
       return;
     }
     if (!selectedStudentId) {
-      alert('학생을 선택해주세요.');
+      toast.info('학생을 선택해주세요.');
       return;
     }
     if (recallMethod === 'peer_explain' && !peerToStudent.trim()) {
-      alert('설명 대상을 입력해주세요.');
+      toast.info('설명 대상을 입력해주세요.');
       return;
     }
 
@@ -259,7 +252,7 @@ export default function MasteryPage() {
   const handleResolveGaps = () => {
     const selectedIds = Object.keys(selectedGapIds).filter(id => selectedGapIds[id]);
     if (selectedIds.length === 0) {
-      alert('재테스트를 완료할 결손(구멍)을 선택해주세요.');
+      toast.info('재테스트를 완료할 결손(구멍)을 선택해주세요.');
       return;
     }
 

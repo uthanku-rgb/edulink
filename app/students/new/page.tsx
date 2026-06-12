@@ -6,10 +6,13 @@ import { ArrowLeft, UserPlus, Save } from 'lucide-react';
 import Header from '../../../components/Header';
 import SectionNav from '../../../components/SectionNav';
 import { getStudents, getExams, getCycles, getD21Plans, getReviewTrackers, saveStudents, saveExams, saveCycles, saveD21Plans, saveReviewTrackers } from '../../../lib/storage';
+import { getToday } from '../../../lib/dateService';
+import { useToast } from '../../../components/ToastProvider';
 import { Student, Exam, Cycle, D21Plan, ReviewTracker, Grade, ExamType, Phase } from '../../../types';
 
 export default function NewStudentPage() {
   const router = useRouter();
+  const toast = useToast();
 
   // 폼 필드 상태
   const [name, setName] = useState('');
@@ -25,7 +28,7 @@ export default function NewStudentPage() {
     e.preventDefault();
 
     if (!name || !school || !examDate) {
-      alert('필수 정보를 입력해 주세요.');
+      toast.info('필수 정보를 입력해 주세요.');
       return;
     }
 
@@ -59,8 +62,8 @@ export default function NewStudentPage() {
       type: examType,
     };
 
-    // D-Day 및 학습 단계(Phase) 계산 (기준일: 2026-05-27)
-    const today = new Date('2026-05-27');
+    // D-Day 및 학습 단계(Phase) 계산 (동적 기준일)
+    const today = getToday();
     const examD = new Date(examDate);
     const diffTime = examD.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -135,11 +138,11 @@ export default function NewStudentPage() {
       await saveD21Plans([newD21Plan, ...plans]);
       await saveReviewTrackers([newTracker, ...trackers]);
 
-      alert('학생이 성공적으로 등록되었습니다.');
+      toast.success('학생이 성공적으로 등록되었습니다.');
       router.push('/students');
     } catch (error) {
       console.error('Failed to save new student:', error);
-      alert('오류가 발생하여 등록에 실패했습니다.');
+      toast.error('오류가 발생하여 등록에 실패했습니다.');
     }
   };
 

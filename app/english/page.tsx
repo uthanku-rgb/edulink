@@ -21,6 +21,7 @@ import {
   getPillarSchedule
 } from '@/lib/storage';
 import { saveAudio, getAudio, deleteAudio } from '@/lib/audioStore';
+import { useToast } from '../../components/ToastProvider';
 import { 
   Sparkles, 
   Mic, 
@@ -49,6 +50,7 @@ const LITTLEFOX_FLOW = [
 ];
 
 export default function EnglishModulePage() {
+  const toast = useToast();
   // SSR Hydration Guard
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -232,7 +234,7 @@ export default function EnglishModulePage() {
       setUseFallbackRecording(false);
     } catch (err) {
       console.error('녹음 마이크 접근 권한 실패 또는 오류:', err);
-      alert('⚠️ 마이크를 열지 못했어요! 브라우저 권한을 확인해주세요. 마이크를 쓸 수 없다면 하단의 "녹음했어요" 수동 체크를 이용할 수 있어요.');
+      toast.error('마이크를 열지 못했어요. 마이크 권한을 확인해주세요.');
     }
   };
 
@@ -287,9 +289,9 @@ export default function EnglishModulePage() {
   };
 
   // STEP 4: Submit & Save output
-  const handleSubmitOutput = () => {
+  const handleSubmitOutput = async () => {
     if (!selectedStudent || !bookTitle.trim()) {
-      alert('책 제목을 입력해주세요!');
+      toast.info('책 제목을 입력해주세요!');
       return;
     }
 
@@ -321,7 +323,7 @@ export default function EnglishModulePage() {
 
     // 3. P3 DailyCard Sync Check
     let synced = false;
-    const cards = getDailyCards();
+    const cards = await getDailyCards();
     const pillarSchedule = getPillarSchedule();
 
     // Determine current day's weekday
@@ -362,7 +364,7 @@ export default function EnglishModulePage() {
         };
         updatedCards.push(newCard);
       }
-      saveDailyCards(updatedCards);
+      await saveDailyCards(updatedCards);
       synced = true;
     }
 
@@ -375,7 +377,7 @@ export default function EnglishModulePage() {
     try {
       const blob = await getAudio(recId);
       if (!blob) {
-        alert('앗! 녹음 파일을 찾을 수 없어요.');
+        toast.error('녹음 파일을 찾을 수 없어요.');
         return;
       }
       const url = URL.createObjectURL(blob);

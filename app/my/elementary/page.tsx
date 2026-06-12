@@ -79,28 +79,31 @@ function ElementaryStudentPortalContent() {
   }, [todayWeekday, queryStudentId]);
 
   useEffect(() => {
-    if (selectedStudentId) {
-      const cards = getDailyCards();
-      let card = cards.find(c => c.studentId === selectedStudentId && c.date === todayStr);
-      
-      // 만약 오늘 카드가 아직 없다면, 학생을 위한 기본 카드 생성
-      if (!card) {
-        card = {
-          id: `dc_${selectedStudentId}_${todayStr.replace(/-/g, '')}`,
-          studentId: selectedStudentId,
-          date: todayStr,
-          attendance: '정상',
-          phasesDone: { P1: false, P2: false, P3: false, P4: false },
-          pillarToday: todayPillar,
-          helpPoints: [],
-          condition: 3,
-          coachNote: '오늘도 웃으며 즐겁게 공부해보아요! 화이팅!'
-        };
-        const updatedCards = [card, ...cards.filter(c => !(c.studentId === selectedStudentId && c.date === todayStr))];
-        saveDailyCards(updatedCards);
+    const loadCard = async () => {
+      if (selectedStudentId) {
+        const cards = await getDailyCards();
+        let card = cards.find(c => c.studentId === selectedStudentId && c.date === todayStr);
+        
+        // 만약 오늘 카드가 아직 없다면, 학생을 위한 기본 카드 생성
+        if (!card) {
+          card = {
+            id: `dc_${selectedStudentId}_${todayStr.replace(/-/g, '')}`,
+            studentId: selectedStudentId,
+            date: todayStr,
+            attendance: '정상',
+            phasesDone: { P1: false, P2: false, P3: false, P4: false },
+            pillarToday: todayPillar,
+            helpPoints: [],
+            condition: 3,
+            coachNote: '오늘도 웃으며 즐겁게 공부해보아요! 화이팅!'
+          };
+          const updatedCards = [card, ...cards.filter(c => !(c.studentId === selectedStudentId && c.date === todayStr))];
+          await saveDailyCards(updatedCards);
+        }
+        setDailyCard(card);
       }
-      setDailyCard(card);
-    }
+    };
+    loadCard();
   }, [selectedStudentId, todayPillar, todayStr]);
 
   const handleStudentChange = (id: string) => {

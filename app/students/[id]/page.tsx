@@ -41,11 +41,14 @@ import {
   BuildWeek,
   BuildCell
 } from '../../../types';
+import { getToday, getTodayStr } from '../../../lib/dateService';
+import { useToast } from '../../../components/ToastProvider';
 
 export default function StudentDetailPage() {
   const router = useRouter();
   const params = useParams();
   const studentId = params.id as string;
+  const toast = useToast();
 
   // 데이터 상태
   const [student, setStudent] = useState<Student | null>(null);
@@ -171,7 +174,7 @@ export default function StudentDetailPage() {
         }
 
         // 일일 기록 날짜 기본값 (오늘 날짜)
-        setRecordDate(new Date('2026-05-27').toISOString().split('T')[0]);
+        setRecordDate(getTodayStr());
       } catch (err) {
         console.error('Failed to load student detail data:', err);
       } finally {
@@ -205,7 +208,7 @@ export default function StudentDetailPage() {
   // D-Day 계산
   const getDDayString = () => {
     if (!exam) return '-';
-    const today = new Date('2026-05-27');
+    const today = getToday();
     const examD = new Date(exam.examDate);
     const diff = Math.ceil((examD.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
     
@@ -256,15 +259,19 @@ export default function StudentDetailPage() {
       const filtered = allRecords.filter(r => !(r.studentId === studentId && r.date === recordDate));
       const updated = [newRecord, ...filtered];
       
-      await saveDailyRecords(updated);
+      const result = await saveDailyRecords(updated);
       setDailyRecords(updated.filter(r => r.studentId === studentId));
       
       // 입력 폼 리셋
       setNote('');
-      alert('일일 기록이 성공적으로 저장되었습니다.');
+      if (result.ok) {
+        toast.success('일일 기록이 성공적으로 저장되었습니다.');
+      } else {
+        toast.error(result.error || '저장에 실패했습니다.');
+      }
     } catch (err) {
       console.error('Failed to save daily record:', err);
-      alert('저장에 실패했습니다.');
+      toast.error('저장에 실패했습니다.');
     }
   };
 
@@ -281,12 +288,16 @@ export default function StudentDetailPage() {
         }
         return r;
       });
-      await saveDailyRecords(updated);
+      const result = await saveDailyRecords(updated);
       setDailyRecords(updated.filter(r => r.studentId === studentId));
-      alert('해당 기록이 승인되었습니다.');
+      if (result.ok) {
+        toast.success('해당 기록이 승인되었습니다.');
+      } else {
+        toast.error(result.error || '승인에 실패했습니다.');
+      }
     } catch (err) {
       console.error('Failed to confirm record:', err);
-      alert('승인에 실패했습니다.');
+      toast.error('승인에 실패했습니다.');
     }
   };
 
@@ -338,7 +349,7 @@ export default function StudentDetailPage() {
       setD21Plan(updatedPlan);
       
       setEditingCell(null);
-      alert('해당 날짜 계획이 수정되었습니다.');
+      toast.success('해당 날짜 계획이 수정되었습니다.');
     } catch (err) {
       console.error('Failed to save planner cell:', err);
     }
@@ -401,7 +412,7 @@ export default function StudentDetailPage() {
       
       setNewSubject('');
       setNewMaterial('');
-      alert('학습 교재가 추가되었습니다.');
+      toast.success('학습 교재가 추가되었습니다.');
     } catch (err) {
       console.error('Failed to add tracker item:', err);
     }

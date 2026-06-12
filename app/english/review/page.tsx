@@ -15,6 +15,8 @@ import {
   seedEnglishMockDataIfEmpty 
 } from '@/lib/storage';
 import { getAudio } from '@/lib/audioStore';
+import { getTodayStr, getThisWeekRange } from '../../../lib/dateService';
+import { useToast } from '../../../components/ToastProvider';
 import { 
   Award, 
   Pause, 
@@ -48,6 +50,7 @@ const STAGE_INFOS = [
 ];
 
 export default function EnglishCoachReviewPage() {
+  const toast = useToast();
   const [mounted, setMounted] = useState(false);
 
 
@@ -79,13 +82,7 @@ export default function EnglishCoachReviewPage() {
     }
   }, []);
 
-  // 오늘 날짜 문자열 계산
-  const getTodayString = () => {
-    // 시안 기준일: 2026-05-30
-    return '2026-05-30';
-  };
-
-  const todayStr = getTodayString();
+  const todayStr = getTodayStr();
 
   // 학생별 동적 EnglishProgress 계산 함수
   const getStudentProgress = (studentId: string): EnglishProgress => {
@@ -104,9 +101,10 @@ export default function EnglishCoachReviewPage() {
     const recordingsCount = studentOutputs.filter(o => o.hasRecording).length;
     const writingsCount = studentOutputs.filter(o => o.writing && o.writing.trim().length > 0).length;
 
-    // 이번 주 학습 시간 합 (2026-05-25 ~ 2026-05-31 주간 가정)
-    const startOfWeek = new Date('2026-05-25');
-    const endOfWeek = new Date('2026-05-31T23:59:59');
+    // 이번 주 학습 시간 합
+    const weekRange = getThisWeekRange();
+    const startOfWeek = new Date(weekRange.start);
+    const endOfWeek = new Date(weekRange.end + 'T23:59:59');
 
     const weekOutputs = studentOutputs.filter(o => {
       const d = new Date(o.date);
@@ -163,7 +161,7 @@ export default function EnglishCoachReviewPage() {
     try {
       const blob = await getAudio(recordingId);
       if (!blob) {
-        alert('녹음 파일을 불러올 수 없습니다. 파일이 손상되었거나 삭제되었을 수 있습니다.');
+        toast.error('녹음 파일을 불러올 수 없습니다.');
         return;
       }
       const url = URL.createObjectURL(blob);
@@ -179,7 +177,7 @@ export default function EnglishCoachReviewPage() {
       setIsPlaying(true);
     } catch (err) {
       console.error('녹음 로드 실패:', err);
-      alert('오디오 재생 중 오류가 발생했습니다.');
+      toast.error('오디오 재생 중 오류가 발생했습니다.');
     }
   };
 

@@ -7,6 +7,7 @@ import { mockWorkshops } from '../../../data/workshops';
 import { mockElementaryStudents } from '../../../data/mockData';
 import { getDailyCards, saveDailyCards, getPillarSchedule } from '../../../lib/storage';
 import { DailyCard } from '../../../types';
+import { getTodayStr, getWeekdayKo } from '../../../lib/dateService';
 import { 
   Play, 
   Pause, 
@@ -44,36 +45,15 @@ export default function WorkshopDetailPage({ params }: PageProps) {
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // 오늘 날짜 계산
-  const getTodayString = () => {
-    const d = new Date();
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const date = String(d.getDate()).padStart(2, '0');
-    return `${year}-${month}-${date}`;
-  };
-
-  const todayStr = getTodayString();
-
-  // 요일 구하기
-  const getWeekdayString = (): '월'|'화'|'수'|'목'|'금' => {
-    const d = new Date();
-    const day = d.getDay();
-    const map: Record<number, '월'|'화'|'수'|'목'|'금'> = {
-      1: '월',
-      2: '화',
-      3: '수',
-      4: '목',
-      5: '금'
-    };
-    return map[day] || '금';
-  };
-
-  const todayWeekday = getWeekdayString();
+  const todayStr = getTodayStr();
+  const todayWeekday = getWeekdayKo();
 
   // 초기 마운트 시 데이터 로드
   useEffect(() => {
-    setDailyCards(getDailyCards());
+    const loadCards = async () => {
+      setDailyCards(await getDailyCards());
+    };
+    loadCards();
     
     // 발표 명단 초기화 (전부 미완료)
     const initialPresentMap: Record<string, boolean> = {};
@@ -172,7 +152,7 @@ export default function WorkshopDetailPage({ params }: PageProps) {
   const totalCohortCount = mockElementaryStudents.length;
 
   // 워크샵 완료 처리 및 DB 반영
-  const handleFinishWorkshop = () => {
+  const handleFinishWorkshop = async () => {
     const pillarSchedule = getPillarSchedule();
     const pillarToday = pillarSchedule.byWeekday[todayWeekday] || '토론';
     const updatedCards = [...dailyCards];
@@ -217,7 +197,7 @@ export default function WorkshopDetailPage({ params }: PageProps) {
       }
     });
 
-    saveDailyCards(updatedCards);
+    await saveDailyCards(updatedCards);
     setDailyCards(updatedCards);
     setShowCompleteModal(true);
   };

@@ -6,11 +6,11 @@ import Header from '../../components/Header';
 import SectionNav from '../../components/SectionNav';
 import { 
   getDailyCards, 
-  seedElementaryMockDataIfEmpty, 
   getPillarSchedule,
   getMasteryChecks,
   getGaps
 } from '../../lib/storage';
+import { getTodayStr, getWeekdayKo } from '../../lib/dateService';
 import { mockElementaryStudents } from '../../data/mockData';
 import { DailyCard, ElementaryStudent, CareSignal, CareState, PillarSchedule, MasteryCheck, Gap } from '../../types';
 import { 
@@ -39,36 +39,13 @@ export default function ElementaryDashboardPage() {
   const [loading, setLoading] = useState(true);
 
   // 오늘 날짜 및 요일 정보
-  const getTodayString = () => {
-    const d = new Date();
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const date = String(d.getDate()).padStart(2, '0');
-    return `${year}-${month}-${date}`;
-  };
-
-  const todayStr = getTodayString();
-
-  const getWeekdayString = (): '월'|'화'|'수'|'목'|'금' => {
-    const d = new Date();
-    const day = d.getDay();
-    const map: Record<number, '월'|'화'|'수'|'목'|'금'> = {
-      1: '월',
-      2: '화',
-      3: '수',
-      4: '목',
-      5: '금'
-    };
-    return map[day] || '금';
-  };
-
-  const todayWeekday = getWeekdayString();
+  const todayStr = getTodayStr();
+  const todayWeekday = getWeekdayKo();
 
   useEffect(() => {
     const initData = async () => {
       try {
-        await seedElementaryMockDataIfEmpty();
-        setDailyCards(getDailyCards());
+        setDailyCards(await getDailyCards());
         setPillarSchedule(getPillarSchedule());
         setMasteryChecks(getMasteryChecks());
         setGaps(getGaps());

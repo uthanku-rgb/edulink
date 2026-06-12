@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { LayoutDashboard, LogOut } from 'lucide-react';
 import Link from 'next/link';
+import { getDisplayDateStr } from '../lib/dateService';
 
 interface HeaderProps {
   title: string;
@@ -15,7 +16,7 @@ export default function Header({
   title = '대시보드',
   studentCount = 28,
   managerName = '정수진',
-  dateString = '2026.05.27 (월)',
+  dateString = getDisplayDateStr(),
 }: HeaderProps) {
   const [role, setRole] = useState<string | null>(null);
 

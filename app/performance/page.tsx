@@ -5,6 +5,8 @@ import Header from '../../components/Header';
 import SectionNav from '../../components/SectionNav';
 import { getStudents } from '../../lib/storage';
 import { Student } from '../../types';
+import { getToday } from '../../lib/dateService';
+import { useToast } from '../../components/ToastProvider';
 import { 
   GraduationCap, 
   Search, 
@@ -82,6 +84,7 @@ const initialPerformanceTasks: PerformanceTask[] = [
 ];
 
 export default function PerformancePage() {
+  const toast = useToast();
   const [students, setStudents] = useState<Student[]>([]);
   const [tasks, setTasks] = useState<PerformanceTask[]>(initialPerformanceTasks);
   const [searchQuery, setSearchQuery] = useState('');
@@ -126,7 +129,7 @@ export default function PerformancePage() {
   const handleAddTask = (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedStudentId || !title || !dueDate) {
-      alert('필수 입력 항목을 채워주세요.');
+      toast.info('필수 입력 항목을 채워주세요.');
       return;
     }
 
@@ -158,7 +161,7 @@ export default function PerformancePage() {
     setStatus('대기');
     setStep('주제선정');
     setManagerComment('');
-    alert('수행평가 일정이 성공적으로 등록되었습니다.');
+    toast.success('수행평가 일정이 성공적으로 등록되었습니다.');
   };
 
   const handleDeleteTask = (id: string) => {
@@ -272,7 +275,7 @@ export default function PerformancePage() {
                 ) : (
                   filteredTasks.map((task) => {
                     // 마감일 D-Day 계산
-                    const today = new Date('2026-05-27');
+                    const today = getToday();
                     const due = new Date(task.dueDate);
                     const diffDays = Math.ceil((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
                     

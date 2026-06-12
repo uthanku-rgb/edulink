@@ -23,9 +23,12 @@ import {
 } from '../../../lib/reportDb';
 import { runReportGenerationJob } from '../../../lib/generate-job';
 import { ReportInstance } from '../../../lib/report-engine-spec';
+import { getThisWeekRange } from '../../../lib/dateService';
+import { useToast } from '../../../components/ToastProvider';
 
 export default function CoachReviewQueuePage() {
   const router = useRouter();
+  const toast = useToast();
   const [instances, setInstances] = useState<(ReportInstance & { student?: { name: string; grade: string; school: string } })[]>([]);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
@@ -65,13 +68,16 @@ export default function CoachReviewQueuePage() {
     setGenerating(true);
     setDispatchLogs([]);
     try {
-      // Run generation job for last week
-      const result = await runReportGenerationJob('2026-05-24', '2026-05-30');
+      // Run generation job for this week (dynamic)
+      const range = getThisWeekRange();
+      const startStr = range.start.toISOString().split('T')[0];
+      const endStr = range.end.toISOString().split('T')[0];
+      const result = await runReportGenerationJob(startStr, endStr);
       if (result.success) {
-        alert(`배치 잡 실행 완료: ${result.count}개의 리포트 인스턴스가 생성되었습니다.`);
+        toast.success(`배치 잡 실행 완료: ${result.count}개의 리포트 인스턴스가 생성되었습니다.`);
         await loadInstances();
       } else {
-        alert('리포트 생성 배치 잡 실행 실패.');
+        toast.error('리포트 생성 배치 잡 실행 실패.');
       }
     } catch (err) {
       console.error('Report generation failed:', err);
@@ -90,7 +96,7 @@ export default function CoachReviewQueuePage() {
   const handleApprove = async (id: string) => {
     const coachComment = comments[id] || '';
     if (!coachComment.trim()) {
-      alert('코치 한 줄 의견을 입력해 주세요.');
+      toast.info('코치 한 줄 의견을 입력해 주세요.');
       return;
     }
 
@@ -109,7 +115,7 @@ export default function CoachReviewQueuePage() {
           )
         );
       } else {
-        alert('승인 처리에 실패했습니다.');
+        toast.error('승인 처리에 실패했습니다.');
       }
     } catch (err) {
       console.error('Approval failed:', err);
@@ -130,7 +136,7 @@ export default function CoachReviewQueuePage() {
         ]);
         await loadInstances();
       } else {
-        alert(`발송 실패: ${result.error}`);
+        toast.error(`발송 실패: ${result.error}`);
       }
     } catch (err) {
       console.error('Dispatch failed:', err);
@@ -143,7 +149,7 @@ export default function CoachReviewQueuePage() {
     );
 
     if (readyInstances.length === 0) {
-      alert('발송 대기(auto_ready) 또는 승인완료(approved) 상태인 리포트가 없습니다.');
+      toast.info('발송 대기(auto_ready) 또는 승인완료(approved) 상태인 리포트가 없습니다.');
       return;
     }
 

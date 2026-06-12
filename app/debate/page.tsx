@@ -6,6 +6,7 @@ import { EvidenceItem, DebatePrep, ElementaryStudent } from '@/types';
 import { mockElementaryStudents } from '@/data/mockData';
 import { debateTopics } from '@/data/debateTopics';
 import { getDebatePreps, saveDebatePreps, seedDebatePrepsIfEmpty } from '@/lib/storage';
+import { useToast } from '../../components/ToastProvider';
 import { 
   ArrowLeft, 
   ArrowRight, 
@@ -22,6 +23,7 @@ import {
 } from 'lucide-react';
 
 export default function DebatePrepPage() {
+  const toast = useToast();
   // State
   const [selectedStudent, setSelectedStudent] = useState<ElementaryStudent | null>(null);
   const [debatePreps, setDebatePreps] = useState<DebatePrep[]>([]);
@@ -183,7 +185,7 @@ export default function DebatePrepPage() {
   // Complete prep handler (Step 6)
   const handleCompletePrep = () => {
     updateActivePrep({ status: 'done' });
-    alert('🎉 멋지게 준비를 마쳤어요! 친구의 생각이 예쁘게 정리되었네요.');
+    toast.success('🎉 멋지게 준비를 마쳤어요! 친구의 생각이 예쁘게 정리되었네요.');
   };
 
   // Loading state
@@ -318,11 +320,11 @@ export default function DebatePrepPage() {
                       // Apply validations if trying to jump forward
                       if (s.n > step) {
                         if (step === 2 && !activePrep.side) {
-                          alert('입장(찬성 혹은 반대)을 정해셔야 앞으로 나갈 수 있어요!');
+                          toast.info('입장을 정해셔야 앞으로 나갈 수 있어요!');
                           return;
                         }
                         if (step === 3 && activePrep.evidence.length === 0) {
-                          alert('근거를 1개 이상 모아주셔야 앞으로 갈 수 있어요!');
+                          toast.info('근거를 1개 이상 모아주셔야 앞으로 갈 수 있어요!');
                           return;
                         }
                       }
@@ -1074,11 +1076,11 @@ export default function DebatePrepPage() {
                 onClick={() => {
                   // Validations per step before moving forward
                   if (step === 2 && !activePrep.side) {
-                    alert('입장(찬성/반대)을 선택하셔야 다음 단계로 가실 수 있어요!');
+                    toast.info('입장(찬성/반대)을 선택하셔야 다음 단계로 가실 수 있어요!');
                     return;
                   }
                   if (step === 3 && activePrep.evidence.length === 0) {
-                    alert('자료를 1개 이상 모아주셔야 다음 단계로 갈 수 있어요!');
+                    toast.info('자료를 1개 이상 모아주셔야 다음 단계로 갈 수 있어요!');
                     return;
                   }
                   setStep(step + 1);

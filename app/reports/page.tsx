@@ -13,9 +13,12 @@ import Header from '../../components/Header';
 import SectionNav from '../../components/SectionNav';
 import { getStudents, getDailyRecords, getExams, getCycles, getMasteryChecks, getGaps } from '../../lib/storage';
 import { Student } from '../../types';
+import { getToday } from '../../lib/dateService';
+import { useToast } from '../../components/ToastProvider';
 
 export default function ReportsPage() {
   const router = useRouter();
+  const toast = useToast();
   const [students, setStudents] = useState<Student[]>([]);
   const [selectedStudentId, setSelectedStudentId] = useState('');
   const [reportType, setReportType] = useState<'weekly' | 'season'>('weekly');
@@ -67,7 +70,7 @@ export default function ReportsPage() {
     const studentRecords = allRecords.filter(r => r.studentId === selectedStudentId);
     
     // 최근 7일 필터링 (주간 리포트 기준 - 동적 baseDate 설정)
-    let baseDate = new Date('2026-05-27');
+    let baseDate = getToday();
     if (studentRecords.length > 0) {
       const sortedRecords = [...studentRecords].sort((a, b) => b.date.localeCompare(a.date));
       const latestDateStr = sortedRecords[0].date;
@@ -201,7 +204,7 @@ ${nextWeekGoal}
   // 클립보드 복사 기능
   const handleCopy = () => {
     navigator.clipboard.writeText(getShareText());
-    alert('리포트 내용이 클립보드에 복사되었습니다! 카카오톡 대화방에 붙여넣어 전송하세요.');
+    toast.success('리포트 내용이 클립보드에 복사되었습니다!');
   };
 
   // 인쇄 기능

@@ -27,11 +27,42 @@ import {
   Smile
 } from 'lucide-react';
 import { mockStudents, mockElementaryStudents } from '@/data/mockData';
+import { seedMockDataIfEmpty, seedElementaryMockDataIfEmpty } from '../../lib/storage';
+import { useToast } from '../../components/ToastProvider';
 
 export default function AdminPage() {
+  const toast = useToast();
   const [mounted, setMounted] = useState(false);
   const [selectedStuId, setSelectedStuId] = useState('stu_01');
   const [selectedElemStuId, setSelectedElemStuId] = useState('estu_01');
+  const [seedingMiddleHigh, setSeedingMiddleHigh] = useState(false);
+  const [seedingElementary, setSeedingElementary] = useState(false);
+
+  const handleSeedMiddleHigh = async () => {
+    if (!window.confirm('정말 시딩하시겠습니까?')) return;
+    setSeedingMiddleHigh(true);
+    try {
+      await seedMockDataIfEmpty();
+      toast.success('중고등 데모 데이터가 시딩되었습니다.');
+    } catch {
+      toast.error('중고등 데모 데이터 시딩에 실패했습니다.');
+    } finally {
+      setSeedingMiddleHigh(false);
+    }
+  };
+
+  const handleSeedElementary = async () => {
+    if (!window.confirm('정말 시딩하시겠습니까?')) return;
+    setSeedingElementary(true);
+    try {
+      await seedElementaryMockDataIfEmpty();
+      toast.success('초등 데모 데이터가 시딩되었습니다.');
+    } catch {
+      toast.error('초등 데모 데이터 시딩에 실패했습니다.');
+    } finally {
+      setSeedingElementary(false);
+    }
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -304,8 +335,34 @@ export default function AdminPage() {
 
         </div>
 
+        {/* 데모 데이터 관리 */}
+        <section className="mt-12 bg-white border border-[#E5E1DA] rounded-xl p-4">
+          <h4 className="text-xs font-bold text-slate-700 mb-2 flex items-center gap-1">
+            🗂️ 데모 데이터 관리
+          </h4>
+          <p className="text-[11px] text-amber-600 font-medium mb-3">
+            ⚠️ 데모/시연 환경 전용 — 실사용 환경에서는 사용하지 마세요.
+          </p>
+          <div className="flex gap-2">
+            <button
+              onClick={handleSeedMiddleHigh}
+              disabled={seedingMiddleHigh}
+              className="bg-slate-800 hover:bg-slate-700 text-white text-xs font-medium px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {seedingMiddleHigh ? '시딩 중...' : '중고등 데모 데이터 시딩'}
+            </button>
+            <button
+              onClick={handleSeedElementary}
+              disabled={seedingElementary}
+              className="bg-slate-800 hover:bg-slate-700 text-white text-xs font-medium px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {seedingElementary ? '시딩 중...' : '초등 데모 데이터 시딩'}
+            </button>
+          </div>
+        </section>
+
         {/* Secondary Info Block */}
-        <section className="mt-12 bg-slate-100 border border-slate-200/50 rounded-2xl p-5">
+        <section className="mt-8 bg-slate-100 border border-slate-200/50 rounded-2xl p-5">
           <h4 className="text-xs font-bold text-slate-700 mb-2 flex items-center gap-1">
             📢 가이드 참고 사항
           </h4>

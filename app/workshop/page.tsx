@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Header from '../../components/Header';
 import { mockWorkshops } from '../../data/workshops';
 import { BookOpen, Clock, ArrowRight } from 'lucide-react';
+import { getDisplayDateStr } from '../../lib/dateService';
 
 export default function WorkshopListPage() {
   return (
@@ -14,7 +15,7 @@ export default function WorkshopListPage() {
         title="워크샵 진행 도우미" 
         studentCount={6} 
         managerName="정수진 코치" 
-        dateString="2026.05.30 (토)" 
+        dateString={getDisplayDateStr()} 
       />
       
       {/* 뒤로가기 버튼 */}
